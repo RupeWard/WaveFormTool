@@ -12,7 +12,6 @@
 *.userprefs
 *.pidb
 *.booproj
-Unity/WaveFormTool/*.sln
 
 #Unity3D Generated File On Crash Reports
 sysinfo.txt
