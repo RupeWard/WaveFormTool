@@ -87,7 +87,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 	public void OnGenerateGraphButtonClicked()
 	{
 		string selected = generatorTypeList.selection;
-		Debug.Log ("GenerateGraphButton clicked with selection = '"+selected+"'");
+//		Debug.Log ("GenerateGraphButton clicked with selection = '"+selected+"'");
 		if (generatorDB_.ContainsKey (selected))
 		{
 			graphPanel.CreateGraph (generatorDB_ [selected], numSamples_, false);
@@ -101,7 +101,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 	public void OnCloseButtonClicked()
 	{
-		Debug.Log ("Close clicked");
+//		Debug.Log ("Close clicked");
 		this.gameObject.SetActive (false);
 	}
 }

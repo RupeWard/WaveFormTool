@@ -15,11 +15,11 @@ public class MakeToneMenu : Menu
 	{
 		if (option == playGraphOption)
 		{
-			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + playGraphOption + "'");
+//			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + playGraphOption + "'");
 			if ( ToneGeneratorPanel.IsInitialised())
 			{
 				bool b = ToneGeneratorPanel.Instance.gameObject.activeSelf;
-				Debug.Log((b)?("Closing"):("Opening")+ "PlayGraph panel");
+//				Debug.Log((b)?("Closing"):("Opening")+ "PlayGraph panel");
 				ToneGeneratorPanel.Instance.SetActive(!b);
 			}
 			else

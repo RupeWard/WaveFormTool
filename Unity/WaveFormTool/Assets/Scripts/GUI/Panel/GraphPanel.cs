@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class GraphPanel : MonoBehaviour 
 {
+	private static readonly bool DEBUG_VIEW = false;
+	private static readonly bool DEBUG_GRAPH = false;
+
 	public UILabel messageLabel;
 
 	public GraphSettings settings;
@@ -174,7 +177,8 @@ public class GraphPanel : MonoBehaviour
 					if (a.gameObject.activeSelf)
 					{
 						bHasX = true;
-						Debug.Log ("Found X axis '"+a.AxisName+"'");
+						if (GraphAxis.DEBUG_AXES)
+							Debug.Log ("Found X axis '"+a.AxisName+"'");
 					}
 					break;
 				}
@@ -183,7 +187,8 @@ public class GraphPanel : MonoBehaviour
 					if (a.gameObject.activeSelf)
 					{
 						bHasY = true;
-						Debug.Log ("Found Y axis '"+a.AxisName+"'");
+						if (GraphAxis.DEBUG_AXES)
+							Debug.Log ("Found Y axis '"+a.AxisName+"'");
 					}
 					break;
 				}
@@ -194,7 +199,8 @@ public class GraphPanel : MonoBehaviour
 		{
 			if (settings.defaultXAxis != null)
 			{
-				Debug.Log ("No visible X axis, creating default");
+				if (GraphAxis.DEBUG_AXES)
+					Debug.Log ("No visible X axis, creating default");
 				AxisDefinition defn = (GameObject.Instantiate(settings.defaultXAxis.gameObject) as GameObject).GetComponent<AxisDefinition>();
 				defn.value = settings.YViewCentre;
 				defn.axisName = "Default Y";
@@ -208,7 +214,8 @@ public class GraphPanel : MonoBehaviour
 		{
 			if (settings.defaultYAxis != null)
 			{
-				Debug.Log ("No visible Y axis, creating default");
+				if (GraphAxis.DEBUG_AXES)
+					Debug.Log ("No visible Y axis, creating default");
 
 				AxisDefinition defn = (GameObject.Instantiate(settings.defaultYAxis.gameObject) as GameObject).GetComponent<AxisDefinition>();
 				defn.value = settings.XViewCentre;
@@ -260,9 +267,11 @@ public class GraphPanel : MonoBehaviour
 
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
-		Debug.Log ("CreateGraph( " + numSamples + " )");
+		if (DEBUG_GRAPH)
+			Debug.Log ("CreateGraph( " + numSamples + " )");
 		yield return StartCoroutine(clearPointsCR ());
-		Debug.Log ("Cleared points");
+		if (DEBUG_GRAPH)
+			Debug.Log ("Cleared points");
 
 		DrawAxes ();
 
@@ -309,7 +318,8 @@ public class GraphPanel : MonoBehaviour
 				yield return null;
 			}
 		}
-		Debug.Log ("Created points");
+		if (DEBUG_GRAPH)
+			Debug.Log ("Created points");
 
 		yield return null;
 	}
@@ -348,7 +358,8 @@ public class GraphPanel : MonoBehaviour
 
 	public void OnViewMinChanged(string inStr)
 	{
-		Debug.Log ("OnViewMinChanged( "+inStr+" )");
+		if (DEBUG_VIEW)
+			Debug.Log ("OnViewMinChanged( "+inStr+" )");
 		float newVal;
 		if (float.TryParse (inStr, out newVal))
 		{
@@ -375,7 +386,8 @@ public class GraphPanel : MonoBehaviour
 
 	public void OnViewMaxChanged(string inStr)
 	{
-		Debug.Log ("OnViewMaxChanged( "+inStr+" )");
+		if (DEBUG_VIEW)
+			Debug.Log ("OnViewMaxChanged( "+inStr+" )");
 		float newVal;
 		if (float.TryParse (inStr, out newVal))
 		{

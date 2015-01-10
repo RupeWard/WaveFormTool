@@ -15,11 +15,11 @@ public class CreateGraphMenu : Menu
 	{
 		if (option == functionsOption)
 		{
-			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + functionsOption + "'");
+//			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + functionsOption + "'");
 			if ( WaveGeneratorPanel.IsInitialised())
 			{
 				bool b = WaveGeneratorPanel.Instance.gameObject.activeSelf;
-				Debug.Log((b)?("Closing"):("Opening")+ "Functions panel");
+//				Debug.Log((b)?("Closing"):("Opening")+ "Functions panel");
 				WaveGeneratorPanel.Instance.SetActive(!b);
 			}
 			else

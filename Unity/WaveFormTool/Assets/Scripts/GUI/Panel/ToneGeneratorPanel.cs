@@ -82,7 +82,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 
 	public void OnGenerateToneButtonClicked()
 	{
-		Debug.Log ("Generate clicked");
+//		Debug.Log ("Generate clicked");
 		if (isPlaying)
 		{
 			player_.audio.Stop();
@@ -108,7 +108,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 
 	public void OnCloseButtonClicked()
 	{
-		Debug.Log ("Close clicked");
+//		Debug.Log ("Close clicked");
 		this.gameObject.SetActive (false);
 	}
 

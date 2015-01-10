@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class GraphAxis : MonoBehaviour 
 {
+	public static readonly bool DEBUG_AXES = false;
+
 	public UISprite axisSprite;
 	
 	private AxisDefinition definition_ = null;

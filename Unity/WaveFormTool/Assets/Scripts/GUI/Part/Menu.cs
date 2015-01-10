@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public abstract class Menu : MonoBehaviour 
 {
+	private static bool DEBUG_MENU = false;
+
 	public UIPopupList popUpList;
 
 	private List< string > allOptions_ = new List< string> ();
@@ -12,13 +14,15 @@ public abstract class Menu : MonoBehaviour
 	{
 		if (!allOptions_.Contains (s))
 		{
-			Debug.LogWarning ("Menu '" + gameObject.name + "' adding option '" + s + "'");
+			if (DEBUG_MENU)
+				Debug.LogWarning ("Menu '" + gameObject.name + "' adding option '" + s + "'");
 			allOptions_.Add(s);
 			SetOptionActive(s, b);
 		}
 		else
 		{
-			Debug.LogWarning ("Menu '" + gameObject.name + "' already has option '" + s + "'");
+			if (DEBUG_MENU)
+				Debug.LogWarning ("Menu '" + gameObject.name + "' already has option '" + s + "'");
 		}
 	}
 
@@ -34,12 +38,14 @@ public abstract class Menu : MonoBehaviour
 			{
 				if (b)
 				{
-					Debug.LogWarning ("Menu '" + gameObject.name + "' adding option '" + s + "'");
+					if (DEBUG_MENU)
+						Debug.Log ("Menu '" + gameObject.name + "' adding option '" + s + "'");
 					popUpList.items.Add(s);
 				}
 				else
 				{
-					Debug.LogWarning ("Menu '" + gameObject.name + "' removing option '" + s + "'");
+					if (DEBUG_MENU)
+						Debug.Log ("Menu '" + gameObject.name + "' removing option '" + s + "'");
 					popUpList.items.Remove(s);
 				}
 			}
