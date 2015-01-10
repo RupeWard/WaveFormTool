@@ -29,7 +29,7 @@ public class MakeToneMenu : Menu
 		}
 		else
 		{
-			Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + playGraphOption + "'");
+			Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + option + "'");
 		}
 	}
 

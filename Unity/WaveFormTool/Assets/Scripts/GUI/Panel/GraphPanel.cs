@@ -18,6 +18,8 @@ public class GraphPanel : MonoBehaviour
 	public UIInput viewMinInput;
 	public UIInput viewMaxInput;
 
+	public GraphPointPanel pointPanel_;
+
 	public Transform pointsContainer;
 	public Transform axesContainer;
 
@@ -58,6 +60,13 @@ public class GraphPanel : MonoBehaviour
 			new Vector3 ( -0.5f * (size.x) + 0.5f * elementSize.x + GuiManager.Instance.Margin,
 			             0.5f * (size.y) - 0.5f * elementSize.y - GuiManager.Instance.Margin,
 		        title.transform.localPosition.z);
+
+		elementSize = pointPanel_.Size ();
+		pointPanel_.transform.localPosition 
+			= new Vector3 ( 0.5f*size.x - 0.5f* elementSize.x - GuiManager.Instance.Margin,
+			               0.5f * (size.y) - GuiManager.Instance.Margin - 0.5f*elementSize.y,
+			               pointPanel_.transform.localPosition.z);
+
 	}
 
 #endregion setup
@@ -350,6 +359,12 @@ public class GraphPanel : MonoBehaviour
 			yield return null;
 		}
 		yield return null;
+	}
+
+	public void OnPointSelected(GraphPoint p)
+	{
+		pointPanel_.gameObject.SetActive (true);
+		pointPanel_.SetPoint (p);
 	}
 
 #endregion graph

@@ -29,7 +29,7 @@ public class CreateGraphMenu : Menu
 		}
 		else
 		{
-			Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + functionsOption + "'");
+			Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + option + "'");
 		}
 	}
 

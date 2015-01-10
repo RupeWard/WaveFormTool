@@ -59,11 +59,11 @@ public class GraphPoint : MonoBehaviour
 		transform.localPosition = new Vector3(graphPosition_.x, graphPosition_.y, transform.localPosition.z);
 		transform.localScale = Vector3.one;
 	}
-
-
-
-	public void Awake()
+	
+	public void OnSelected()
 	{
+		Debug.Log ("Point Selected: " + DebugDescribe ());
+		myGraph_.OnPointSelected (this);
 	}
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
