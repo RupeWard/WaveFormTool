@@ -329,6 +329,8 @@ public class GraphPanel : MonoBehaviour
 					}
 					OnPointSelected(newPoint);
 					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
+
+					yield return null; // yield allows point to pick up on it immediately
 //					newPoint.IsFixed = true;
 				}
 				currentX += step;
@@ -478,7 +480,7 @@ public class GraphPanel : MonoBehaviour
 								{
 									if (DEBUG_POINTMOVEMENT && sb != null)
 									{
-										sb.Append("Point not moved "+gp.ToString()+"\n");
+										sb.Append("Point not moved "+gp.DebugDescribe()+"\n");
 									}
 									gpAbsY = newAbs;
 								}
@@ -486,7 +488,7 @@ public class GraphPanel : MonoBehaviour
 								{
 									if (DEBUG_POINTMOVEMENT && sb != null)
 									{
-										sb.Append("Point being moved from zero "+gp.ToString()+"\n");
+										sb.Append("Point being moved from zero "+gp.DebugDescribe()+"\n");
 									}
 									gpAbsY *= bottomMultiplier;
 								}
@@ -494,7 +496,7 @@ public class GraphPanel : MonoBehaviour
 								{
 									if (DEBUG_POINTMOVEMENT && sb != null)
 									{
-										sb.Append("Point being moved from range "+gp.ToString()+"\n");
+										sb.Append("Point being moved from range "+gp.DebugDescribe()+"\n");
 									}
 									float distFromTop = settings.yRange.y - gpAbsY; // FIXME assumes syyemtry about zero
 									distFromTop *= topMultiplier;

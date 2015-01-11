@@ -18,7 +18,7 @@ public class GraphPoint : MonoBehaviour
 	private GraphPoint follower_ = null;
 	public void SetFollower(GraphPoint f)
 	{
-		Debug.LogWarning ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+//		Debug.Log ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
 
 		if (f != null)
 		{
@@ -30,7 +30,7 @@ public class GraphPoint : MonoBehaviour
 					f.SetFollower (null);
 				}
 				follower_ = f;
-				Debug.LogWarning ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+//				Debug.Log ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
 			}
 			else
 			{
@@ -104,6 +104,10 @@ public class GraphPoint : MonoBehaviour
 	}
 
 	private GraphPanel myGraph_; 
+	public GraphPanel graphPanel
+	{
+		get { return myGraph_; }
+	}
 
 	private Vector2 point_ = new Vector2 ();
 	public Vector2 Point

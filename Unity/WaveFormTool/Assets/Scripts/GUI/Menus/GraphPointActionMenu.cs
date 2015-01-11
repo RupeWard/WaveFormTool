@@ -30,16 +30,22 @@ public class GraphPointActionMenu : Menu
 			{
 				if (point_.IsFunctional)
 				{
+					if (!point_.graphPanel.IsCreatingGraph)
+					{
+						Debug.LogWarning ("FixPoint : "+point_.DebugDescribe());
+					}
 					point_.IsFixed = true;
-					Debug.LogWarning ("FixPoint : "+point_.DebugDescribe());
 				}
 			}
 			else if (option == freePointOption)
 			{
 				if (point_.IsFunctional)
 				{
+					if (!point_.graphPanel.IsCreatingGraph)
+					{
+						Debug.LogWarning ("FreePoint"+point_.DebugDescribe());
+					}
 					point_.IsFixed = false;
-					Debug.LogWarning ("FreePoint"+point_.DebugDescribe());
 				}
 			}
 			else
