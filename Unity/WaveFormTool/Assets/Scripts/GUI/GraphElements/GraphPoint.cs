@@ -238,7 +238,7 @@ public class GraphPoint : MonoBehaviour
 		sb.Append (", ");
 		sb.Append (point_.y);
 		sb.Append (" ) at ");
-		sb.Append (pointSprite.transform.localPosition);
+		sb.Append (transform.localPosition);
 		sb.Append (" ");
 		if (isFixed_)
 		{
