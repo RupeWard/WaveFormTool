@@ -127,7 +127,7 @@ public class GraphPoint : MonoBehaviour
 	}
 
 	private float throbTime = 0f;
-	private bool isSelected = false;
+	private bool isSelected = true;
 
 	public void Update()
 	{

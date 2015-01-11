@@ -31,6 +31,7 @@ public class GraphPointPanel : MonoBehaviour
 		point_ = p;
 		xValueLabel.text = string.Format("{0:0.####}",point_.Point.x); 
 		yValueLabel.text = string.Format("{0:0.####}",point_.Point.y);  
+		stateLabel.text = (point_.IsFixed)?("Fixed"):("");
 		actionMenu.SetPoint (point_);
 	}
 
@@ -49,6 +50,11 @@ public class GraphPointPanel : MonoBehaviour
 		gameObject.SetActive (b);
 	}
 
+	private void SetStateLabel()
+	{
+		stateLabel.text = (point_.IsFixed)?("Fixed"):("");
+	}
+
 	public void OnCloseButtonClicked()
 	{
 //		Debug.Log ("Close clicked");
@@ -59,7 +65,7 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		if (point_ != null && point_.IsDataDirty)
 		{
-			stateLabel.text = (point_.IsFixed)?("Fixed"):("");
+			SetStateLabel ();
 			actionMenu.SetPoint(point_);
 			point_.ClearDataDirty();
 		}

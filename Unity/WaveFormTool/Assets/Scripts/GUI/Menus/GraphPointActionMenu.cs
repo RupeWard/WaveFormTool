@@ -30,7 +30,7 @@ public class GraphPointActionMenu : Menu
 			{
 				if (point_.IsFunctional)
 				{
-					point_.IsFixed = !point_.IsFixed;
+					point_.IsFixed = true;
 					Debug.LogWarning ("FixPoint");
 				}
 			}
@@ -38,7 +38,7 @@ public class GraphPointActionMenu : Menu
 			{
 				if (point_.IsFunctional)
 				{
-					point_.IsFixed = !point_.IsFixed;
+					point_.IsFixed = false;
 					Debug.LogWarning ("FreePoint");
 				}
 			}
