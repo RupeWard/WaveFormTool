@@ -197,4 +197,34 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		this.transform.SetLocalXYPosition (bottomRightPosition);
 	}
+
+	public void OnMoveRightButtonPressed()
+	{
+		if (point_ != null)
+		{
+			if (point_.graphPanel.RangeEnd == point_)
+			{
+				point_.graphPanel.RangeStart.OnSelected();
+			}
+			else if (point_.nextPoint_ != null && point_.nextPoint_.IsFunctional)
+			{
+				point_.nextPoint_.OnSelected();
+			}
+		}
+	}
+
+	public void OnMoveLeftButtonPressed()
+	{
+		if (point_ != null)
+		{
+			if (point_.graphPanel.RangeStart == point_)
+			{
+				point_.graphPanel.RangeEnd.OnSelected();
+			}
+			if (point_.previousPoint_ != null && point_.previousPoint_.IsFunctional)
+			{
+				point_.previousPoint_.OnSelected();
+			}
+		}
+	}
 }

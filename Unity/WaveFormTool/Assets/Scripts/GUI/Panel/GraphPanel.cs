@@ -20,7 +20,17 @@ public class GraphPanel : MonoBehaviour
 	public Transform pointsContainer;
 	public Transform axesContainer;
 
-	private GraphPoint firstPoint = null;
+	private GraphPoint firstPoint_ = null;
+	private GraphPoint rangeStart_ = null;
+	public GraphPoint RangeStart
+	{
+		get { return rangeStart_; }
+	}
+	private GraphPoint rangeEnd_ = null;
+	public GraphPoint RangeEnd
+	{
+		get { return rangeEnd_; }
+	}
 
 	private List < GraphAxis > axes_ = new List< GraphAxis> ();
 
@@ -308,9 +318,6 @@ public class GraphPanel : MonoBehaviour
 			finalX += step;
 		}
 
-		GraphPoint rangeStart = null;
-		GraphPoint rangeEnd = null;
-
 		GraphPoint previous = null;
 
 		while (currentX <= finalX)
@@ -328,11 +335,11 @@ public class GraphPanel : MonoBehaviour
 				{
 					if (currentX == settings.xRange.x) // FIXME specific to wave loop
 					{
-						rangeStart = newPoint;
+						rangeStart_ = newPoint;
 					}
 					if (currentX == settings.xRange.y) // FIXME specific to wave loop
 					{
-						rangeEnd = newPoint;
+						rangeEnd_ = newPoint;
 					}
 					OnPointSelected(newPoint);
 					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
@@ -344,9 +351,9 @@ public class GraphPanel : MonoBehaviour
 				
 //				Debug.Log ("Created Point : "+newPoint.DebugDescribe());
 				
-				if (firstPoint == null)
+				if (firstPoint_ == null)
 				{
-					firstPoint = newPoint;
+					firstPoint_ = newPoint;
 				}
 				else
 				{
@@ -358,17 +365,20 @@ public class GraphPanel : MonoBehaviour
 			}
 			OnPointSelected(null);
 		}
-
-		GraphPoint earlyPoint = rangeStart.previousPoint_;
-		GraphPoint followedPoint = rangeEnd.previousPoint_;
+		if (rangeEnd_ == null || rangeStart_ == null)
+		{
+			Debug.LogError ("Range ends not found");
+		}
+		GraphPoint earlyPoint = rangeStart_.previousPoint_;
+		GraphPoint followedPoint = rangeEnd_.previousPoint_;
 		while (earlyPoint != null && followedPoint != null)
 		{
 			followedPoint.SetFollower(earlyPoint);
 			earlyPoint = earlyPoint.previousPoint_;
 			followedPoint = followedPoint.previousPoint_;
 		}
-		GraphPoint latePoint = rangeEnd.nextPoint_;
-		followedPoint = rangeStart.nextPoint_;
+		GraphPoint latePoint = rangeEnd_.nextPoint_;
+		followedPoint = rangeStart_.nextPoint_;
 		while (latePoint != null && followedPoint != null)
 		{
 			followedPoint.SetFollower(latePoint);
@@ -387,7 +397,7 @@ public class GraphPanel : MonoBehaviour
 
 	private IEnumerator AdjustPointPositionsCR()
 	{
-		GraphPoint pt = firstPoint;
+		GraphPoint pt = firstPoint_;
 		while (pt != null)
 		{
 			pt.adjustPosition();
@@ -399,7 +409,10 @@ public class GraphPanel : MonoBehaviour
 
 	private IEnumerator clearPointsCR()
 	{
-		GraphPoint pt = firstPoint;
+		rangeStart_ = null;
+		rangeEnd_ = null;
+
+		GraphPoint pt = firstPoint_;
 		while (pt != null)
 		{
 			pt.previousPoint_ = null;
