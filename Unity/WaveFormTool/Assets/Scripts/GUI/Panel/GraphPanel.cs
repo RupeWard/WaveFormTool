@@ -300,6 +300,9 @@ public class GraphPanel : MonoBehaviour
 			finalX += step;
 		}
 
+		GraphPoint rangeStart = null;
+		GraphPoint rangeEnd = null;
+
 		GraphPoint previous = null;
 
 		while (currentX <= finalX)
@@ -315,6 +318,14 @@ public class GraphPanel : MonoBehaviour
 				              );
 				if (currentX == settings.xRange.x || currentX == settings.xRange.y) // FIXME specific to wave loop
 				{
+					if (currentX == settings.xRange.x) // FIXME specific to wave loop
+					{
+						rangeStart = newPoint;
+					}
+					if (currentX == settings.xRange.y) // FIXME specific to wave loop
+					{
+						rangeEnd = newPoint;
+					}
 					OnPointSelected(newPoint);
 					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
 //					newPoint.IsFixed = true;
@@ -337,6 +348,25 @@ public class GraphPanel : MonoBehaviour
 			}
 			OnPointSelected(null);
 		}
+
+		GraphPoint earlyPoint = rangeStart.previousPoint_;
+		GraphPoint followedPoint = rangeEnd.previousPoint_;
+		while (earlyPoint != null && followedPoint != null)
+		{
+			followedPoint.SetFollower(earlyPoint);
+			earlyPoint = earlyPoint.previousPoint_;
+			followedPoint = followedPoint.previousPoint_;
+		}
+		GraphPoint latePoint = rangeEnd.nextPoint_;
+		followedPoint = rangeStart.nextPoint_;
+		while (latePoint != null && followedPoint != null)
+		{
+			followedPoint.SetFollower(latePoint);
+			latePoint = latePoint.nextPoint_;
+			followedPoint = followedPoint.nextPoint_;
+		}
+
+
 		if (DEBUG_GRAPH)
 			Debug.Log ("Created points");
 
@@ -383,41 +413,57 @@ public class GraphPanel : MonoBehaviour
 	{			
 		if (settings.IsYInRange(newY))
 		{
-			switch (s)
+//			bool onSameSide = true;
+			float oldY = p.Point.y;
+
+			if (newY != oldY)
 			{
-				case EYChangeStrategy.Solo:
+				if (newY * oldY >= 0f)
 				{
-					p.SetY(newY);
-					break;
+					int sign = (newY + oldY < 0f)?(-1):(1);
+					float oldAbs = Mathf.Abs(oldY);
+					float newAbs = Mathf.Abs(newY);
+
+					switch (s)
+					{
+						case EYChangeStrategy.Solo:
+						{
+							p.SetY(newY);
+							break;
+						}
+						case EYChangeStrategy.Linear:
+						{
+							float multiplier = newY/p.Point.y;
+							Debug.Log("Linear shift of "+multiplier+" from "+p.DebugDescribe());
+							
+							List < GraphPoint > pointsToMove = new List< GraphPoint>();
+							
+							GraphPoint tp = p;
+							while (!tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
+							{
+								pointsToMove.Add (tp);
+								tp = tp.previousPoint_;
+							}
+							
+							tp = p.nextPoint_;
+							while (tp != null && !tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
+							{
+								pointsToMove.Add (tp);
+								tp = tp.nextPoint_;
+							}
+							foreach (GraphPoint gp in pointsToMove)
+							{
+								float changedY = settings.ClampYToRange( gp.Point.y * multiplier);
+								gp.SetY(changedY);
+							}
+							
+							break;
+						}
+					}
 				}
-				case EYChangeStrategy.Linear:
+				else
 				{
-					float multiplier = newY/p.Point.y;
-					Debug.Log("Linear shift of "+multiplier+" from "+p.DebugDescribe());
-
-					List < GraphPoint > pointsToMove = new List< GraphPoint>();
-
-					GraphPoint tp = p;
-
-					while (!tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
-					{
-						pointsToMove.Add (tp);
-						tp = tp.previousPoint_;
-					}
-
-					tp = p.nextPoint_;
-					while (tp != null && !tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
-					{
-						pointsToMove.Add (tp);
-						tp = tp.nextPoint_;
-					}
-					foreach (GraphPoint gp in pointsToMove)
-					{
-						float changedY = settings.ClampYToRange( gp.Point.y * multiplier);
-						gp.SetY(changedY);
-					}
-
-					break;
+					messageLabel.text = "Can't change the sign of a point"; 
 				}
 			}
 		}

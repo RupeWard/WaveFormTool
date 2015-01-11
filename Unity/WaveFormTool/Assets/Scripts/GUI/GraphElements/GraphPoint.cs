@@ -15,6 +15,38 @@ public class GraphPoint : MonoBehaviour
 	public GraphPoint nextPoint_ = null;
 	public GraphPoint previousPoint_ = null;
 
+	private GraphPoint follower_ = null;
+	public void SetFollower(GraphPoint f)
+	{
+		Debug.LogWarning ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+
+		if (f != null)
+		{
+			if (!f.IsFunctional)
+			{
+				if (f.HasFollower)
+				{
+					Debug.LogWarning ("Shouldn't chain following, removing the other's follower");
+					f.SetFollower (null);
+				}
+				follower_ = f;
+				Debug.LogWarning ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+			}
+			else
+			{
+				Debug.LogWarning ("Follower can't be functional " + f.DebugDescribe () + this.DebugDescribe ());
+			}
+		}
+		else
+		{
+			follower_ = null;
+		}
+	}
+	public bool HasFollower
+	{
+		get  { return (follower_ != null); }
+	}
+
 	private bool isAppearanceDirty_ = false;
 	public bool IsAppearanceDirty
 	{
@@ -83,7 +115,7 @@ public class GraphPoint : MonoBehaviour
 	{
 		myGraph_ = p;
 		IsFunctional = functional;
-		SetPoint (x, y);
+		SetXY (x, y);
 	}
 
 	private void SetColour()
@@ -98,12 +130,16 @@ public class GraphPoint : MonoBehaviour
 		}
 	}
 
-	public void SetPoint (float x, float y)
+	public void SetXY (float x, float y)
 	{
 		point_.x = x;
 		point_.y = y;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		if (follower_ != null)
+		{
+			follower_.SetXY (x, y);
+		}
 	}
 
 	public void SetY (float y)
@@ -111,6 +147,10 @@ public class GraphPoint : MonoBehaviour
 		point_.y = y;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		if (follower_ != null)
+		{
+			follower_.SetY (y);
+		}
 	}
 
 	public void SetX (float x)
@@ -118,6 +158,10 @@ public class GraphPoint : MonoBehaviour
 		point_.x = x;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		if (follower_ != null)
+		{
+			follower_.SetX (x);
+		}
 	}
 
 	public void adjustPosition()
