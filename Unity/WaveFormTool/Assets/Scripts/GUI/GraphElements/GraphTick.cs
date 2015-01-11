@@ -36,20 +36,16 @@ public class GraphTick : MonoBehaviour
 		{
 			case EXYDirection.X:
 			{
-				transform.localPosition 
-					= new Vector3(
+				transform.SetLocalXYPosition(
 						myAxis_.Graph.GetXLocationForPoint(value_), 
-						0f, 
-						transform.localPosition.z);
+						0f);
 				break;
 			}
 			case EXYDirection.Y:
 			{
-				transform.localPosition 
-					= new Vector3(
+				transform.SetLocalXYPosition(
 						0f, 
-						myAxis_.Graph.GetYLocationForPoint(value_), 
-						transform.localPosition.z);
+						myAxis_.Graph.GetYLocationForPoint(value_));
 				break;
 			}
 		}
@@ -78,7 +74,7 @@ public class GraphTick : MonoBehaviour
 	
 	public void SetLabelSize(float f)
 	{
-		label.transform.localScale = new Vector3 (f, f, 1f);
+		label.transform.SetLocalXYSize(f);
 	}
 
 	public void SetValue(float v)

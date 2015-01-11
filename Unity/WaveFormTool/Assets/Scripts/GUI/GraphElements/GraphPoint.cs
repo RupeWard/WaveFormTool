@@ -102,14 +102,14 @@ public class GraphPoint : MonoBehaviour
 	{
 		point_.x = x;
 		point_.y = y;
-		pointSprite.transform.SetLocalSize (myGraph_.settings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
 	}
 
 	public void adjustPosition()
 	{
 		graphPosition_ = myGraph_.GetLocationForPoint (point_.x, point_.y);
-		transform.localPosition = new Vector3(graphPosition_.x, graphPosition_.y, transform.localPosition.z);
+		transform.SetLocalXYPosition(graphPosition_.x, graphPosition_.y);
 		transform.localScale = Vector3.one;
 	}
 	
@@ -148,7 +148,7 @@ public class GraphPoint : MonoBehaviour
 
 			float phase = throbTime / myGraph_.settings.selectedPointThrobTime; // 0 to 1
 			float size = Mathf.Lerp (myGraph_.settings.pointSize, myGraph_.settings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
-			pointSprite.transform.SetLocalSize (size); 
+			pointSprite.transform.SetLocalXYSize (size); 
 				
 			throbTime += Time.deltaTime;
 			if (throbTime > myGraph_.settings.selectedPointThrobTime)
@@ -162,7 +162,7 @@ public class GraphPoint : MonoBehaviour
 			{
 				if (DEBUG_POINT)
 					Debug.Log("Point deselected: "+DebugDescribe());
-				pointSprite.transform.SetLocalSize (myGraph_.settings.pointSize); 
+				pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 				isSelected = false;
 			}
 		}

@@ -36,7 +36,7 @@ public class GraphPointPanel : MonoBehaviour
 
 	public Vector2 Size()
 	{
-		return new Vector2 ( background_.transform.localScale.x, background_.transform.localScale.y );
+		return background_.transform.GetLocalXYSize();
 	}
 
 	// TODO BASE CLASS

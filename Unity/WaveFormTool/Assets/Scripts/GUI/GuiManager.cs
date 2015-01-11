@@ -20,9 +20,7 @@ public class GuiManager : SingletonApplicationLifetime< GuiManager >
 	public void Start()
 	{
 		Debug.Log ("GuiManager.Awake: Screen is " + Screen.width + " x " + Screen.height);
-		mainMenuBar.transform.localPosition 
-			= new Vector3(0f, -0.5f * mainMenuBarHeightProvider.localScale.y - margin_, 
-				mainMenuBar.transform.localPosition.z);
+		mainMenuBar.transform.SetLocalXYPosition(0f, -0.5f * mainMenuBarHeightProvider.localScale.y - margin_);
 		float graphTop = -1f *(mainMenuBarHeightProvider.localScale.y + 2 * margin_);
 		float graphBottom = -1f * (Screen.height - 50f);
 		waveGraphPanel.init ( new Vector2 (Screen.width - 2*margin_ ,graphTop - graphBottom), 
@@ -32,15 +30,11 @@ public class GuiManager : SingletonApplicationLifetime< GuiManager >
 
 		Vector2 popUpSize = ToneGeneratorPanel.Instance.Size ();
 		float popUpBottom = popUpTop - popUpSize.y;
-		ToneGeneratorPanel.Instance.transform.localPosition 
-			= new Vector3 (0f, 0.5f * (popUpTop + popUpBottom), 
-			               ToneGeneratorPanel.Instance.transform.localPosition.z);
+		ToneGeneratorPanel.Instance.transform.SetLocalXYPosition(0f, 0.5f * (popUpTop + popUpBottom));
 
 		popUpSize = WaveGeneratorPanel.Instance.Size ();
 		popUpBottom = popUpTop - popUpSize.y;
-		WaveGeneratorPanel.Instance.transform.localPosition 
-			= new Vector3 (0f, 0.5f * (popUpTop + popUpBottom), 
-			               WaveGeneratorPanel.Instance.transform.localPosition.z);
+		WaveGeneratorPanel.Instance.transform.SetLocalXYPosition(0f, 0.5f * (popUpTop + popUpBottom));
 
 	}
 

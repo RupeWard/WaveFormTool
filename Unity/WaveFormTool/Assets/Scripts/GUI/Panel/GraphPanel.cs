@@ -38,8 +38,8 @@ public class GraphPanel : MonoBehaviour
 	{
 		width_ = size.x - 2f*backgroundMargin;
 		height_ = size.y  - 2f*backgroundMargin;
-		background.transform.localScale = new Vector3 (size.x, size.y, 1);		
-		transform.localPosition = new Vector3 (pos.x, pos.y, transform.localPosition.z);
+		background.transform.SetLocalXYSize(size.x, size.y);		
+		transform.SetLocalXYPosition(pos);
 		viewMinInput.text = settings.xView.x.ToString();
 		viewMaxInput.text = settings.xView.y.ToString();
 
@@ -47,25 +47,19 @@ public class GraphPanel : MonoBehaviour
 
 		Vector3 elementSize = viewMinInput.transform.FindChild ("Background").localScale;
 
-		viewMinInput.transform.localPosition = new Vector3 ( -0.5f * (size.x) + GuiManager.Instance.Margin,
-		                                                    -0.5f * (size.y) + GuiManager.Instance.Margin + 0.5f*elementSize.y,
-		                                                    viewMinInput.transform.localPosition.z);
+		viewMinInput.transform.SetLocalXYPosition( -0.5f * (size.x) + GuiManager.Instance.Margin,
+		                                         -0.5f * (size.y) + GuiManager.Instance.Margin + 0.5f*elementSize.y);
 		elementSize = viewMaxInput.transform.FindChild ("Background").localScale;
-		viewMaxInput.transform.localPosition = new Vector3 ( -1f*viewMinInput.transform.localPosition.x - elementSize.x,
-		                                                    viewMinInput.transform.localPosition.y,
-		                                                    viewMaxInput.transform.localPosition.z);
+		viewMaxInput.transform.SetLocalXYPosition( -1f*viewMinInput.transform.localPosition.x - elementSize.x,
+		                                         viewMinInput.transform.localPosition.y);
 
 		elementSize = title.transform.FindChild ("Size").localScale;
-		title.transform.localPosition = 
-			new Vector3 ( -0.5f * (size.x) + 0.5f * elementSize.x + GuiManager.Instance.Margin,
-			             0.5f * (size.y) - 0.5f * elementSize.y - GuiManager.Instance.Margin,
-		        title.transform.localPosition.z);
+		title.transform.SetLocalXYPosition( -0.5f * (size.x) + 0.5f * elementSize.x + GuiManager.Instance.Margin,
+			             0.5f * (size.y) - 0.5f * elementSize.y - GuiManager.Instance.Margin);
 
 		elementSize = pointPanel_.Size ();
-		pointPanel_.transform.localPosition 
-			= new Vector3 ( 0.5f*size.x - 0.5f* elementSize.x - GuiManager.Instance.Margin,
-			               0.5f * (size.y) - GuiManager.Instance.Margin - 0.5f*elementSize.y,
-			               pointPanel_.transform.localPosition.z);
+		pointPanel_.transform.SetLocalXYPosition( 0.5f*size.x - 0.5f* elementSize.x - GuiManager.Instance.Margin,
+			               0.5f * (size.y) - GuiManager.Instance.Margin - 0.5f*elementSize.y);
 
 	}
 
