@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class GraphSettings : MonoBehaviour
 {
 	public Vector2 xRange = new Vector2();
-	
+	public Vector2 yRange = Vector2.zero;
+
 	public Vector2 xView = new Vector2();
 	public Vector2 yView = new Vector2();
 
@@ -71,6 +72,17 @@ public class GraphSettings : MonoBehaviour
 	{
 		return (x >= xRange.x && x <= xRange.y);
 	}
+
+	public bool HasYRange()
+	{
+		return (yRange.x < yRange.y);
+	}
+
+	public bool IsYInRange(float y)
+	{
+		return (y >= yRange.x && y <= yRange.y);
+	}
+	
 
 	public bool IsXInView(float x)
 	{

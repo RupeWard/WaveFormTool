@@ -106,6 +106,20 @@ public class GraphPoint : MonoBehaviour
 		adjustPosition ();
 	}
 
+	public void SetY (float y)
+	{
+		point_.y = y;
+		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+		adjustPosition ();
+	}
+
+	public void SetX (float x)
+	{
+		point_.x = x;
+		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+		adjustPosition ();
+	}
+
 	public void adjustPosition()
 	{
 		graphPosition_ = myGraph_.GetLocationForPoint (point_.x, point_.y);

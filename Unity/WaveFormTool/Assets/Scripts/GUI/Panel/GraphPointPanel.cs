@@ -14,6 +14,9 @@ public class GraphPointPanel : MonoBehaviour
 	public UILabel yValueLabel;
 	public UILabel stateLabel;
 
+	public UIInput xInput;
+	public UIInput yInput;
+
 	private GraphPoint point_ = null;
 	public GraphPoint Point
 	{
@@ -24,23 +27,30 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		HUDManager.Instance.AddPopup (this.gameObject);
 		this.gameObject.SetActive (false);
+		xInput.enabled = false;
 	}
-	
+
+	private void SetXLabel()
+	{
+		xValueLabel.text = (point_ != null)?(string.Format("{0:0.####}",point_.Point.x)):(""); 
+	}
+
+	private void SetYLabel()
+	{
+		yValueLabel.text = (point_ != null)?(string.Format ("{0:0.####}", point_.Point.y)):(""); 
+	}
+
+	private void SetXYLabels()
+	{
+		SetXLabel ();
+		SetYLabel ();
+	}
+
 	public void SetPoint(GraphPoint p)
 	{
 		point_ = p;
-		if (point_ != null)
-		{
-			xValueLabel.text = string.Format("{0:0.####}",point_.Point.x); 
-			yValueLabel.text = string.Format("{0:0.####}",point_.Point.y);  
-			stateLabel.text = (point_.IsFixed)?("Fixed"):("");
-		}
-		else
-		{
-			xValueLabel.text = "-"; 
-			yValueLabel.text = "-";  
-			stateLabel.text = "NULL";
-		}
+		SetXYLabels();
+		SetStateLabel ();
 		actionMenu.SetPoint (point_);
 	}
 
@@ -68,8 +78,33 @@ public class GraphPointPanel : MonoBehaviour
 		else
 		{
 			stateLabel.text = (point_.IsFixed) ? ("Fixed") : ("");
+			yInput.enabled = !point_.IsFixed;
 		}
 	}
+
+	public void OnYValueChanged(string s)
+	{
+		float newY;
+		if (float.TryParse (s, out newY))
+		{
+			if (graphPanel.settings.IsYInRange(newY))
+			{
+				point_.SetY(newY);
+			}
+			else
+			{
+				messageLabel.text = "Out of range "+graphPanel.settings.yRange;
+			}
+		}
+		else
+		{
+			messageLabel.text = "Must be a number!";
+		}
+
+		SetXLabel ();
+	}
+
+
 
 	public void OnCloseButtonClicked()
 	{
