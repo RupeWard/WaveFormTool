@@ -23,7 +23,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	
 	public void Start()
 	{
-		GuiManager.Instance.AddPopup (gameObject);		
+		HUDManager.Instance.AddPopup (gameObject);		
 
 		frequencyInput.text = frequency_.ToString ();
 //		this.gameObject.SetActive (false);
@@ -39,7 +39,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	{
 		if (b)
 		{
-			GuiManager.Instance.CloseAllPopupsExcept(gameObject);
+			HUDManager.Instance.CloseAllPopupsExcept(gameObject);
 		}
 		gameObject.SetActive (b);
 	}

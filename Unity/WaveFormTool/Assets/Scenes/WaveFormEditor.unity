@@ -225,6 +225,7 @@ Transform:
   m_LocalScale: {x: .00333333341, y: .00333333341, z: .00333333341}
   m_Children:
   - {fileID: 1876296904}
+  - {fileID: 931627483}
   m_Father: {fileID: 0}
   m_RootOrder: 1
 --- !u!114 &100324034
@@ -2571,7 +2572,7 @@ GameObject:
   - 4: {fileID: 931627483}
   - 114: {fileID: 931627484}
   m_Layer: 0
-  m_Name: TheGuiManager
+  m_Name: TheHUDManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2584,11 +2585,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 931627482}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -.720473289, y: .685572267, z: -.00243069441}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -216.141983, y: 205.671677, z: -.72920835}
+  m_LocalScale: {x: 300, y: 300, z: 300}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_Father: {fileID: 100324033}
+  m_RootOrder: 1
 --- !u!114 &931627484
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3811,7 +3812,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!1 &1449431721
 GameObject:
   m_ObjectHideFlags: 0

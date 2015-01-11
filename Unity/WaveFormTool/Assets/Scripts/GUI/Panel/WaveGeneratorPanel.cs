@@ -17,7 +17,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 	public void Start()
 	{
-		GuiManager.Instance.AddPopup (gameObject);		
+		HUDManager.Instance.AddPopup (gameObject);		
 
 		generatorDB_.Add ("Sine (built in)", new WaveFormGeneratorSine ());
 		generatorDB_.Add ("Sawtooth (built in)", new WaveFormGeneratorSaw ());
@@ -42,7 +42,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 	{
 		if (b)
 		{
-			GuiManager.Instance.CloseAllPopupsExcept(gameObject);
+			HUDManager.Instance.CloseAllPopupsExcept(gameObject);
 		}
 		gameObject.SetActive (b);
 	}

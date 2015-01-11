@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GuiManager : SingletonApplicationLifetime< GuiManager >
+public class HUDManager : SingletonApplicationLifetime< HUDManager >
 {
 	public GraphPanel waveGraphPanel;
 	public UIRoot myRoot;

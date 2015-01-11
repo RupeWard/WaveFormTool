@@ -47,19 +47,19 @@ public class GraphPanel : MonoBehaviour
 
 		Vector3 elementSize = viewMinInput.transform.FindChild ("Background").localScale;
 
-		viewMinInput.transform.SetLocalXYPosition( -0.5f * (size.x) + GuiManager.Instance.Margin,
-		                                         -0.5f * (size.y) + GuiManager.Instance.Margin + 0.5f*elementSize.y);
+		viewMinInput.transform.SetLocalXYPosition( -0.5f * (size.x) + HUDManager.Instance.Margin,
+		                                         -0.5f * (size.y) + HUDManager.Instance.Margin + 0.5f*elementSize.y);
 		elementSize = viewMaxInput.transform.FindChild ("Background").localScale;
 		viewMaxInput.transform.SetLocalXYPosition( -1f*viewMinInput.transform.localPosition.x - elementSize.x,
 		                                         viewMinInput.transform.localPosition.y);
 
 		elementSize = title.transform.FindChild ("Size").localScale;
-		title.transform.SetLocalXYPosition( -0.5f * (size.x) + 0.5f * elementSize.x + GuiManager.Instance.Margin,
-			             0.5f * (size.y) - 0.5f * elementSize.y - GuiManager.Instance.Margin);
+		title.transform.SetLocalXYPosition( -0.5f * (size.x) + 0.5f * elementSize.x + HUDManager.Instance.Margin,
+			             0.5f * (size.y) - 0.5f * elementSize.y - HUDManager.Instance.Margin);
 
 		elementSize = pointPanel_.Size ();
-		pointPanel_.transform.SetLocalXYPosition( 0.5f*size.x - 0.5f* elementSize.x - GuiManager.Instance.Margin,
-			               0.5f * (size.y) - GuiManager.Instance.Margin - 0.5f*elementSize.y);
+		pointPanel_.transform.SetLocalXYPosition( 0.5f*size.x - 0.5f* elementSize.x - HUDManager.Instance.Margin,
+			               0.5f * (size.y) - HUDManager.Instance.Margin - 0.5f*elementSize.y);
 
 	}
 

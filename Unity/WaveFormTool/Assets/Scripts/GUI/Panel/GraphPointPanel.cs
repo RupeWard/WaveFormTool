@@ -22,7 +22,7 @@ public class GraphPointPanel : MonoBehaviour
 
 	public void Start()
 	{
-		GuiManager.Instance.AddPopup (this.gameObject);
+		HUDManager.Instance.AddPopup (this.gameObject);
 		this.gameObject.SetActive (false);
 	}
 	
@@ -54,7 +54,7 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		if (b && !graphPanel.IsCreatingGraph)
 		{
-			GuiManager.Instance.CloseAllPopupsExcept(gameObject);
+			HUDManager.Instance.CloseAllPopupsExcept(gameObject);
 		}
 		gameObject.SetActive (b);
 	}
