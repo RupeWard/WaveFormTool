@@ -379,6 +379,31 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.SetPoint (p);
 	}
 
+	public void MovePointY(GraphPoint p, float newY, EYChangeStrategy s)
+	{			
+		if (settings.IsYInRange(newY))
+		{
+			switch (s)
+			{
+				case EYChangeStrategy.Solo:
+				{
+					p.SetY(newY);
+					break;
+				}
+				case EYChangeStrategy.Linear:
+				{
+					Debug.LogWarning("Linear shift not implemented");
+					break;
+				}
+			}
+		}
+		else
+		{
+			messageLabel.text = "Out of range "+settings.yRange;
+		}
+
+	}
+
 #endregion graph
 
 #region controls

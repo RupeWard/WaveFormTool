@@ -17,6 +17,8 @@ public class GraphPointPanel : MonoBehaviour
 	public UIInput xInput;
 	public UIInput yInput;
 
+	public UIPopupList yChangeStrategy;
+
 	private GraphPoint point_ = null;
 	public GraphPoint Point
 	{
@@ -28,6 +30,37 @@ public class GraphPointPanel : MonoBehaviour
 		HUDManager.Instance.AddPopup (this.gameObject);
 		this.gameObject.SetActive (false);
 		xInput.enabled = false;
+
+		EYChangeStrategy[] strategies = (EYChangeStrategy[])System.Enum.GetValues (typeof(EYChangeStrategy));
+		foreach (EYChangeStrategy e in strategies)
+		{
+			if (e != EYChangeStrategy.None)
+			{
+				yChangeStrategy.items.Add (e.ToString());
+			}
+		}
+		yChangeStrategy.enabled = true;
+	}
+
+	private EYChangeStrategy ParseYChangeStrategy(string s)
+	{
+		EYChangeStrategy result = EYChangeStrategy.None;
+		EYChangeStrategy[] strategies = (EYChangeStrategy[])System.Enum.GetValues (typeof(EYChangeStrategy));
+		foreach (EYChangeStrategy e in strategies)
+		{
+			if (s == e.ToString())
+			{
+				result = e;
+				break;
+			}
+		}
+		return result;
+	}
+
+	public void OnYChangeStrategyChange()
+	{
+		EYChangeStrategy e = ParseYChangeStrategy (yChangeStrategy.selection);
+		Debug.Log ("Y change strategy changed to "+e);
 	}
 
 	private void SetXLabel()
@@ -87,21 +120,14 @@ public class GraphPointPanel : MonoBehaviour
 		float newY;
 		if (float.TryParse (s, out newY))
 		{
-			if (graphPanel.settings.IsYInRange(newY))
-			{
-				point_.SetY(newY);
-			}
-			else
-			{
-				messageLabel.text = "Out of range "+graphPanel.settings.yRange;
-			}
+			graphPanel.MovePointY(point_, newY, ParseYChangeStrategy( yChangeStrategy.selection));
 		}
 		else
 		{
 			messageLabel.text = "Must be a number!";
 		}
 
-		SetXLabel ();
+		SetYLabel ();
 	}
 
 
@@ -109,6 +135,7 @@ public class GraphPointPanel : MonoBehaviour
 	public void OnCloseButtonClicked()
 	{
 //		Debug.Log ("Close clicked");
+		SetPoint (null);
 		this.gameObject.SetActive (false);
 	}
 
