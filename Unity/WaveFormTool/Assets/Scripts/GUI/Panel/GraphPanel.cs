@@ -31,7 +31,7 @@ public class GraphPanel : MonoBehaviour
 	private float height_;
 
 	private float backgroundMargin = 20f;
-
+	
 #region setup
 
 	public void init(Vector2 size, Vector2 pos)

@@ -1434,6 +1434,9 @@ MonoBehaviour:
   - {fileID: 677319188}
   defaultXAxis: {fileID: 1248938234}
   defaultYAxis: {fileID: 677319188}
+  pointSize: 4
+  selectedPointMaxSize: 16
+  selectedPointThrobTime: 1
 --- !u!1 &562063937
 GameObject:
   m_ObjectHideFlags: 0

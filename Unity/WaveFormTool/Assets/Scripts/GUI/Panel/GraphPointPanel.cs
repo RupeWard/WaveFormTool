@@ -15,6 +15,10 @@ public class GraphPointPanel : MonoBehaviour
 	public UILabel stateLabel;
 
 	private GraphPoint point_;
+	public GraphPoint Point
+	{
+		get { return point_; }
+	}
 
 	public void Start()
 	{

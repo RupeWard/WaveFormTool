@@ -15,7 +15,7 @@ public abstract class Menu : MonoBehaviour
 		if (!allOptions_.Contains (s))
 		{
 			if (DEBUG_MENU)
-				Debug.LogWarning ("Menu '" + gameObject.name + "' adding option '" + s + "'");
+				Debug.Log ("Menu '" + gameObject.name + "' adding option '" + s + "'");
 			allOptions_.Add(s);
 			SetOptionActive(s, b);
 		}
@@ -32,7 +32,8 @@ public abstract class Menu : MonoBehaviour
 		{
 			if (popUpList.items.Contains (s) == b)
 			{
-				Debug.LogWarning ("Menu '" + gameObject.name + "' option '" + s + "' is already "+b);
+				if (DEBUG_MENU)
+					Debug.LogWarning ("Menu '" + gameObject.name + "' option '" + s + "' is already "+b);
 			}
 			else
 			{

@@ -13,6 +13,10 @@ public class GraphSettings : MonoBehaviour
 	public AxisDefinition defaultXAxis = null;
 	public AxisDefinition defaultYAxis = null;
 
+	public float pointSize = 4f;
+	public float selectedPointMaxSize =16f;
+	public float selectedPointThrobTime = 1f;
+
 	private float xViewCentre_ = 0f;
 	public float XViewCentre
 	{

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class GraphPoint : MonoBehaviour 
 {
+	static public readonly bool DEBUG_POINT = true;
+
 	static readonly Color s_functionalColor = Color.green;
 	static readonly Color s_functionalColorFixed = Color.blue;
 	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
@@ -100,7 +102,7 @@ public class GraphPoint : MonoBehaviour
 	{
 		point_.x = x;
 		point_.y = y;
-
+		pointSprite.transform.SetLocalSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
 	}
 
@@ -124,6 +126,9 @@ public class GraphPoint : MonoBehaviour
 		}
 	}
 
+	private float throbTime = 0f;
+	private bool isSelected = false;
+
 	public void Update()
 	{
 		if (isAppearanceDirty_)
@@ -131,6 +136,37 @@ public class GraphPoint : MonoBehaviour
 			SetColour();
 			ClearAppearanceDirty();
 		}
+
+		if (this == myGraph_.pointPanel_.Point)
+		{
+			if (!isSelected)
+			{
+				if (DEBUG_POINT)
+					Debug.Log("Point selected: "+DebugDescribe());
+			}
+			isSelected = true;
+
+			float phase = throbTime / myGraph_.settings.selectedPointThrobTime; // 0 to 1
+			float size = Mathf.Lerp (myGraph_.settings.pointSize, myGraph_.settings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
+			pointSprite.transform.SetLocalSize (size); 
+				
+			throbTime += Time.deltaTime;
+			if (throbTime > myGraph_.settings.selectedPointThrobTime)
+			{
+				throbTime -= myGraph_.settings.selectedPointThrobTime;
+			}
+		}
+		else
+		{
+			if (isSelected)
+			{
+				if (DEBUG_POINT)
+					Debug.Log("Point deselected: "+DebugDescribe());
+				pointSprite.transform.SetLocalSize (myGraph_.settings.pointSize); 
+				isSelected = false;
+			}
+		}
+
 	}
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
