@@ -268,8 +268,16 @@ public class GraphPanel : MonoBehaviour
 		StartCoroutine (CreateGraphCR(wfp, numSamples, visibleOnly));
 	}
 
+	private bool isCreatingGraph_ = true;
+	public bool IsCreatingGraph
+	{
+		get { return isCreatingGraph_; }
+	}
+
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
+		isCreatingGraph_ = true;
+
 		if (DEBUG_GRAPH)
 			Debug.Log ("CreateGraph( " + numSamples + " )");
 		yield return StartCoroutine(clearPointsCR ());
@@ -300,10 +308,17 @@ public class GraphPanel : MonoBehaviour
 			{
 				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
-				newPoint.init(this, currentX, 
+				newPoint.init(this, 
+				              currentX, 
 				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
 				              (currentX >= 0f && currentX <= 1f)
 				              );
+				if (currentX == settings.xRange.x || currentX == settings.xRange.y) // FIXME specific to wave loop
+				{
+					OnPointSelected(newPoint);
+					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
+//					newPoint.IsFixed = true;
+				}
 				currentX += step;
 				
 //				Debug.Log ("Created Point : "+newPoint.DebugDescribe());
@@ -320,9 +335,12 @@ public class GraphPanel : MonoBehaviour
 				previous = newPoint;
 				yield return null;
 			}
+			OnPointSelected(null);
 		}
 		if (DEBUG_GRAPH)
 			Debug.Log ("Created points");
+
+		isCreatingGraph_ = false;
 
 		yield return null;
 	}
@@ -357,7 +375,7 @@ public class GraphPanel : MonoBehaviour
 
 	public void OnPointSelected(GraphPoint p)
 	{
-		pointPanel_.SetActive (true);
+		pointPanel_.SetActive (p != null);
 		pointPanel_.SetPoint (p);
 	}
 

@@ -163,8 +163,8 @@ public class GraphPoint : MonoBehaviour
 				if (DEBUG_POINT)
 					Debug.Log("Point deselected: "+DebugDescribe());
 				pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
-				isSelected = false;
 			}
+			isSelected = false;
 		}
 
 	}
