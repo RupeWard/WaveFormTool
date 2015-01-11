@@ -19,6 +19,11 @@ public class GraphPointPanel : MonoBehaviour
 
 	public UIPopupList yChangeStrategy;
 
+	public Vector2 topLeftPosition;
+	public Vector2 topRightPosition;
+	public Vector2 bottomLeftPosition;
+	public Vector2 bottomRightPosition;
+
 	private GraphPoint point_ = null;
 	public GraphPoint Point
 	{
@@ -85,6 +90,33 @@ public class GraphPointPanel : MonoBehaviour
 		SetXYLabels();
 		SetStateLabel ();
 		actionMenu.SetPoint (point_);
+		if (point_ != null)
+		{
+			if (point_.Point.y >= point_.graphPanel.settings.YViewCentre)
+			{ 
+				// top
+				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
+				{
+					this.transform.SetLocalXYPosition(bottomLeftPosition);
+				}
+				else
+				{
+					this.transform.SetLocalXYPosition(bottomRightPosition);
+				}
+			}
+			else
+			{
+				// bottom
+				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
+				{
+					this.transform.SetLocalXYPosition(topLeftPosition);
+				}
+				else
+				{
+					this.transform.SetLocalXYPosition(topRightPosition);
+				}
+			}
+		}
 	}
 
 	public Vector2 Size()
@@ -147,5 +179,22 @@ public class GraphPointPanel : MonoBehaviour
 			actionMenu.SetPoint(point_);
 			point_.ClearDataDirty();
 		}
+	}
+
+	public void OnTopLeftButtonPressed()
+	{
+		this.transform.SetLocalXYPosition (topLeftPosition);
+	}
+	public void OnTopRightButtonPressed()
+	{
+		this.transform.SetLocalXYPosition (topRightPosition);
+	}
+	public void OnBottomLeftButtonPressed()
+	{
+		this.transform.SetLocalXYPosition (bottomLeftPosition);
+	}
+	public void OnBottomRightButtonPressed()
+	{
+		this.transform.SetLocalXYPosition (bottomRightPosition);
 	}
 }

@@ -55,8 +55,15 @@ public class GraphPanel : MonoBehaviour
 			             0.5f * (size.y) - 0.5f * elementSize.y - HUDManager.Instance.Margin);
 
 		elementSize = pointPanel_.Size ();
-		pointPanel_.transform.SetLocalXYPosition( 0.5f*size.x - 0.5f* elementSize.x - HUDManager.Instance.Margin,
-			               0.5f * (size.y) - HUDManager.Instance.Margin - 0.5f*elementSize.y);
+
+		float leftX = -0.5f * size.x + 0.5f * elementSize.x + HUDManager.Instance.Margin;
+		float rightX = 0.5f*size.x - 0.5f* elementSize.x - HUDManager.Instance.Margin;
+		float topY = 0.5f * (size.y) - HUDManager.Instance.Margin - 0.5f * elementSize.y;
+		float bottomY = -0.5f * (size.y) + HUDManager.Instance.Margin + 0.5f * elementSize.y;
+		pointPanel_.topLeftPosition = new Vector2(leftX, topY);
+		pointPanel_.topRightPosition = new Vector2 (rightX, topY);
+		pointPanel_.bottomLeftPosition = new Vector2(leftX, bottomY);
+		pointPanel_.bottomRightPosition = new Vector2 (rightX, bottomY);
 
 	}
 
