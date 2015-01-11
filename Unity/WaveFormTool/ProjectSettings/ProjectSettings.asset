@@ -68,7 +68,7 @@ PlayerSettings:
   metroEnableIndependentInputSource: 0
   metroEnableLowLatencyPresentationAPI: 0
   productGUID: d75f5602328a3a84981a89fa5a8a15ca
-  iPhoneBundleVersion: 1.0
+  iPhoneBundleVersion: 1.0.0
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 9
   AndroidPreferredInstallLocation: 1

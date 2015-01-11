@@ -242,7 +242,7 @@ MonoBehaviour:
   automatic: 0
   manualHeight: 600
   minimumHeight: 320
-  maximumHeight: 1536
+  maximumHeight: 1600
 --- !u!114 &100324035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2601,6 +2601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waveGraphPanel: {fileID: 955659918}
+  myRoot: {fileID: 100324034}
   mainMenuBarHeightProvider: {fileID: 1581925855}
   mainMenuBar: {fileID: 428393543}
 --- !u!1 &955659916
