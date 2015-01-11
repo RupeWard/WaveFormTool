@@ -95,6 +95,8 @@ public class WaveFormDataRegular : IWaveFormProvider
 		return sb.ToString ();
 	}
 
+
+
 	private float getIndexForPhase(float phase)
 	{
 		phase = phase - Mathf.Floor (phase);
