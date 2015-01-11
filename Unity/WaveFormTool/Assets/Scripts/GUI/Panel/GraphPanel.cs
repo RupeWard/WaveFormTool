@@ -392,7 +392,31 @@ public class GraphPanel : MonoBehaviour
 				}
 				case EYChangeStrategy.Linear:
 				{
-					Debug.LogWarning("Linear shift not implemented");
+					float multiplier = newY/p.Point.y;
+					Debug.Log("Linear shift of "+multiplier+" from "+p.DebugDescribe());
+
+					List < GraphPoint > pointsToMove = new List< GraphPoint>();
+
+					GraphPoint tp = p;
+
+					while (!tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
+					{
+						pointsToMove.Add (tp);
+						tp = tp.previousPoint_;
+					}
+
+					tp = p.nextPoint_;
+					while (tp != null && !tp.IsFixed && tp.previousPoint_ != null && tp.previousPoint_.IsFunctional)
+					{
+						pointsToMove.Add (tp);
+						tp = tp.nextPoint_;
+					}
+					foreach (GraphPoint gp in pointsToMove)
+					{
+						float changedY = settings.ClampYToRange( gp.Point.y * multiplier);
+						gp.SetY(changedY);
+					}
+
 					break;
 				}
 			}
@@ -401,7 +425,6 @@ public class GraphPanel : MonoBehaviour
 		{
 			messageLabel.text = "Out of range "+settings.yRange;
 		}
-
 	}
 
 #endregion graph

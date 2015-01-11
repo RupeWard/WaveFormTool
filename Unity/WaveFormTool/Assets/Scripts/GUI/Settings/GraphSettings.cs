@@ -82,6 +82,19 @@ public class GraphSettings : MonoBehaviour
 	{
 		return (y >= yRange.x && y <= yRange.y);
 	}
+
+	public float ClampYToRange(float y)
+	{
+		if (y < yRange.x)
+		{
+			return yRange.x;
+		}
+		if (y > yRange.y)
+		{
+			return yRange.y;
+		}
+		return y;
+	}
 	
 
 	public bool IsXInView(float x)
