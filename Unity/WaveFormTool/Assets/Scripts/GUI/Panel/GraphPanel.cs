@@ -363,7 +363,7 @@ public class GraphPanel : MonoBehaviour
 
 	public void OnPointSelected(GraphPoint p)
 	{
-		pointPanel_.gameObject.SetActive (true);
+		pointPanel_.SetActive (true);
 		pointPanel_.SetPoint (p);
 	}
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GraphPointPanel : MonoBehaviour  
 {
-	public Menu actionMenu;
+	public GraphPointActionMenu actionMenu;
 
 	public GraphPanel graphPanel;
 	public UILabel messageLabel;
@@ -12,6 +12,7 @@ public class GraphPointPanel : MonoBehaviour
 
 	public UILabel xValueLabel;
 	public UILabel yValueLabel;
+	public UILabel stateLabel;
 
 	private GraphPoint point_;
 
@@ -20,12 +21,13 @@ public class GraphPointPanel : MonoBehaviour
 		GuiManager.Instance.AddPopup (this.gameObject);
 		this.gameObject.SetActive (false);
 	}
-
+	
 	public void SetPoint(GraphPoint p)
 	{
 		point_ = p;
 		xValueLabel.text = string.Format("{0:0.####}",point_.Point.x); 
 		yValueLabel.text = string.Format("{0:0.####}",point_.Point.y);  
+		actionMenu.SetPoint (point_);
 	}
 
 	public Vector2 Size()
@@ -47,5 +49,15 @@ public class GraphPointPanel : MonoBehaviour
 	{
 //		Debug.Log ("Close clicked");
 		this.gameObject.SetActive (false);
+	}
+
+	public void Update()
+	{
+		if (point_ != null && point_.IsDataDirty)
+		{
+			stateLabel.text = (point_.IsFixed)?("Fixed"):("");
+			actionMenu.SetPoint(point_);
+			point_.ClearDataDirty();
+		}
 	}
 }

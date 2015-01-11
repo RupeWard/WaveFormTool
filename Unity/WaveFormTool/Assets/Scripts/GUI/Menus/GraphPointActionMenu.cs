@@ -5,29 +5,47 @@ using System.Collections.Generic;
 public class GraphPointActionMenu : Menu 
 {
 	static readonly string fixPointOption = "Fix";
+	static readonly string freePointOption = "Free";
 
 	private GraphPoint point_ = null;
 
 	public void Awake ()
 	{
-		AddOption (fixPointOption, true);
+		AddOption (fixPointOption, false);
+		AddOption (freePointOption, false);
 	}
 
 	public void SetPoint(GraphPoint p)
 	{
 		point_ = p;
+		SetOptionActive(freePointOption, point_.IsFixed);
+		SetOptionActive(fixPointOption, !point_.IsFixed);
 	}
 	
 	public override void OnOptionSelected(string option)
 	{
-		if (option == fixPointOption)
+		if (point_ != null)
 		{
-//			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + playGraphOption + "'");
-			Debug.LogWarning ("fixPoint not implemented");
-		}
-		else
-		{
-			Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + option + "'");
+			if (option == fixPointOption)
+			{
+				if (point_.IsFunctional)
+				{
+					point_.IsFixed = !point_.IsFixed;
+					Debug.LogWarning ("FixPoint");
+				}
+			}
+			else if (option == freePointOption)
+			{
+				if (point_.IsFunctional)
+				{
+					point_.IsFixed = !point_.IsFixed;
+					Debug.LogWarning ("FreePoint");
+				}
+			}
+			else
+			{
+				Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + option + "'");
+			}
 		}
 	}
 

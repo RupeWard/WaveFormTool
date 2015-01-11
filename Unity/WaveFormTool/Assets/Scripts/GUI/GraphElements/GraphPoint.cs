@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class GraphPoint : MonoBehaviour 
 {
-	static readonly Color s_functionalColor = Color.blue;
+	static readonly Color s_functionalColor = Color.green;
+	static readonly Color s_functionalColorFixed = Color.blue;
 	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
 
 	public UISprite pointSprite;
@@ -12,10 +13,54 @@ public class GraphPoint : MonoBehaviour
 	public GraphPoint nextPoint_ = null;
 	public GraphPoint previousPoint_ = null;
 
+	private bool isAppearanceDirty_ = false;
+	public bool IsAppearanceDirty
+	{
+		get { return isAppearanceDirty_; }
+	}
+	public void ClearAppearanceDirty()
+	{
+		isAppearanceDirty_ = false;
+	}
+
+	private bool isDataDirty_ = false;
+	public bool IsDataDirty
+	{
+		get { return isDataDirty_; }
+	}
+	public void ClearDataDirty()
+	{
+		isDataDirty_ = false;
+	}
+	public void SetDataDirty()
+	{
+		isDataDirty_ = true;
+	}
+
+
+	private bool isFixed_ = false;
+	public bool IsFixed
+	{
+		get { return isFixed_; }
+		set
+		{
+			isFixed_ = value;
+			isAppearanceDirty_ = true;
+			isDataDirty_ = true;
+		}
+	}
+
 	private bool isFunctional_ = true;
 	public bool IsFunctional
 	{
 		get { return isFunctional_; }
+		set 
+		{
+			isFunctional_ = value;
+			isAppearanceDirty_ = true;
+		}
+		
+
 	}
 
 	private Vector2 graphPosition_;
@@ -32,17 +77,23 @@ public class GraphPoint : MonoBehaviour
 		get { return point_; }
 	}
 
-	public void init (GraphPanel p, float x, float y, bool b)
+	public void init (GraphPanel p, float x, float y, bool functional)
 	{
 		myGraph_ = p;
-		SetFunctional(b);
+		IsFunctional = functional;
 		SetPoint (x, y);
 	}
 
-	public void SetFunctional(bool b)
+	private void SetColour()
 	{
-		isFunctional_ = b;
-		pointSprite.color = (isFunctional_) ? (s_functionalColor) : (s_nonFunctionalColor);
+		if (isFunctional_)
+		{
+			pointSprite.color = (isFixed_) ? (s_functionalColorFixed) : (s_functionalColor);
+		}
+		else
+		{
+			pointSprite.color = s_nonFunctionalColor;
+		}
 	}
 
 	public void SetPoint (float x, float y)
@@ -62,13 +113,44 @@ public class GraphPoint : MonoBehaviour
 	
 	public void OnSelected()
 	{
-		Debug.Log ("Point Selected: " + DebugDescribe ());
-		myGraph_.OnPointSelected (this);
+		if (isFunctional_)
+		{
+			Debug.Log ("Point Selected: " + DebugDescribe ());
+			myGraph_.OnPointSelected (this);
+		}
+		else
+		{
+			Debug.Log ("Attempt to click "+DebugDescribe());
+		}
+	}
+
+	public void Update()
+	{
+		if (isAppearanceDirty_)
+		{
+			SetColour();
+			ClearAppearanceDirty();
+		}
 	}
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
-		sb.Append ("[GraphPoint ( " + point_.x + ", " + point_.y + " ) at " + pointSprite.transform.localPosition+" ]");
+		sb.Append ("[GraphPoint ( ");
+		sb.Append (point_.x);
+		sb.Append (", ");
+		sb.Append (point_.y);
+		sb.Append (" ) at ");
+		sb.Append (pointSprite.transform.localPosition);
+		sb.Append (" ");
+		if (isFixed_)
+		{
+			sb.Append ("Fixed ");
+		}
+		if (!isFunctional_)
+		{
+			sb.Append ("Dead ");
+		}
+		sb.Append (" ]");
 	}
 
 	public string DebugDescribe()
