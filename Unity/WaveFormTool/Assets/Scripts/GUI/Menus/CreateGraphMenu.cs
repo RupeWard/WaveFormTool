@@ -7,7 +7,7 @@ public class CreateGraphMenu : Menu
 	static readonly string functionsOption = "Functions";
 	static readonly string clearOption = "Clear";
 
-	public GraphPanel waveGraphPanel;
+	public WaveGraphPanel waveGraphPanel;
 
 	public void Awake ()
 	{

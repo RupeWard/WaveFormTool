@@ -6,7 +6,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 {
 	public UIPopupList generatorTypeList;
 	public UIInput numSamplesInput;
-	public GraphPanel graphPanel;
+	public WaveGraphPanel graphPanel;
 	public UILabel messageLabel;
 	public UISprite background_;
 
