@@ -868,6 +868,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popUpList: {fileID: 629866807}
+  waveGraphPanel: {fileID: 955659918}
 --- !u!1 &245641005
 GameObject:
   m_ObjectHideFlags: 0

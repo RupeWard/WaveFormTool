@@ -292,13 +292,20 @@ public class GraphPanel : MonoBehaviour
 		get { return isCreatingGraph_; }
 	}
 
+	public void ClearGraph()
+	{
+		StartCoroutine (ClearPointsCR ());
+		pointPanel_.SetActive(false);
+	}
+
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
 		isCreatingGraph_ = true;
 
 		if (DEBUG_GRAPH)
 			Debug.Log ("CreateGraph( " + numSamples + " )");
-		yield return StartCoroutine(clearPointsCR ());
+
+		yield return StartCoroutine(ClearPointsCR ());
 		if (DEBUG_GRAPH)
 			Debug.Log ("Cleared points");
 
@@ -407,8 +414,9 @@ public class GraphPanel : MonoBehaviour
 		yield return null;
 	}
 
-	private IEnumerator clearPointsCR()
+	private IEnumerator ClearPointsCR()
 	{
+		pointPanel_.SetPoint (null);
 		rangeStart_ = null;
 		rangeEnd_ = null;
 
