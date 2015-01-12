@@ -83,7 +83,7 @@ public class GraphAxis : MonoBehaviour
 	{
 		if (definition_ != null)
 		{
-			GameObject.DestroyImmediate(definition_);
+			GameObject.Destroy(definition_);
 			definition_ = null;
 		}
 	}
@@ -142,7 +142,7 @@ public class GraphAxis : MonoBehaviour
 	{
 		foreach (GraphTick tick in ticks_)
 		{
-			GameObject.DestroyImmediate(tick.gameObject);
+			GameObject.Destroy(tick.gameObject);
 		}
 		ticks_.Clear ();
 	}

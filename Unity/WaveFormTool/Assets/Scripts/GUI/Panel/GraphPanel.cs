@@ -161,7 +161,7 @@ public class GraphPanel : MonoBehaviour
 	{
 		foreach (GraphAxis a in axes_)
 		{
-			GameObject.DestroyImmediate(a.gameObject);
+			GameObject.Destroy(a.gameObject);
 		}
 		axes_.Clear ();
 	}
@@ -260,7 +260,7 @@ public class GraphPanel : MonoBehaviour
 		foreach (GraphAxis axis in temps)
 		{
 			axes_.Remove(axis);
-			GameObject.DestroyImmediate(axis);
+			GameObject.Destroy(axis);
 		}
 	}
 	
@@ -310,6 +310,7 @@ public class GraphPanel : MonoBehaviour
 			Debug.Log ("Cleared points");
 
 		DrawAxes ();
+		yield return null;
 
 		float step = settings.XRangeLength / numSamples;
 
@@ -426,7 +427,7 @@ public class GraphPanel : MonoBehaviour
 			pt.previousPoint_ = null;
 			GraphPoint nextPoint = pt.nextPoint_;
 			pt.nextPoint_ = null;
-			GameObject.DestroyImmediate(pt.gameObject);
+			GameObject.Destroy(pt.gameObject);
 
 			pt = nextPoint;
 			yield return null;
