@@ -32,7 +32,8 @@ public class GraphPointPanel : MonoBehaviour
 
 	public void Start()
 	{
-		HUDManager.Instance.AddPopup (this.gameObject);
+//		HUDManager.Instance.AddPopup (this.gameObject);
+
 		this.gameObject.SetActive (false);
 		xInput.enabled = false;
 

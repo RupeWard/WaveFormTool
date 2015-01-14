@@ -9,6 +9,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	public UILabel playButtonLabel;
 	public UISprite background_;
 	public WaveFormPlayer player_;
+	public UILabel sourceLabel;
 
 	public IWaveFormProvider waveFormProvider_ = null;
 
@@ -23,7 +24,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	
 	public void Start()
 	{
-		HUDManager.Instance.AddPopup (gameObject);		
+//		HUDManager.Instance.AddPopup (gameObject);		
 
 		frequencyInput.text = frequency_.ToString ();
 //		this.gameObject.SetActive (false);
@@ -44,8 +45,9 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		gameObject.SetActive (b);
 	}
 
-	public void SetWaveFormProvider(IWaveFormProvider i)
+	public void SetWaveFormProvider(string s, IWaveFormProvider i)
 	{
+		sourceLabel.text = s;
 		waveFormProvider_ = i;
 		if (isPlaying)
 		{
@@ -100,7 +102,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 			}
 			else
 			{
-				messageLabel.text = "Generate a graph first";
+				messageLabel.text = "No source defined";
 			}
 		}
 		SetPlayButtonLabel();

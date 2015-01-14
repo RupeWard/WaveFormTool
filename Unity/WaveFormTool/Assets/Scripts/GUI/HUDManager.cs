@@ -52,11 +52,11 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 
 		Vector2 popUpSize = ToneGeneratorPanel.Instance.Size ();
 		float popUpBottom = popUpTop - popUpSize.y;
-		ToneGeneratorPanel.Instance.transform.SetLocalXYPosition(0f, 0.5f * (popUpTop + popUpBottom));
+		ToneGeneratorPanel.Instance.transform.SetLocalXYPosition(0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
 
 		popUpSize = WaveGeneratorPanel.Instance.Size ();
 		popUpBottom = popUpTop - popUpSize.y;
-		WaveGeneratorPanel.Instance.transform.SetLocalXYPosition(0f, 0.5f * (popUpTop + popUpBottom));
+		WaveGeneratorPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
 
 	}
 

@@ -17,7 +17,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 	public void Start()
 	{
-		HUDManager.Instance.AddPopup (gameObject);		
+//		HUDManager.Instance.AddPopup (gameObject);		
 
 		generatorDB_.Add ("Sine (built in)", new WaveFormGeneratorSine ());
 		generatorDB_.Add ("Sawtooth (built in)", new WaveFormGeneratorSaw ());
@@ -91,7 +91,21 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 		if (generatorDB_.ContainsKey (selected))
 		{
 			graphPanel.CreateGraph (generatorDB_ [selected], numSamples_, false);
-			ToneGeneratorPanel.Instance.SetWaveFormProvider(generatorDB_[selected]);
+		}
+		else
+		{
+			Debug.LogError ("No such option");
+		}
+	}
+
+	public void OnPlayButtonClicked()
+	{
+		string selected = generatorTypeList.selection;
+		//		Debug.Log ("GenerateGraphButton clicked with selection = '"+selected+"'");
+		if (generatorDB_.ContainsKey (selected))
+		{
+			ToneGeneratorPanel.Instance.SetWaveFormProvider(selected, generatorDB_[selected]);
+			ToneGeneratorPanel.Instance.SetActive(true);
 		}
 		else
 		{
