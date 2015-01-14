@@ -398,6 +398,7 @@ public class GraphPanel : MonoBehaviour
 			Debug.Log ("Created points");
 
 		isCreatingGraph_ = false;
+		HandleDataChange ();
 
 		yield return null;
 	}
@@ -549,6 +550,11 @@ public class GraphPanel : MonoBehaviour
 							break;
 						}
 					}
+					if (DEBUG_POINTMOVEMENT)
+					{
+						Debug.Log("Finished Moving point");
+					}
+					HandleDataChange ();
 				}
 				else
 				{
@@ -562,7 +568,27 @@ public class GraphPanel : MonoBehaviour
 		}
 	}
 
+	protected int NumGraphPoints()
+	{
+		int n = 0;
+		GraphPoint p = rangeStart_;
+		while (p != null && p != rangeEnd_)
+		{
+			n++;
+			p = p.nextPoint_;
+		}
+		return n;
+	}
+
 #endregion graph
+
+#region delegation
+
+	protected virtual void HandleDataChange ()
+	{
+	}
+
+#endregion
 
 #region controls
 

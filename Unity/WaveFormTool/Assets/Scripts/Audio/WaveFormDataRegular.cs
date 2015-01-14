@@ -16,14 +16,32 @@ public class WaveFormDataRegular : IWaveFormProvider
 
 	private float[] samples_;
 
-	static int s_nextTempName = 0;
-	static readonly string s_tempName = "tempWaveForm_";
+	private static int s_nextTempName = 0;
+	private static readonly string s_tempName = "tempWaveForm_";
+
+	private static int s_minSamples = 5;
+	private static int s_maxSamples = 2800;
+
+	public WaveFormDataRegular( string tname, float[] samples)
+	{
+		if (!ValidateNumSamples(samples.Length))
+		{
+			throw new ArgumentNullException("NumSamples has to be in range "+s_minSamples+", "+s_maxSamples);
+		}
+		if (tname.Length == 0)
+		{
+			tname = s_tempName + s_nextTempName.ToString();
+			s_nextTempName++;
+		}
+		waveformName_ = tname;
+		samples_ = samples;
+	}
 
 	public WaveFormDataRegular (string tname, int tn)
 	{
-		if (tn <= 1)
+		if (!ValidateNumSamples(tn))
 		{
-			throw new ArgumentNullException("NumSamples has to be positive, not "+tn);
+			throw new ArgumentNullException("NumSamples has to be in range "+s_minSamples+", "+s_maxSamples);
 		}
 		if (tname.Length == 0)
 		{
@@ -33,6 +51,17 @@ public class WaveFormDataRegular : IWaveFormProvider
 		waveformName_ = tname;
 		samples_ = new float[tn];
 	}
+
+	private bool ValidateNumSamples(int n)
+	{
+		if (n < s_minSamples || n > s_maxSamples)
+		{
+			return false;
+		}
+		return true;
+	}
+	
+
 
 	public float getSampleConstrained(int i)
 	{

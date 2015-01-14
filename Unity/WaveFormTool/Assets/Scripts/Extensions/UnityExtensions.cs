@@ -3,6 +3,7 @@ using System.Collections;
 
 public static class UnityExtensions
 {
+#region Transform
 	public static void SetLocalXYPosition(this Transform t, float x, float y)
 	{
 		t.localPosition = new Vector3 (x, y, t.localPosition.z);
@@ -32,5 +33,24 @@ public static class UnityExtensions
 	{
 		return new Vector2(t.localScale.x, t.localScale.y);
 	}
+#endregion
+
+#region StringBuilder
+
+	public static void DebugDescribe(this System.Text.StringBuilder sb, IDebugDescribable dd)
+	{
+		sb.Append ( (dd==null)?("NULL"):(dd.DebugDescribe()));
+	}
+
+	public static string DebugDescribe(this IDebugDescribable dd)
+	{
+		return ( (dd==null)?("NULL"):(dd.DebugDescribe()));
+	}
+
+
+#endregion
+
+
+
 
 }

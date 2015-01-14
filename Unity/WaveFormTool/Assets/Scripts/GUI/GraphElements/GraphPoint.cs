@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GraphPoint : MonoBehaviour 
+public class GraphPoint : MonoBehaviour, IDebugDescribable
 {
 	static public readonly bool DEBUG_POINT = true;
 
@@ -257,5 +257,6 @@ public class GraphPoint : MonoBehaviour
 		DebugDescribe (sb);
 		return sb.ToString ();
 	}
-	
+
+
 }
