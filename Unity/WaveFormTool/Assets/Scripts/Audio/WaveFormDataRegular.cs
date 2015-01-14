@@ -5,7 +5,7 @@
 using System;
 using UnityEngine;
 
-public class WaveFormDataRegular : IWaveFormProvider
+public class WaveFormDataRegular : IWaveFormProvider, IDebugDescribable
 {
 	private string waveformName_;
 
