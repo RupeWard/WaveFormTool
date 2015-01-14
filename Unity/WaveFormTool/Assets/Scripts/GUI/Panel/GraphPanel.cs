@@ -75,6 +75,11 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.bottomLeftPosition = new Vector2(leftX, bottomY);
 		pointPanel_.bottomRightPosition = new Vector2 (rightX, bottomY);
 
+		postInit ();
+	}
+
+	protected virtual void postInit()
+	{
 	}
 
 #endregion setup

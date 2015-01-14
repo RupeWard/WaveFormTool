@@ -33,6 +33,12 @@ public static class UnityExtensions
 	{
 		return new Vector2(t.localScale.x, t.localScale.y);
 	}
+
+	public static Vector2 GetLocalXYPosition(this Transform t)
+	{
+		return new Vector2(t.localPosition.x, t.localPosition.y);
+	}
+
 #endregion
 
 #region StringBuilder

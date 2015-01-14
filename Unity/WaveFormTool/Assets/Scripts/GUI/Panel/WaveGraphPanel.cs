@@ -7,6 +7,8 @@ public class WaveGraphPanel : GraphPanel
 
 	public int numSamples_ = 100;
 
+	public Transform playButton;
+
 	private static readonly bool DEBUG_GENERATION = true;
 
 	private WaveFormDataRegular waveFormData_ = null;
@@ -18,6 +20,14 @@ public class WaveGraphPanel : GraphPanel
 	}
 
 	private bool isCreating_ = false;
+
+	protected override void postInit()
+	{
+		Vector2 pos = viewMinInput.transform.GetLocalXYPosition ();
+		pos.y += 60f;
+		pos.x += 40f;
+		playButton.SetLocalXYPosition ( pos );
+	}
 
 	public void Update()
 	{
@@ -170,5 +180,18 @@ public class WaveGraphPanel : GraphPanel
 			Debug.Log("Points at...\n"+ptssb.ToString());
 		}
 		yield return null;
+	}
+
+	public void OnPlayButtonClicked()
+	{
+		if (waveFormData_ == null)
+		{
+			Debug.Log ("Not ready");
+		}
+		else
+		{
+			ToneGeneratorPanel.Instance.SetWaveFormProvider ("Graph", waveFormData_);
+			ToneGeneratorPanel.Instance.SetActive(true);
+		}
 	}
 }

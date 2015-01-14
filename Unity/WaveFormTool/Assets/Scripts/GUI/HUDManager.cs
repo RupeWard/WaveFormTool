@@ -9,7 +9,7 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 
 	public Transform mainMenuBarHeightProvider;
 	public GameObject mainMenuBar;
-
+	
 	private Vector2 screenDims_;
 	public Vector2 ScreenDims
 	{
