@@ -181,9 +181,17 @@ public class GraphPointPanel : MonoBehaviour
 
 	public void OnCloseButtonClicked()
 	{
-//		Debug.Log ("Close clicked");
-		SetPoint (null);
-		this.gameObject.SetActive (false);
+		if (!HUDManager.Instance.clickHandled)
+		{
+			HUDManager.Instance.clickHandled = true;
+			//		Debug.Log ("Close clicked");
+			SetPoint (null);
+			this.gameObject.SetActive (false);
+		}
+		else
+		{
+			Debug.LogWarning("Not closing because clickHandled");
+		}
 	}
 
 	public void Update()

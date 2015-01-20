@@ -182,17 +182,26 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	
 	public void OnSelected()
 	{
-		if (isFunctional_)
+//		Debug.Log ("Select "+HUDManager.Instance.clickHandled);
+//		if (!HUDManager.Instance.clickHandled)
 		{
-			Debug.Log ("Point Selected: " + DebugDescribe ());
-			myGraph_.OnPointSelected (this);
+//			HUDManager.Instance.clickHandled = true;
+			if (isFunctional_)
+			{
+				Debug.Log ("Point Selected: " + DebugDescribe ());
+				myGraph_.OnPointSelected (this);
+			}
+			else
+			{
+				Debug.Log ("Attempt to click "+DebugDescribe());
+			}
 		}
-		else
+//		else
 		{
-			Debug.Log ("Attempt to click "+DebugDescribe());
+//			Debug.LogWarning("Not selecting point because clickHandled");
 		}
 	}
-
+	
 	private float throbTime = 0f;
 	private bool isSelected = true;
 

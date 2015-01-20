@@ -115,7 +115,16 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 	public void OnCloseButtonClicked()
 	{
-//		Debug.Log ("Close clicked");
-		this.gameObject.SetActive (false);
+//		Debug.Log ("Close "+HUDManager.Instance.clickHandled);
+		//if (!HUDManager.Instance.clickHandled)
+		{
+		//	HUDManager.Instance.clickHandled = true;
+			//		Debug.Log ("Close clicked");
+			this.gameObject.SetActive (false);
+		}
+//		else
+		{
+//			Debug.LogWarning("Not closing because clickHandled");
+		}
 	}
 }

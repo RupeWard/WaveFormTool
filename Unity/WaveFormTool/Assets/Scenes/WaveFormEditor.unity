@@ -2894,6 +2894,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 779936865}
   - 114: {fileID: 779936866}
+  - 65: {fileID: 779936867}
   m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
@@ -2935,6 +2936,18 @@ MonoBehaviour:
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
+--- !u!65 &779936867
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 779936864}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 470, y: 110, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &792344489
 GameObject:
   m_ObjectHideFlags: 0
@@ -3330,6 +3343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeb2d55f0830e5e4999e100f1781b9da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clickHandled: 0
   waveGraphPanel: {fileID: 955659918}
   myRoot: {fileID: 100324034}
   mainMenuBarHeightProvider: {fileID: 1581925855}
