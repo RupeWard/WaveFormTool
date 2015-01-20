@@ -17,7 +17,7 @@ public class GraphPointPanel : MonoBehaviour
 	public UIInput xInput;
 	public UIInput yInput;
 
-	public UIPopupList yChangeStrategy;
+	public UIPopupList pointMoverSelection;
 
 	public Vector2 topLeftPosition;
 	public Vector2 topRightPosition;
@@ -30,6 +30,9 @@ public class GraphPointPanel : MonoBehaviour
 		get { return point_; }
 	}
 
+	public GraphPointMoverBase[] pointMovers_ = new GraphPointMoverBase[0]{};
+	private Dictionary< string, GraphPointMoverBase > moversDB_ = new Dictionary<string, GraphPointMoverBase> ();
+
 	public void Start()
 	{
 //		HUDManager.Instance.AddPopup (this.gameObject);
@@ -37,36 +40,39 @@ public class GraphPointPanel : MonoBehaviour
 		this.gameObject.SetActive (false);
 		xInput.enabled = false;
 
-		EYChangeStrategy[] strategies = (EYChangeStrategy[])System.Enum.GetValues (typeof(EYChangeStrategy));
-		foreach (EYChangeStrategy e in strategies)
+		foreach (GraphPointMoverBase mover in pointMovers_)
 		{
-			if (e != EYChangeStrategy.None)
+			if (moversDB_.ContainsKey(mover.moverName))
 			{
-				yChangeStrategy.items.Add (e.ToString());
+				Debug.LogError ("Duplicate mover name");
 			}
+			else
+			{
+				moversDB_.Add( mover.moverName, mover);
+				pointMoverSelection.items.Add (mover.moverName);			}
 		}
-		yChangeStrategy.enabled = true;
+		pointMoverSelection.enabled = true;
 	}
 
-	private EYChangeStrategy ParseYChangeStrategy(string s)
+	private GraphPointMoverBase GetPointMover()
 	{
-		EYChangeStrategy result = EYChangeStrategy.None;
-		EYChangeStrategy[] strategies = (EYChangeStrategy[])System.Enum.GetValues (typeof(EYChangeStrategy));
-		foreach (EYChangeStrategy e in strategies)
+		string s = pointMoverSelection.selection;
+		GraphPointMoverBase result = null;
+		if (moversDB_.ContainsKey (s))
 		{
-			if (s == e.ToString())
-			{
-				result = e;
-				break;
-			}
+			result = moversDB_[s];
+		}
+		else
+		{
+			Debug.LogError ("No such mover: '"+s+"'");
 		}
 		return result;
 	}
 
 	public void OnYChangeStrategyChange()
 	{
-		EYChangeStrategy e = ParseYChangeStrategy (yChangeStrategy.selection);
-		Debug.Log ("Y change strategy changed to "+e);
+		GraphPointMoverBase e = GetPointMover ();
+		Debug.Log ("Y change strategy changed to "+e.DebugDescribe());
 	}
 
 	private void SetXLabel()
@@ -153,7 +159,15 @@ public class GraphPointPanel : MonoBehaviour
 		float newY;
 		if (float.TryParse (s, out newY))
 		{
-			graphPanel.MovePointY(point_, newY, ParseYChangeStrategy( yChangeStrategy.selection));
+			GraphPointMoverBase mover = GetPointMover();
+			if (mover != null)
+			{
+				graphPanel.MovePointY(point_, GetPointMover(), newY);
+			}
+			else
+			{
+				messageLabel.text = "No PointMover type is selected";
+			}
 		}
 		else
 		{

@@ -4,6 +4,36 @@ using System.Collections.Generic;
 
 public class GraphSettings : MonoBehaviour
 {
+	public virtual bool allowYChange(float oldY, float newY, System.Text.StringBuilder sb)
+	{
+		if (oldY == newY)
+		{
+			if (sb != null)
+			{
+				sb.Append ("No change in Y, so not doing it");
+			}
+			return false;
+		}
+		if (oldY * newY < 0f)
+		{
+			if (sb != null)
+			{
+				sb.Append ("Can't change sign of Y");
+			}
+			return false;
+		}
+		if (!IsYInRange (newY))
+		{
+			if (sb != null)
+			{
+				sb.Append ("Y out of range "+yRange);
+			}
+			return false;
+		}
+
+		return true;
+	}
+
 	public Vector2 xRange = new Vector2();
 	public Vector2 yRange = Vector2.zero;
 

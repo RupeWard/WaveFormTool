@@ -283,7 +283,6 @@ public class GraphPanel : MonoBehaviour
 
 #region graph
 	private static readonly bool DEBUG_GRAPH = false;
-	private static readonly bool DEBUG_POINTMOVEMENT = true;
 
 	public void CreateGraph(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
@@ -446,17 +445,17 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.SetPoint (p);
 	}
 
-	public void MovePointY(GraphPoint p, float newY, EYChangeStrategy s)
+	public void MovePointY(GraphPoint p, GraphPointMoverBase mover, float newY)
 	{			
-		if (settings.IsYInRange(newY))
-		{
-//			bool onSameSide = true;
-			float oldY = p.Point.y;
+		float oldY = p.Point.y;
 
-			if (newY != oldY)
-			{
-				if (newY * oldY >= 0f)
-				{
+		System.Text.StringBuilder errSb = new System.Text.StringBuilder ();
+
+		if (settings.allowYChange(oldY, newY, errSb))
+		{
+			mover.MoveGraphPointY(p, newY);
+			HandleDataChange();
+			/*
 					p.SetY(newY);
 					switch (s)
 					{
@@ -559,17 +558,12 @@ public class GraphPanel : MonoBehaviour
 					{
 						Debug.Log("Finished Moving point");
 					}
-					HandleDataChange ();
-				}
-				else
-				{
-					messageLabel.text = "Can't change the sign of a point"; 
-				}
-			}
-		}
+					*/
+		} //if (settings.allowYChange(oldY, newY, errSb))
+
 		else
 		{
-			messageLabel.text = "Out of range "+settings.yRange;
+			messageLabel.text = errSb.ToString();
 		}
 	}
 
@@ -589,7 +583,7 @@ public class GraphPanel : MonoBehaviour
 
 #region delegation
 
-	protected virtual void HandleDataChange ()
+	public virtual void HandleDataChange ()
 	{
 	}
 

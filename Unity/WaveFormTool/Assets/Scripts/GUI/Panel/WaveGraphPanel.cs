@@ -3,7 +3,7 @@ using System.Collections;
 
 public class WaveGraphPanel : GraphPanel 
 {
-	private static readonly bool DEBUG_TONE_GEN = true;
+	private static readonly bool DEBUG_TONE_GEN = false;
 
 	public int numSamples_ = 100;
 
@@ -14,7 +14,7 @@ public class WaveGraphPanel : GraphPanel
 	private WaveFormDataRegular waveFormData_ = null;
 
 	private bool isDirty_ = false;
-	protected override void HandleDataChange ()
+	public override void HandleDataChange ()
 	{
 		isDirty_ = true;
 	}

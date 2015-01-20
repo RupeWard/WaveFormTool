@@ -134,6 +134,11 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		}
 	}
 
+	public void SetXY (Vector2 v)
+	{
+		SetXY (v.x, v.y);
+	}
+
 	public void SetXY (float x, float y)
 	{
 		point_.x = x;
