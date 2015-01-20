@@ -4,8 +4,6 @@ using System.Collections.Generic;
 
 public class HUDManager : SingletonApplicationLifetime< HUDManager >
 {
-	public bool clickHandled = false;
-
 	public GraphPanel waveGraphPanel;
 	public UIRoot myRoot;
 
@@ -83,7 +81,6 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 
 	public void Update()
 	{
-		clickHandled = false;
 		if (Application.platform == RuntimePlatform.Android)
 		{
 			if (Input.GetKey(KeyCode.Escape))
