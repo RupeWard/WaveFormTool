@@ -3390,7 +3390,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphPanel: {fileID: 955659918}
   moverName: Splinear
-  fixSlopes: 1
+  fixStartSlope: 1
+  fixEndSlope: 1
+  fixStartAdjustSlope: 1
+  fixEndAdjustSlope: 1
   numToAdjust: 1
   numEachSide: 2
 --- !u!1 &999631063
@@ -4536,6 +4539,10 @@ Prefab:
       propertyPath: messageLabel
       value: 
       objectReference: {fileID: 1234804147}
+    - target: {fileID: 11400188, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
+      propertyPath: fixEndAdjustSlope
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
   m_RootGameObject: {fileID: 955659916}

@@ -6,7 +6,11 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 {
 	private static readonly bool DEBUG_POINTMOVEMENT = true;
 
-	public bool fixSlopes = true;
+	public bool fixStartSlope = true;
+	public bool fixEndSlope = true;
+	public bool fixStartAdjustSlope = true;
+	public bool fixEndAdjustSlope = true;
+
 	public int numToAdjust = 1;
 	public int numEachSide = 2;
 
@@ -100,8 +104,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 		GraphPoint firstPoint = splinePoints [0];
 		if (firstPoint.PreviousPoint != null)
 		{
-			// 
-			startSlope = GraphPoint.SlopeBetween(firstPoint.PreviousPoint, firstPoint);
+//			startSlope = GraphPoint.SlopeBetween(firstPoint.PreviousPoint, firstPoint);
+			startSlope = Mathf.Tan (GraphPoint.SlopeBetween(firstPoint.PreviousPoint, firstPoint));
 			if (sb != null)
 			{
 				sb.Append ("\nfixed start slope at "+startSlope);
@@ -116,7 +120,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 		GraphPoint lastPoint = splinePoints [ splinePoints.Count -1];
 		if (lastPoint.NextPoint != null)
 		{
-			endSlope = GraphPoint.SlopeBetween(lastPoint.PreviousPoint, lastPoint);
+//			endSlope = GraphPoint.SlopeBetween(lastPoint.PreviousPoint, lastPoint);
+			endSlope = Mathf.Tan (GraphPoint.SlopeBetween(lastPoint.PreviousPoint, lastPoint));
 			if (sb != null)
 			{
 				sb.Append ("\nfixed end slope at "+endSlope);
@@ -142,17 +147,12 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			
 		TestMySpline.CubicSpline spline = new TestMySpline.CubicSpline();
 			
-		if (fixSlopes)
-		{
-			spline.Fit (x, y, startSlope, endSlope);
-		}
-		else
-		{
-			if (sb!=null)
-				sb.Append("\nslope fitting turned Off");
-			spline.Fit(x,y);
-		}
-			
+		spline.Fit (x, y, 
+            ( (fixStartAdjustSlope)?( startSlope):(float.NaN)), 
+	            ((fixEndAdjustSlope)?(endSlope):(float.NaN)));
+		if (sb!=null)
+			sb.Append("\nslope fitting on adjust = "+fixStartAdjustSlope+" / "+fixEndAdjustSlope);
+
 		float[] fitx = new float[1];
 		float[] fity = null;
 		//if (pt.PreviousPoint != null && false == splinePoints.Contains(pt.PreviousPoint))
@@ -208,7 +208,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 
 				if (pt.PreviousPoint.PreviousPoint.PreviousPoint != null)
 				{
-					startSlope = GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint.PreviousPoint, pt.PreviousPoint.PreviousPoint);
+//					startSlope = GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint.PreviousPoint, pt.PreviousPoint.PreviousPoint);
+					startSlope = Mathf.Tan(GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint.PreviousPoint, pt.PreviousPoint.PreviousPoint));
 					if (DEBUG_POINTMOVEMENT)
 						sb.Append ("\nfixed start slope at "+startSlope);
 				}
@@ -226,7 +227,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 					sb.Append ("\nprevious is spline point");
 				if (pt.PreviousPoint.IsFixed && pt.PreviousPoint.PreviousPoint != null)
 				{
-					startSlope = GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint, pt.PreviousPoint);
+//					startSlope = GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint, pt.PreviousPoint);
+					startSlope = Mathf.Tan (GraphPoint.SlopeBetween(pt.PreviousPoint.PreviousPoint, pt.PreviousPoint));
 					if (DEBUG_POINTMOVEMENT)
 						sb.Append ("\nfixed start slope at "+startSlope);
 				}
@@ -250,7 +252,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 					sb.Append ("\nnext-next is spline point");
 				if (pt.NextPoint.NextPoint.NextPoint != null)
 				{
-					endSlope = GraphPoint.SlopeBetween(pt.NextPoint.NextPoint.NextPoint, pt.NextPoint.NextPoint);
+//					endSlope = GraphPoint.SlopeBetween(pt.NextPoint.NextPoint.NextPoint, pt.NextPoint.NextPoint);
+					endSlope = Mathf.Tan (GraphPoint.SlopeBetween(pt.NextPoint.NextPoint.NextPoint, pt.NextPoint.NextPoint));
 					if (DEBUG_POINTMOVEMENT)
 						sb.Append ("\nfixed end slope at "+startSlope);
 				}
@@ -268,7 +271,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 					sb.Append ("\nnext is spline point");
 				if (pt.NextPoint.IsFixed && pt.NextPoint.NextPoint != null)
 				{
-					endSlope = GraphPoint.SlopeBetween(pt.NextPoint.NextPoint, pt.NextPoint);
+//					endSlope = GraphPoint.SlopeBetween(pt.NextPoint.NextPoint, pt.NextPoint);
+					endSlope = Mathf.Tan (GraphPoint.SlopeBetween(pt.NextPoint.NextPoint, pt.NextPoint));
 					if (DEBUG_POINTMOVEMENT)
 						sb.Append ("\nfixed end slope at "+endSlope);
 				}
@@ -299,8 +303,13 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			// add slope stuff
 			//spline.Fit(x,y, startSlope, endSlope);
 			//spline.Fit(x,y, 0f, 0f);
-			spline.Fit(x,y);
-			Debug.LogWarning("slope fitting turned Off");
+
+			spline.Fit(x,y,
+			           ( (fixStartSlope)?(startSlope):(float.NaN)),
+			           ( (fixEndSlope)?(endSlope):(float.NaN))
+			           );
+			if (DEBUG_POINTMOVEMENT)
+				sb.Append("\nslope fitting is "+fixStartSlope+" / "+fixEndSlope);
 
 			float[] fitx = new float[1];
 			float[] fity = null;
