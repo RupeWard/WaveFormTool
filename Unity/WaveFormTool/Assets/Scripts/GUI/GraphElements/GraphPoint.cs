@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GraphPoint : MonoBehaviour, IDebugDescribable
 {
 	static public readonly bool DEBUG_POINT = true;
+	static public readonly bool DEBUG_POINTLINE = false;
 
 	static readonly Color s_functionalColor = Color.green;
 	static readonly Color s_functionalColorFixed = Color.blue;
@@ -252,12 +253,14 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			}
 			else
 			{
-				Debug.LogWarning("No line because nextpoint");
+				if (DEBUG_POINTLINE)
+					Debug.LogWarning("No line because nextpoint");
 			}
 		}
 		else
 		{
-			Debug.LogWarning("No line because showline");
+//			if (DEBUG_POINTLINE)
+//				Debug.LogWarning("No line because showline");
 		}
 		lineSprite.gameObject.SetActive(bShow);
 	}

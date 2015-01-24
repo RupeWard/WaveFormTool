@@ -7,10 +7,149 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 	private static readonly bool DEBUG_POINTMOVEMENT = true;
 
 	public bool fixSlopes = true;
+	public int numToAdjust = 1;
+	public int numEachSide = 2;
+
+//	public bool stopAtZero = true;
 
 	private interface IMoveFactorCalculator
 	{
 		float getMoveFactor (GraphPoint movingPoint, GraphPoint refPoint);
+	}
+
+	private bool adjustPoint(GraphPoint pt, int numEachSide, System.Text.StringBuilder sb)
+	{
+		if (pt.IsFixed)
+		{
+			if (sb != null)
+			{
+				sb.Append ("\nNot adjusting fixed point " + pt.DebugDescribe());
+			}
+			return false;
+		}
+		if (sb != null)
+		{
+			sb.Append("\nAdjusting point "+pt+" (using "+numEachSide+" each side)");
+		}
+
+		List< GraphPoint> splinePoints = new List< GraphPoint >();
+
+		float startSlope = float.NaN;
+		float endSlope = float.NaN;
+
+		int nBefore = 0;
+		GraphPoint testPoint = pt.PreviousPoint; 
+		while (nBefore < numEachSide && testPoint !=null)
+		{
+			splinePoints.Add (testPoint);
+			if (DEBUG_POINTMOVEMENT)
+				sb.Append ("\nAdded previous spline point "+testPoint.DebugDescribe());
+			nBefore ++;
+			if (testPoint.IsFixed)
+				break;
+			testPoint = testPoint.PreviousPoint;
+		}
+		if (nBefore == 0)
+		{
+			if (sb!=null)
+				sb.Append("\nNo points before so not splining");
+			return false;
+		}
+		if (sb != null)
+			sb.Append ("\nFound " + nBefore + " before: " + splinePoints.Count+"\nReversing");
+		splinePoints.Reverse ();
+
+		int nAfter = 0;
+		testPoint = pt.NextPoint; 
+		while (nAfter < numEachSide && testPoint !=null)
+		{
+			splinePoints.Add (testPoint);
+			if (DEBUG_POINTMOVEMENT)
+				sb.Append ("\nAdded after spline point "+testPoint.DebugDescribe());
+			nAfter ++;
+			if (testPoint.IsFixed)
+				break;
+			testPoint = testPoint.NextPoint;
+		}
+		if (nAfter == 0)
+		{
+			if (sb!=null)
+				sb.Append("\nNo points after so not splining");
+			return false;
+		}
+		if (sb != null)
+			sb.Append ("\nFound " + nAfter + " after: " + splinePoints.Count);
+
+		if (splinePoints.Count < 3)
+		{
+			if (sb != null)
+				sb.Append ("\nNot enough points ");
+			return false;
+		}
+
+		GraphPoint firstPoint = splinePoints [0];
+		if (firstPoint.PreviousPoint != null)
+		{
+			startSlope = GraphPoint.SlopeBetween(firstPoint.PreviousPoint, firstPoint);
+			if (sb != null)
+			{
+				sb.Append ("\nfixed start slope at "+startSlope);
+			}
+			else
+			{
+				if (sb != null)
+					sb.Append ("\nnot fixed start slope because of null ");
+			}
+		}
+
+		GraphPoint lastPoint = splinePoints [ splinePoints.Count -1];
+		if (lastPoint.NextPoint != null)
+		{
+			endSlope = GraphPoint.SlopeBetween(lastPoint.PreviousPoint, lastPoint);
+			if (sb != null)
+			{
+				sb.Append ("\nfixed end slope at "+endSlope);
+			}
+			else
+			{
+				if (sb != null)
+					sb.Append ("\nnot fixed end slope because of null ");
+			}
+		}
+
+		if (sb!=null)
+			sb.Append ("\nfitting spline with "+splinePoints.Count
+		           +" points, slopes = "+startSlope+" / "+endSlope);
+			
+		float[] x = new float[splinePoints.Count];
+		float[] y = new float[splinePoints.Count];
+		for (int i = 0; i < splinePoints.Count; i++)
+		{
+			x[i] = splinePoints[i].Point.x;
+			y[i] = splinePoints[i].Point.y;
+		}
+			
+		TestMySpline.CubicSpline spline = new TestMySpline.CubicSpline();
+			
+		// add slope stuff
+		//spline.Fit(x,y, startSlope, endSlope);
+		//spline.Fit(x,y, 0f, 0f);
+		spline.Fit(x,y);
+		Debug.LogWarning("slope fitting turned Off");
+			
+		float[] fitx = new float[1];
+		float[] fity = null;
+		//if (pt.PreviousPoint != null && false == splinePoints.Contains(pt.PreviousPoint))
+		{
+				fitx[0] = pt.Point.x;
+				fity = spline.Eval(fitx);
+				
+				pt.SetY(fity[0]);
+				
+				if (sb!=null)
+					sb.Append ("\npoint adjusted by spline: "+pt.DebugDescribe());
+		}		
+		return true;
 	}
 
 	public override void MoveGraphPoint(GraphPoint pt, Vector2 newValues)
@@ -168,101 +307,57 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 				pt.NextPoint.SetY(fity[0]);
 
 				if (DEBUG_POINTMOVEMENT)
-					sb.Append ("\nnext poinr moved by spline");
+					sb.Append ("\nnext point moved by spline");
 			}
+
+			if (DEBUG_POINTMOVEMENT)
+			{
+				sb.Append ("\nLooking for "+numToAdjust+" each side to adjust"); 
+			}
+			int nBefore = 0;
+			GraphPoint beforePoint = pt.PreviousPoint.PreviousPoint;
+			while (nBefore < numToAdjust && beforePoint != null)
+			{
+				if (DEBUG_POINTMOVEMENT)
+				{
+					sb.Append ("\nTrying to adjust before #"+(nBefore+1)+ " "+beforePoint.DebugDescribe()); 
+				}
+				if (adjustPoint(beforePoint, numEachSide, sb))
+				{
+					nBefore++;
+					beforePoint = beforePoint.PreviousPoint;
+				}
+				else
+				{
+					break;
+				}
+			}
+			int nAfter = 0;
+			GraphPoint afterPoint = pt.NextPoint.NextPoint;
+			while (nAfter < numToAdjust && afterPoint != null)
+			{
+				if (DEBUG_POINTMOVEMENT)
+				{
+					sb.Append ("\nTrying to adjust after #"+(nAfter+1)+" "+afterPoint.DebugDescribe()); 
+				}
+				if (adjustPoint(afterPoint, numEachSide, sb))
+				{
+					nAfter++;
+					afterPoint = afterPoint.NextPoint;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			// Now adjust
 		}
 		else
 		{
 			Debug.LogError ("Splinear move point "+pt.DebugDescribe()+" found no moveable neighbours");
 		}
 
-		/*
-
-		int sign = (newY + oldY < 0f)?(-1):(1);
-		float oldAbs = Mathf.Abs(oldY);
-		float newAbs = Mathf.Abs(newY);
-		
-		float bottomMultiplier = newY/oldY;
-		float topMultiplier = (settings.yRange.y - newAbs)/(settings.yRange.y - oldAbs); // FIXME assume symmetry about zero
-		
-		System.Text.StringBuilder sb = null;
-		if (DEBUG_POINTMOVEMENT)
-		{
-			sb = new System.Text.StringBuilder();
-			Debug.Log("Linear shift of "+bottomMultiplier+" : "+topMultiplier+" from "+pt.DebugDescribe());
-			sb.Append("\nPoint movements... ");
-		}
-		List < GraphPoint > pointsToMove = new List< GraphPoint>();
-							
-		GraphPoint tp = pt.PreviousPoint;
-		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
-		{
-			pointsToMove.Add (tp);
-			tp = tp.PreviousPoint;
-			if (tp != null && tp.Point.y * sign < 0f) // FIXME Only go to x axis?
-			{
-				break;
-			}
-		}
-		if (DEBUG_POINTMOVEMENT)
-			Debug.Log (pointsToMove.Count.ToString()+" prior points to move");
-
-		tp = pt.NextPoint;
-		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
-		{
-			pointsToMove.Add (tp);
-			tp = tp.NextPoint;
-			if (tp != null && tp.Point.y * sign < 0f) // FIXME Only go to x axis?
-			{
-				break;
-			}
-		}
-		if (DEBUG_POINTMOVEMENT)
-			Debug.Log (pointsToMove.Count.ToString()+" total points to move");
-
-
-		foreach (GraphPoint gp in pointsToMove)
-		{
-			float gpAbsY = Mathf.Abs(gp.Point.y);
-			if (gpAbsY == oldAbs)
-			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point not moved "+gp.DebugDescribe()+"\n");
-				}
-				gpAbsY = newAbs;
-			}
-			else if (newAbs < oldAbs)
-			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point being moved from zero "+gp.DebugDescribe()+"\n");
-				}
-				gpAbsY *= bottomMultiplier;
-			}
-			else
-			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point being moved from range "+gp.DebugDescribe()+"\n");
-				}
-				float distFromTop = settings.yRange.y - gpAbsY; // FIXME assumes syyemtry about zero
-				distFromTop *= topMultiplier;
-				gpAbsY = settings.yRange.y - distFromTop;
-			}
-
-			float gpNewY = gpAbsY * sign;
-			float altY = settings.ClampYToRange( gpNewY);
-
-			if (altY != gpNewY)
-			{
-				if (DEBUG_POINTMOVEMENT)
-					Debug.LogWarning("Clamping point's y to "+altY+" "+gp.DebugDescribe()); 
-				gpNewY = altY;
-			}
-			gp.SetY(gpNewY);
-		}
-		*/
 		if (sb != null)
 		{
 			Debug.Log (sb.ToString());
@@ -272,6 +367,10 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			Debug.Log(moverName+" Finished Moving point");
 		}
 		graph.HandleDataChange ();
+	}
+
+	private void doSplineMove(GraphPoint pt)
+	{
 	}
 
 	public override void DebugDescribe(System.Text.StringBuilder sb)
