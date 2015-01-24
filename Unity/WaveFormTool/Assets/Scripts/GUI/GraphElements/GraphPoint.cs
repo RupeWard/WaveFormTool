@@ -11,9 +11,31 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
 
 	public UISprite pointSprite;
+	public UISprite lineSprite;
 
-	public GraphPoint nextPoint_ = null;
-	public GraphPoint previousPoint_ = null;
+	private GraphPoint nextPoint_ = null;
+	private GraphPoint previousPoint_ = null;
+
+	public GraphPoint NextPoint
+	{
+		get { return nextPoint_; }
+		set 
+		{ 
+			nextPoint_ = value;
+			updateLine (); 
+		}
+	}
+	public GraphPoint PreviousPoint
+	{
+		get { return previousPoint_; }
+		set 
+		{ 
+			previousPoint_ = value;
+			updateLine (); 
+		}
+	}
+
+	public bool showLine = true;
 
 	private GraphPoint follower_ = null;
 	public void SetFollower(GraphPoint f)
@@ -132,6 +154,16 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		{
 			pointSprite.color = s_nonFunctionalColor;
 		}
+		if (isFunctional_ || (nextPoint_ != null && nextPoint_.IsFunctional))
+		{
+			// TODO separate colours for lines & points
+			lineSprite.color = s_functionalColor;
+		}
+		else
+		{
+			// TODO separate colours for lines & points
+			lineSprite.color = s_nonFunctionalColor;
+		}
 	}
 
 	public void SetXY (Vector2 v)
@@ -145,6 +177,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		point_.y = y;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		updateLine ();
 		if (follower_ != null)
 		{
 			follower_.SetXY (x, y);
@@ -156,6 +189,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		point_.y = y;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		updateLine ();
 		if (follower_ != null)
 		{
 			follower_.SetY (y);
@@ -167,10 +201,41 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		point_.x = x;
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
+		updateLine ();
 		if (follower_ != null)
 		{
 			follower_.SetX (x);
 		}
+	}
+
+	private void updateLine()
+	{
+		bool bShow = false;
+		if (showLine)
+		{
+			if (nextPoint_ != null)
+			{
+				Vector2 pointPosition = myGraph_.GetLocationForPoint (point_.x, point_.y);
+				Vector2 nextPointPosition = myGraph_.GetLocationForPoint (nextPoint_.Point.x, nextPoint_.Point.y);
+
+				lineSprite.transform.SetLocalXYPosition 
+					( 0.5f*(nextPointPosition.x - pointPosition.x) , 
+					 0.5f*(nextPointPosition.y - pointPosition.y));
+
+				float length = nextPointPosition.x - pointPosition.x;
+				lineSprite.transform.SetLocalXYSize (length, 2f);
+				bShow = true;
+			}
+			else
+			{
+				Debug.LogWarning("No line because nextpoint");
+			}
+		}
+		else
+		{
+			Debug.LogWarning("No line because showline");
+		}
+		lineSprite.gameObject.SetActive(bShow);
 	}
 
 	public void adjustPosition()

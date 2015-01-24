@@ -369,8 +369,8 @@ public class GraphPanel : MonoBehaviour
 				}
 				else
 				{
-					newPoint.previousPoint_ = previous;
-					previous.nextPoint_ = newPoint;
+					newPoint.PreviousPoint = previous;
+					previous.NextPoint = newPoint;
 				}
 				previous = newPoint;
 				yield return null;
@@ -379,23 +379,49 @@ public class GraphPanel : MonoBehaviour
 		}
 		if (rangeEnd_ == null || rangeStart_ == null)
 		{
-			Debug.LogError ("Range ends not found");
+			Debug.LogError ("Range ends not found, looking for closest");
+
+			float minAbsXdist = float.MaxValue;
+			GraphPoint pt = firstPoint_;
+			while (pt != null)
+			{
+				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.x);
+				if (absDist < minAbsXdist)
+				{
+					minAbsXdist = absDist;
+					rangeStart_ = pt;
+				}
+				pt = pt.NextPoint;
+			}
+			minAbsXdist = float.MaxValue;
+			pt = firstPoint_;
+			while (pt != null)
+			{
+				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.y);
+				if (absDist < minAbsXdist)
+				{
+					minAbsXdist = absDist;
+					rangeEnd_ = pt;
+				}
+				pt = pt.NextPoint;
+			}
+
 		}
-		GraphPoint earlyPoint = rangeStart_.previousPoint_;
-		GraphPoint followedPoint = rangeEnd_.previousPoint_;
+		GraphPoint earlyPoint = rangeStart_.PreviousPoint;
+		GraphPoint followedPoint = rangeEnd_.PreviousPoint;
 		while (earlyPoint != null && followedPoint != null)
 		{
 			followedPoint.SetFollower(earlyPoint);
-			earlyPoint = earlyPoint.previousPoint_;
-			followedPoint = followedPoint.previousPoint_;
+			earlyPoint = earlyPoint.PreviousPoint;
+			followedPoint = followedPoint.PreviousPoint;
 		}
-		GraphPoint latePoint = rangeEnd_.nextPoint_;
-		followedPoint = rangeStart_.nextPoint_;
+		GraphPoint latePoint = rangeEnd_.NextPoint;
+		followedPoint = rangeStart_.NextPoint;
 		while (latePoint != null && followedPoint != null)
 		{
 			followedPoint.SetFollower(latePoint);
-			latePoint = latePoint.nextPoint_;
-			followedPoint = followedPoint.nextPoint_;
+			latePoint = latePoint.NextPoint;
+			followedPoint = followedPoint.NextPoint;
 		}
 
 
@@ -414,7 +440,7 @@ public class GraphPanel : MonoBehaviour
 		while (pt != null)
 		{
 			pt.adjustPosition();
-			pt = pt.nextPoint_;
+			pt = pt.NextPoint;
 			yield return null;
 		}
 		yield return null;
@@ -429,9 +455,9 @@ public class GraphPanel : MonoBehaviour
 		GraphPoint pt = firstPoint_;
 		while (pt != null)
 		{
-			pt.previousPoint_ = null;
-			GraphPoint nextPoint = pt.nextPoint_;
-			pt.nextPoint_ = null;
+			pt.PreviousPoint = null;
+			GraphPoint nextPoint = pt.NextPoint;
+			pt.NextPoint = null;
 			GameObject.Destroy(pt.gameObject);
 
 			pt = nextPoint;
@@ -478,7 +504,7 @@ public class GraphPanel : MonoBehaviour
 		while (p != null && p != rangeEnd_)
 		{
 			n++;
-			p = p.nextPoint_;
+			p = p.NextPoint;
 		}
 		return n;
 	}

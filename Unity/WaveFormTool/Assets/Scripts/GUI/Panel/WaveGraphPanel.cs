@@ -98,7 +98,7 @@ public class WaveGraphPanel : GraphPanel
 				Debug.Log("PHASE is "+ phase);
 			}
 
-			nextPt = p.nextPoint_;
+			nextPt = p.NextPoint;
 			if (DEBUG_TONE_GEN)
 			{
 				Debug.Log("NextPoint is "+ UnityExtensions.DebugDescribe(nextPt));
