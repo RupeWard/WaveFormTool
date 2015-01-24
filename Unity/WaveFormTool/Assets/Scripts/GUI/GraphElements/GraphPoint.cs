@@ -325,6 +325,27 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 	}
 
+	public float slopeBetween(GraphPoint other)
+	{
+		if (other == null)
+		{
+			throw new System.ArgumentNullException();
+		}
+		float xDist = other.Point.x - point_.x;
+		float yDist = other.Point.y - point_.y;
+		return Mathf.Atan (yDist/xDist);
+	}
+
+	public static float SlopeBetween(GraphPoint a, GraphPoint b)
+	{
+		float result = a.slopeBetween (b);
+		if (result != b.slopeBetween (a))
+		{
+			Debug.LogError ("slopebtween!");
+		}
+		return result;
+	}
+
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		sb.Append ("[GraphPoint ( ");

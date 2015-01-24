@@ -3389,6 +3389,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphPanel: {fileID: 955659918}
   moverName: Splinear
+  fixSlopes: 1
 --- !u!1 &999631063
 GameObject:
   m_ObjectHideFlags: 0
