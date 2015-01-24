@@ -21,6 +21,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 		generatorDB_.Add ("Sine (built in)", new WaveFormGeneratorSine ());
 		generatorDB_.Add ("Sawtooth (built in)", new WaveFormGeneratorSaw ());
+		generatorDB_.Add ("Flat (built in)", new WaveFormGeneratorFlat ());
 
 		foreach (string key in generatorDB_.Keys)
 		{
