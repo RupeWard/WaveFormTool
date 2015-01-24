@@ -14,7 +14,7 @@ public class GraphSettings : MonoBehaviour
 			}
 			return false;
 		}
-		if (oldY * newY < 0f)
+		if (!allowCrossingXAxis && oldY * newY < 0f)
 		{
 			if (sb != null)
 			{
@@ -47,6 +47,8 @@ public class GraphSettings : MonoBehaviour
 	public float pointSize = 4f;
 	public float selectedPointMaxSize =16f;
 	public float selectedPointThrobTime = 1f;
+
+	public bool allowCrossingXAxis = true;
 
 	private float xViewCentre_ = 0f;
 	public float XViewCentre
