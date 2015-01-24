@@ -12,7 +12,7 @@ public class GraphPointPanel : MonoBehaviour
 
 	public UILabel xValueLabel;
 	public UILabel yValueLabel;
-	public UILabel stateLabel;
+	public UILabel fixFreeButtonLabel;
 
 	public UIInput xInput;
 	public UIInput yInput;
@@ -95,7 +95,7 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		point_ = p;
 		SetXYLabels();
-		SetStateLabel ();
+		SetUpFixFreeButton ();
 		actionMenu.SetPoint (point_);
 		if (point_ != null)
 		{
@@ -141,15 +141,16 @@ public class GraphPointPanel : MonoBehaviour
 		gameObject.SetActive (b);
 	}
 
-	private void SetStateLabel()
+	private void SetUpFixFreeButton()
 	{
 		if (point_ == null)
 		{
-			stateLabel.text = "NULL";
+			fixFreeButtonLabel.text = "";
 		}
 		else
 		{
-			stateLabel.text = (point_.IsFixed) ? ("Fixed") : ("");
+			fixFreeButtonLabel.text = (point_.IsFixed) ? ("Free") : ("Fix");
+			fixFreeButtonLabel.color = (point_.IsFixed) ? (Color.red) : (Color.black);
 			yInput.enabled = !point_.IsFixed;
 		}
 	}
@@ -190,7 +191,7 @@ public class GraphPointPanel : MonoBehaviour
 	{
 		if (point_ != null && point_.IsDataDirty)
 		{
-			SetStateLabel ();
+			SetUpFixFreeButton ();
 			actionMenu.SetPoint(point_);
 			point_.ClearDataDirty();
 		}
@@ -242,4 +243,20 @@ public class GraphPointPanel : MonoBehaviour
 			}
 		}
 	}
+
+	public void OnFixFreeButtonClicked()
+	{
+		if (point_ != null)
+		{
+			if (point_.IsFunctional)
+			{
+				if (!point_.graphPanel.IsCreatingGraph)
+				{
+					Debug.LogWarning ("FixPoint : " + point_.DebugDescribe ());
+				}
+				point_.IsFixed = !point_.IsFixed;
+			}
+		}
+	}
+
 }

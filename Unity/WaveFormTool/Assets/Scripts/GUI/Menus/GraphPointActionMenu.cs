@@ -11,6 +11,7 @@ public class GraphPointActionMenu : Menu
 
 	public void Awake ()
 	{
+		// Not needed
 		AddOption (fixPointOption, false);
 		AddOption (freePointOption, false);
 	}
