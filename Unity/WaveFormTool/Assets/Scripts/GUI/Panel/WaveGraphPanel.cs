@@ -179,7 +179,7 @@ public class WaveGraphPanel : GraphPanel
 		{
 			Debug.Log ("Created: " + waveFormData_.DebugDescribe ());
 			ToneGeneratorPanel.Instance.SetWaveFormProvider ("Graph", waveFormData_);
-			ToneGeneratorPanel.Instance.SetActive (true);
+			//ToneGeneratorPanel.Instance.SetActive (true);
 			messageLabel.color = Color.black;
 			messageLabel.text = "Changed base tone";
 		}

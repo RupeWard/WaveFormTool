@@ -446,6 +446,7 @@ public class GraphPanel : MonoBehaviour
 		while (pt != null)
 		{
 			pt.adjustPosition();
+			pt.updateLine();
 			pt = pt.NextPoint;
 			yield return null;
 		}

@@ -59,8 +59,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			if (DEBUG_POINTMOVEMENT)
 				sb.Append ("\nAdded previous spline point "+testPoint.DebugDescribe());
 			nBefore ++;
-			if (testPoint.IsFixed)
-				break;
+//			if (testPoint.IsFixed)
+//				break;
 			testPoint = testPoint.PreviousPoint;
 		}
 		if (nBefore == 0)
@@ -81,8 +81,8 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			if (DEBUG_POINTMOVEMENT)
 				sb.Append ("\nAdded after spline point "+testPoint.DebugDescribe());
 			nAfter ++;
-			if (testPoint.IsFixed)
-				break;
+//			if (testPoint.IsFixed)
+//				break;
 			testPoint = testPoint.NextPoint;
 		}
 		if (nAfter == 0)
