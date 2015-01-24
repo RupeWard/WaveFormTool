@@ -17,6 +17,16 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 		float getMoveFactor (GraphPoint movingPoint, GraphPoint refPoint);
 	}
 
+	private float radTodegrees(float f)
+	{
+		return 180f * f / Mathf.PI;
+	}
+
+	private float degreesToRads(float f)
+	{
+		return Mathf.PI * f / 180f;
+	}
+
 	private bool adjustPoint(GraphPoint pt, int numEachSide, System.Text.StringBuilder sb)
 	{
 		if (pt.IsFixed)
@@ -90,6 +100,7 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 		GraphPoint firstPoint = splinePoints [0];
 		if (firstPoint.PreviousPoint != null)
 		{
+			// 
 			startSlope = GraphPoint.SlopeBetween(firstPoint.PreviousPoint, firstPoint);
 			if (sb != null)
 			{
@@ -131,11 +142,16 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			
 		TestMySpline.CubicSpline spline = new TestMySpline.CubicSpline();
 			
-		// add slope stuff
-		//spline.Fit(x,y, startSlope, endSlope);
-		//spline.Fit(x,y, 0f, 0f);
-		spline.Fit(x,y);
-		Debug.LogWarning("slope fitting turned Off");
+		if (fixSlopes)
+		{
+			spline.Fit (x, y, startSlope, endSlope);
+		}
+		else
+		{
+			if (sb!=null)
+				sb.Append("\nslope fitting turned Off");
+			spline.Fit(x,y);
+		}
 			
 		float[] fitx = new float[1];
 		float[] fity = null;

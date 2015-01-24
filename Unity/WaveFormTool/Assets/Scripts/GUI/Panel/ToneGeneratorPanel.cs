@@ -13,7 +13,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 
 	public IWaveFormProvider waveFormProvider_ = null;
 
-	private float frequency_ = 440f;
+	private float frequency_ = 220f;
 	private bool isPlaying = false;
 
 	private static readonly float s_minFrequency = 0.00001f;

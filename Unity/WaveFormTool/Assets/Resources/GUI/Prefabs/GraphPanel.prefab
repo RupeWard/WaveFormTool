@@ -2302,6 +2302,7 @@ MonoBehaviour:
   pointSize: 4
   selectedPointMaxSize: 16
   selectedPointThrobTime: 1
+  allowCrossingXAxis: 1
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2373,11 +2374,11 @@ MonoBehaviour:
     e00: 300
     e01: 0
     e02: 0
-    e03: 2
+    e03: 1.5
     e10: 0
     e11: 300
     e12: 0
-    e13: -2.58721924
+    e13: -2.474823
     e20: 0
     e21: 0
     e22: 300
@@ -2835,10 +2836,10 @@ MonoBehaviour:
   bottomLeftPosition: {x: 0, y: 0}
   bottomRightPosition: {x: 0, y: 0}
   pointMovers_:
-  - {fileID: 11400182}
-  - {fileID: 11400184}
-  - {fileID: 11400186}
   - {fileID: 11400188}
+  - {fileID: 11400182}
+  - {fileID: 11400186}
+  - {fileID: 11400184}
 --- !u!114 &11400052
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2881,11 +2882,11 @@ MonoBehaviour:
     e00: 300.029999
     e01: 0
     e02: 0
-    e03: -248.454742
+    e03: -248.954788
     e10: 0
     e11: 300.029999
     e12: 0
-    e13: -7.91717339
+    e13: -7.80476618
     e20: 0
     e21: 0
     e22: 300.029999
@@ -4099,6 +4100,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   graphPanel: {fileID: 11400026}
   moverName: Splinear
+  fixSlopes: 1
+  numToAdjust: 1
+  numEachSide: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
