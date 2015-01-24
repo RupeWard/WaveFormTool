@@ -16,6 +16,8 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	private GraphPoint nextPoint_ = null;
 	private GraphPoint previousPoint_ = null;
 
+	private Quaternion flatLineRotation_ =  new Quaternion(0,0,0,1);
+
 	public GraphPoint NextPoint
 	{
 		get { return nextPoint_; }
@@ -178,9 +180,16 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
 		updateLine ();
+		if (previousPoint_ != null)
+		{
+			previousPoint_.updateLine();
+		}
 		if (follower_ != null)
 		{
-			follower_.SetXY (x, y);
+			follower_.SetY (y); 
+			// TODO this works so long as we don't change x values, 
+			// need to revisit if/when new movers can move x too, follower's
+			// x move will have to be relative
 		}
 	}
 
@@ -190,6 +199,10 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
 		updateLine ();
+		if (previousPoint_ != null)
+		{
+			previousPoint_.updateLine();
+		}
 		if (follower_ != null)
 		{
 			follower_.SetY (y);
@@ -202,13 +215,17 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 		adjustPosition ();
 		updateLine ();
+		if (previousPoint_ != null)
+		{
+			previousPoint_.updateLine();
+		}
 		if (follower_ != null)
 		{
 			follower_.SetX (x);
 		}
 	}
 
-	private void updateLine()
+	public void updateLine()
 	{
 		bool bShow = false;
 		if (showLine)
@@ -218,12 +235,19 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 				Vector2 pointPosition = myGraph_.GetLocationForPoint (point_.x, point_.y);
 				Vector2 nextPointPosition = myGraph_.GetLocationForPoint (nextPoint_.Point.x, nextPoint_.Point.y);
 
+				float xDist = nextPointPosition.x - pointPosition.x;
+				float yDist =  nextPointPosition.y - pointPosition.y;
 				lineSprite.transform.SetLocalXYPosition 
-					( 0.5f*(nextPointPosition.x - pointPosition.x) , 
-					 0.5f*(nextPointPosition.y - pointPosition.y));
+					( 0.5f*xDist , 
+					 0.5f*yDist);
 
-				float length = nextPointPosition.x - pointPosition.x;
+				float length = Mathf.Sqrt( xDist * xDist + yDist*yDist );
 				lineSprite.transform.SetLocalXYSize (length, 2f);
+
+				lineSprite.transform.localRotation = flatLineRotation_;
+				float angle = Mathf.Atan( yDist / xDist);
+				lineSprite.transform.Rotate(0f, 0f, 180f * angle / Mathf.PI);
+
 				bShow = true;
 			}
 			else

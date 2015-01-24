@@ -332,6 +332,8 @@ public class GraphPanel : MonoBehaviour
 
 		GraphPoint previous = null;
 
+		float rangeEndTolerance = step / 10f;
+
 		while (currentX <= finalX)
 		{
 			if (!visibleOnly || (settings.IsXInView(currentX) ))
@@ -343,16 +345,20 @@ public class GraphPanel : MonoBehaviour
 				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
 				              (currentX >= 0f && currentX <= 1f)
 				              );
-				if (currentX == settings.xRange.x || currentX == settings.xRange.y) // FIXME specific to wave loop
+				bool bIsRangeStart = false;
+				if (Mathf.Abs( currentX - settings.xRange.x ) < rangeEndTolerance)
 				{
-					if (currentX == settings.xRange.x) // FIXME specific to wave loop
-					{
-						rangeStart_ = newPoint;
-					}
-					if (currentX == settings.xRange.y) // FIXME specific to wave loop
-					{
-						rangeEnd_ = newPoint;
-					}
+					bIsRangeStart = true;
+					rangeStart_ = newPoint;
+				}
+				bool bIsRangeEnd = false;
+				if (!bIsRangeStart && (Mathf.Abs( currentX - settings.xRange.y ) < rangeEndTolerance))
+				{
+					bIsRangeEnd = true;
+					rangeEnd_ = newPoint;
+				}
+				if (bIsRangeStart || bIsRangeEnd) // FIXME specific to wave loop
+				{
 					OnPointSelected(newPoint);
 					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
 
@@ -446,6 +452,19 @@ public class GraphPanel : MonoBehaviour
 		yield return null;
 	}
 
+	public IEnumerator UpdateLinesCR()
+	{
+		GraphPoint pt = firstPoint_;
+		while (pt != null)
+		{
+			pt.updateLine();
+			pt = pt.NextPoint;
+			yield return null;
+		}
+		yield return null;
+	}
+	
+
 	private IEnumerator ClearPointsCR()
 	{
 		pointPanel_.SetPoint (null);
@@ -483,6 +502,7 @@ public class GraphPanel : MonoBehaviour
 			if (settings.allowYChange (oldY, newY, errSb))
 			{
 				mover.MoveGraphPointY (p, newY);
+//				StartCoroutine(UpdateLinesCR());
 				HandleDataChange ();
 			} //if (settings.allowYChange(oldY, newY, errSb))
 			
