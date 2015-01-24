@@ -40,6 +40,8 @@ public class WaveGraphPanel : GraphPanel
 					Debug.Log("WGP: restarting");
 				}
 				isCreating_ = false;
+				messageLabel.color = Color.red;
+				messageLabel.text = "Restarted tone creation";
 				StopCoroutine ("CreateDataCR");
 			}
 			else
@@ -48,9 +50,11 @@ public class WaveGraphPanel : GraphPanel
 				{
 					Debug.Log("WGP: starting");
 				}
+				messageLabel.color = Color.red;
+				messageLabel.text = "Started tone creation";
 			}
 			isDirty_ = false;
-			StartCoroutine(CreateDataCR());
+			StartCoroutine("CreateDataCR");
 		}
 	}
 
@@ -173,9 +177,16 @@ public class WaveGraphPanel : GraphPanel
 
 		if (waveFormData_ != null)
 		{
-			Debug.Log("Created: "+waveFormData_.DebugDescribe());
+			Debug.Log ("Created: " + waveFormData_.DebugDescribe ());
 			ToneGeneratorPanel.Instance.SetWaveFormProvider ("Graph", waveFormData_);
-			ToneGeneratorPanel.Instance.SetActive(true);
+			ToneGeneratorPanel.Instance.SetActive (true);
+			messageLabel.color = Color.black;
+			messageLabel.text = "Changed base tone";
+		}
+		else
+		{
+			messageLabel.color = Color.black;
+			messageLabel.text = "!! Failed to create base tone";
 		}
 		if (ptssb != null)
 		{

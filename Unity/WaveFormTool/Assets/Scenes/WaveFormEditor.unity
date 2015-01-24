@@ -2001,6 +2001,7 @@ MonoBehaviour:
   pointSize: 4
   selectedPointMaxSize: 16
   selectedPointThrobTime: 1
+  allowCrossingXAxis: 1
 --- !u!1 &562063937
 GameObject:
   m_ObjectHideFlags: 0
@@ -3392,7 +3393,6 @@ MonoBehaviour:
   fixSlopes: 1
   numToAdjust: 1
   numEachSide: 2
-  stopAtZero: 1
 --- !u!1 &999631063
 GameObject:
   m_ObjectHideFlags: 0
@@ -4424,10 +4424,10 @@ MonoBehaviour:
   bottomLeftPosition: {x: 0, y: 0}
   bottomRightPosition: {x: 0, y: 0}
   pointMovers_:
-  - {fileID: 111612328}
-  - {fileID: 1031922449}
-  - {fileID: 1106133444}
   - {fileID: 959068439}
+  - {fileID: 111612328}
+  - {fileID: 1106133444}
+  - {fileID: 1031922449}
 --- !u!1 &1248281607
 GameObject:
   m_ObjectHideFlags: 0
@@ -7580,6 +7580,18 @@ Prefab:
       propertyPath: messageLabel
       value: 
       objectReference: {fileID: 1234804147}
+    - target: {fileID: 11400050, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
+      propertyPath: pointMovers_.Array.data[0]
+      value: 
+      objectReference: {fileID: 959068439}
+    - target: {fileID: 11400050, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
+      propertyPath: pointMovers_.Array.data[1]
+      value: 
+      objectReference: {fileID: 111612328}
+    - target: {fileID: 11400050, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
+      propertyPath: pointMovers_.Array.data[3]
+      value: 
+      objectReference: {fileID: 1031922449}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 724ad1d390c7ecd428101c579955b84c, type: 2}
   m_RootGameObject: {fileID: 955659916}
