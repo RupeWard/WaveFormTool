@@ -30,6 +30,12 @@ public class GraphPointPanel : MonoBehaviour
 
 	public UIPopupList pointMoverSelection;
 
+	public GameObject topLeftButton;
+	public GameObject topRightButton;
+	public GameObject bottomLeftButton;
+	public GameObject bottomRightButton;
+	public GameObject closeButton;
+
 	private Vector2 topLeftPosition;
 	private Vector2 topRightPosition;
 	private Vector2 bottomLeftPosition;
@@ -76,11 +82,7 @@ public class GraphPointPanel : MonoBehaviour
 	}
 
 
-	public GameObject topLeftButton;
-	public GameObject topRightButton;
-	public GameObject bottomLeftButton;
-	public GameObject bottomRightButton;
-	
+
 
 	private GraphPoint point_ = null;
 	public GraphPoint Point
@@ -294,9 +296,8 @@ public class GraphPointPanel : MonoBehaviour
 			else
 				buttonsByPositions_[pos].SetActive(true);
 		}
+		closeButton.transform.SetLocalXYPosition ( buttonsByPositions_[p].transform.localPosition );
 	}
-
-
 
 	public void OnMoveRightButtonPressed()
 	{
