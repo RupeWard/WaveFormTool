@@ -70,10 +70,10 @@ public class GraphPanel : MonoBehaviour
 		float rightX = 0.5f*size.x - 0.5f* elementSize.x - HUDManager.Instance.Margin;
 		float topY = 0.5f * (size.y) - HUDManager.Instance.Margin - 0.5f * elementSize.y;
 		float bottomY = -0.5f * (size.y) + HUDManager.Instance.Margin + 0.5f * elementSize.y;
-		pointPanel_.topLeftPosition = new Vector2(leftX, topY);
-		pointPanel_.topRightPosition = new Vector2 (rightX, topY);
-		pointPanel_.bottomLeftPosition = new Vector2(leftX, bottomY);
-		pointPanel_.bottomRightPosition = new Vector2 (rightX, bottomY);
+		pointPanel_.TopLeftPosition = new Vector2(leftX, topY);
+		pointPanel_.TopRightPosition = new Vector2 (rightX, topY);
+		pointPanel_.BottomLeftPosition = new Vector2(leftX, bottomY);
+		pointPanel_.BottomRightPosition = new Vector2 (rightX, bottomY);
 
 		postInit ();
 	}

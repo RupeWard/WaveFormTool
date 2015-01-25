@@ -4,6 +4,17 @@ using System.Collections.Generic;
 
 public class GraphPointPanel : MonoBehaviour  
 {
+	public enum EPositions
+	{
+		TopLeft,
+		TopRight,
+		BottomLeft,
+		BottomRight
+	}
+
+	private Dictionary< EPositions, GameObject > buttonsByPositions_ = new Dictionary<EPositions, GameObject> ();
+	private Dictionary< EPositions, Vector2 > positionsByPositions_ = new Dictionary<EPositions, Vector2> ();
+
 	public GraphPointActionMenu actionMenu;
 
 	public GraphPanel graphPanel;
@@ -19,10 +30,57 @@ public class GraphPointPanel : MonoBehaviour
 
 	public UIPopupList pointMoverSelection;
 
-	public Vector2 topLeftPosition;
-	public Vector2 topRightPosition;
-	public Vector2 bottomLeftPosition;
-	public Vector2 bottomRightPosition;
+	private Vector2 topLeftPosition;
+	private Vector2 topRightPosition;
+	private Vector2 bottomLeftPosition;
+	private Vector2 bottomRightPosition;
+
+	public Vector2 TopLeftPosition
+	{
+		set 
+		{ 
+			topLeftPosition = value;
+			addPosition(EPositions.TopLeft, topLeftPosition);
+		}
+	}
+
+	public Vector2 TopRightPosition
+	{
+		set 
+		{ 
+			topRightPosition = value;
+			addPosition(EPositions.TopRight, topRightPosition);
+		}
+	}
+
+	public Vector2 BottomLeftPosition
+	{
+		set 
+		{ 
+			bottomLeftPosition = value;
+			addPosition(EPositions.BottomLeft, bottomLeftPosition);
+		}
+	}
+	public Vector2 BottomRightPosition
+	{
+		set 
+		{ 
+			bottomRightPosition = value;
+			addPosition(EPositions.BottomRight, bottomRightPosition);
+		}
+	}
+
+	private void addPosition(EPositions p, Vector2 v)
+	{
+		positionsByPositions_ [p] = v;
+	}
+
+
+	public GameObject topLeftButton;
+	public GameObject topRightButton;
+	public GameObject bottomLeftButton;
+	public GameObject bottomRightButton;
+	
 
 	private GraphPoint point_ = null;
 	public GraphPoint Point
@@ -36,6 +94,11 @@ public class GraphPointPanel : MonoBehaviour
 	public void Start()
 	{
 //		HUDManager.Instance.AddPopup (this.gameObject);
+
+		buttonsByPositions_ [EPositions.TopLeft] = topLeftButton;
+		buttonsByPositions_ [EPositions.TopRight] = topRightButton;
+		buttonsByPositions_ [EPositions.BottomLeft] = bottomLeftButton;
+		buttonsByPositions_ [EPositions.BottomRight] = bottomRightButton;
 
 		this.gameObject.SetActive (false);
 		xInput.enabled = false;
@@ -52,6 +115,8 @@ public class GraphPointPanel : MonoBehaviour
 				pointMoverSelection.items.Add (mover.moverName);			}
 		}
 		pointMoverSelection.enabled = true;
+
+
 	}
 
 	private GraphPointMoverBase GetPointMover()
@@ -104,11 +169,11 @@ public class GraphPointPanel : MonoBehaviour
 				// top
 				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
 				{
-					this.transform.SetLocalXYPosition(bottomLeftPosition);
+					SetPosition(EPositions.BottomLeft);
 				}
 				else
 				{
-					this.transform.SetLocalXYPosition(bottomRightPosition);
+					SetPosition(EPositions.BottomRight);
 				}
 			}
 			else
@@ -116,11 +181,11 @@ public class GraphPointPanel : MonoBehaviour
 				// bottom
 				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
 				{
-					this.transform.SetLocalXYPosition(topLeftPosition);
+					SetPosition(EPositions.TopLeft);
 				}
 				else
 				{
-					this.transform.SetLocalXYPosition(topRightPosition);
+					SetPosition(EPositions.TopRight);
 				}
 			}
 		}
@@ -199,20 +264,39 @@ public class GraphPointPanel : MonoBehaviour
 
 	public void OnTopLeftButtonPressed()
 	{
-		this.transform.SetLocalXYPosition (topLeftPosition);
+		SetPosition (EPositions.TopLeft);
 	}
 	public void OnTopRightButtonPressed()
 	{
-		this.transform.SetLocalXYPosition (topRightPosition);
+		SetPosition (EPositions.TopRight);
 	}
 	public void OnBottomLeftButtonPressed()
 	{
-		this.transform.SetLocalXYPosition (bottomLeftPosition);
+		SetPosition (EPositions.BottomLeft);
 	}
 	public void OnBottomRightButtonPressed()
 	{
-		this.transform.SetLocalXYPosition (bottomRightPosition);
+		SetPosition (EPositions.BottomRight);
 	}
+
+	public void SetPosition(EPositions p)
+	{
+		this.transform.SetLocalXYPosition ( positionsByPositions_[p]);
+		SetPositionButtons (p);
+	}
+
+	private void SetPositionButtons(EPositions p)
+	{
+		foreach (EPositions pos in buttonsByPositions_.Keys)
+		{
+			if (pos == p)
+				buttonsByPositions_[pos].SetActive(false);
+			else
+				buttonsByPositions_[pos].SetActive(true);
+		}
+	}
+
+
 
 	public void OnMoveRightButtonPressed()
 	{
