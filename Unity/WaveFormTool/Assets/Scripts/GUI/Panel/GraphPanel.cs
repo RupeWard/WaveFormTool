@@ -318,16 +318,23 @@ public class GraphPanel : MonoBehaviour
 
 		float step = settings.XRangeLength / numSamples;
 
+
 		float currentX = settings.xRange.x;
-		while (currentX > settings.xView.x)
+		if (settings.loop)
 		{
+			while (currentX > settings.xView.x)
+			{
 				currentX -= step;
+			}
 		}
 
 		float finalX = settings.xRange.y;
-		while (finalX < settings.xView.y)
+		if (settings.loop)
 		{
-			finalX += step;
+			while (finalX < settings.xView.y)
+			{
+				finalX += step;
+			}
 		}
 
 		GraphPoint previous = null;
@@ -415,21 +422,35 @@ public class GraphPanel : MonoBehaviour
 		}
 		GraphPoint earlyPoint = rangeStart_.PreviousPoint;
 		GraphPoint followedPoint = rangeEnd_.PreviousPoint;
+
+		int earlyPoints = 0;
 		while (earlyPoint != null && followedPoint != null)
 		{
+			earlyPoints++;
 			followedPoint.SetFollower(earlyPoint);
 			earlyPoint = earlyPoint.PreviousPoint;
 			followedPoint = followedPoint.PreviousPoint;
 		}
+		if (earlyPoints > 0 && !settings.loop)
+		{
+			Debug.LogError("Found "+earlyPoints+" early points when not looping");
+		}
+
 		GraphPoint latePoint = rangeEnd_.NextPoint;
 		followedPoint = rangeStart_.NextPoint;
+
+		int latePoints = 0;
 		while (latePoint != null && followedPoint != null)
 		{
+			latePoints++;
 			followedPoint.SetFollower(latePoint);
 			latePoint = latePoint.NextPoint;
 			followedPoint = followedPoint.NextPoint;
 		}
-
+		if (latePoints > 0 && !settings.loop)
+		{
+			Debug.LogError("Found "+latePoints+" late points when not looping");
+		}
 
 		if (DEBUG_GRAPH)
 			Debug.Log ("Created points");
