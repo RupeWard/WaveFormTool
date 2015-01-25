@@ -4,12 +4,18 @@ using System.Collections.Generic;
 
 public class HUDManager : SingletonApplicationLifetime< HUDManager >
 {
+	public AudioClip changeWindowClip;
+
 	public GraphPanel waveGraphPanel;
 	public UIRoot myRoot;
 
 	public Transform mainMenuBarHeightProvider;
 	public GameObject mainMenuBar;
-	
+
+	public GameObject BaseWaveObject;
+	public GameObject EnvelopeObject;
+	public GameObject PermanentObject;
+
 	private Vector2 screenDims_;
 	public Vector2 ScreenDims
 	{
@@ -58,6 +64,8 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 		popUpBottom = popUpTop - popUpSize.y;
 		WaveGeneratorPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
 
+		BaseWaveObject.SetActive (true);
+		EnvelopeObject.SetActive (false);
 	}
 
 	public void AddPopup(GameObject p)
@@ -94,6 +102,12 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 			}
 		}
 
+	}
+
+	public void HandleWindowChanged()
+	{
+		audio.clip = changeWindowClip;
+		audio.Play ();
 	}
 
 }

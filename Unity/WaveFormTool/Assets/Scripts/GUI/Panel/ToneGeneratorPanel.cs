@@ -121,6 +121,6 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 
 	private void SetPlayButtonLabel()
 	{
-		playButtonLabel.text = (player_.audio.isPlaying) ? (stopStr) : (playStr);
+		playButtonLabel.text = (player_!= null && player_.audio.isPlaying) ? (stopStr) : (playStr);
 	}
 }
