@@ -402,22 +402,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100050
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400050}
-  - 114: {fileID: 11400042}
-  m_Layer: 8
-  m_Name: Background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100052
 GameObject:
   m_ObjectHideFlags: 1
@@ -1484,7 +1468,7 @@ Transform:
   - {fileID: 400046}
   - {fileID: 400032}
   m_Father: {fileID: 400052}
-  m_RootOrder: 2
+  m_RootOrder: 1
 --- !u!4 &400046
 Transform:
   m_ObjectHideFlags: 1
@@ -1511,18 +1495,6 @@ Transform:
   - {fileID: 400078}
   m_Father: {fileID: 400080}
   m_RootOrder: 0
---- !u!4 &400050
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100050}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .000106822205, y: 1.52603152e-05, z: 0}
-  m_LocalScale: {x: 450, y: 40, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400052}
-  m_RootOrder: 0
 --- !u!4 &400052
 Transform:
   m_ObjectHideFlags: 1
@@ -1533,7 +1505,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 16.2126808, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 400050}
   - {fileID: 400058}
   - {fileID: 400044}
   - {fileID: 400120}
@@ -1578,7 +1549,7 @@ Transform:
   - {fileID: 400056}
   - {fileID: 400082}
   m_Father: {fileID: 400052}
-  m_RootOrder: 1
+  m_RootOrder: 0
 --- !u!4 &400060
 Transform:
   m_ObjectHideFlags: 1
@@ -1598,7 +1569,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100062}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 250.429901, y: 5.3291626, z: 0}
+  m_LocalPosition: {x: 250.429901, y: -145.346069, z: 0}
   m_LocalScale: {x: .999899983, y: .999899983, z: .999899983}
   m_Children:
   - {fileID: 400066}
@@ -1901,7 +1872,7 @@ Transform:
   - {fileID: 400112}
   - {fileID: 400114}
   m_Father: {fileID: 400052}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!4 &400112
 Transform:
   m_ObjectHideFlags: 1
@@ -1963,7 +1934,7 @@ Transform:
   - {fileID: 400118}
   - {fileID: 400116}
   m_Father: {fileID: 400052}
-  m_RootOrder: 3
+  m_RootOrder: 2
 --- !u!4 &400122
 Transform:
   m_ObjectHideFlags: 1
@@ -2103,7 +2074,7 @@ Transform:
   - {fileID: 400144}
   - {fileID: 400142}
   m_Father: {fileID: 400052}
-  m_RootOrder: 5
+  m_RootOrder: 4
 --- !u!65 &6500000
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2307,7 +2278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 3
   mDepth: 154
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -2536,7 +2507,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 3
   mDepth: 152
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -2579,7 +2550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .588235319}
   mPivot: 3
   mDepth: 2
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -2790,27 +2761,6 @@ MonoBehaviour:
   eventReceiver: {fileID: 100062}
   functionName: OnPointHeightChangeStrategyChange
   mSelectedItem: 
---- !u!114 &11400042
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100050}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
-  mPivot: 4
-  mDepth: 151
-  mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
-  mSpriteName: white_box01
-  mFillCenter: 1
-  mType: 1
-  mFillDirection: 4
-  mFillAmount: 1
-  mInvert: 0
 --- !u!114 &11400044
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2926,7 +2876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .588235319}
   mPivot: 4
   mDepth: 150
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -2961,7 +2911,7 @@ MonoBehaviour:
     e10: 0
     e11: 300.029999
     e12: 0
-    e13: -7.91717339
+    e13: 142.773132
     e20: 0
     e21: 0
     e22: 300.029999
@@ -3062,7 +3012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 151
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3116,7 +3066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 3
   mDepth: 152
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3297,7 +3247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 3
   mDepth: 152
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3318,7 +3268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .588235319}
   mPivot: 3
   mDepth: 2
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3339,7 +3289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3512,7 +3462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3533,7 +3483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3706,7 +3656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3727,7 +3677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -3958,7 +3908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 157
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
@@ -4268,7 +4218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b3dc54f924693f41b5cbecb267e647a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: 1, g: 1, b: 1, a: .196078435}
   mPivot: 4
   mDepth: 159
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
