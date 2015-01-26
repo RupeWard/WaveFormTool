@@ -45,8 +45,10 @@ public class GraphPointMoverLinearB : GraphPointMoverBase // FIXME refactor to Y
 				break;
 			}
 		}
+		GraphPoint fixedPriorPoint = tp;
+
 		if (DEBUG_POINTMOVEMENT)
-			Debug.Log (pointsToMove.Count.ToString()+" prior points to move");
+			Debug.Log (pointsToMove.Count.ToString()+" prior points to move relative to fixed point "+fixedPriorPoint.DebugDescribe());
 
 		tp = pt.NextPoint;
 		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
@@ -58,48 +60,27 @@ public class GraphPointMoverLinearB : GraphPointMoverBase // FIXME refactor to Y
 				break;
 			}
 		}
+		GraphPoint fixedPostPoint = tp;
+		
 		if (DEBUG_POINTMOVEMENT)
-			Debug.Log (pointsToMove.Count.ToString()+" total points to move");
+			Debug.Log (pointsToMove.Count.ToString()+" total points to move, post relative to fixed point "+fixedPostPoint.DebugDescribe());
 
+		float ydiff = newY - oldY;
+		float priorXdiff = pt.Point.x - fixedPriorPoint.Point.x;
+		float postXdiff = fixedPostPoint.Point.x - pt.Point.x;
 
 		foreach (GraphPoint gp in pointsToMove)
 		{
-			float gpAbsY = Mathf.Abs(gp.Point.y);
-			if (gpAbsY == oldAbs)
+			float gpNewY = gp.Point.y;
+			if (gp.Point.x < pt.Point.x)
 			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point not moved "+gp.DebugDescribe()+"\n");
-				}
-				gpAbsY = newAbs;
-			}
-			else if (newAbs < oldAbs)
-			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point being moved from zero "+gp.DebugDescribe()+"\n");
-				}
-				gpAbsY *= bottomMultiplier;
+				float fraction = (gp.Point.x - fixedPriorPoint.Point.x)/priorXdiff;
+				gpNewY += fraction * ydiff;
 			}
 			else
 			{
-				if (DEBUG_POINTMOVEMENT && sb != null)
-				{
-					sb.Append("Point being moved from range "+gp.DebugDescribe()+"\n");
-				}
-				float distFromTop = settings.yRange.y - gpAbsY; // FIXME assumes syyemtry about zero
-				distFromTop *= topMultiplier;
-				gpAbsY = settings.yRange.y - distFromTop;
-			}
-
-			float gpNewY = gpAbsY * sign;
-			float altY = settings.ClampYToRange( gpNewY);
-
-			if (altY != gpNewY)
-			{
-				if (DEBUG_POINTMOVEMENT)
-					Debug.LogWarning("Clamping point's y to "+altY+" "+gp.DebugDescribe()); 
-				gpNewY = altY;
+				float fraction = (fixedPostPoint.Point.x - gp.Point.x)/postXdiff;
+				gpNewY += fraction * ydiff;
 			}
 			gp.SetY(gpNewY);
 		}
