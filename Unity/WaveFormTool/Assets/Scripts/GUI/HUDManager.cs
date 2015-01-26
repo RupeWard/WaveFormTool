@@ -6,6 +6,7 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 {
 	public AudioClip changeWindowClip;
 
+	public GraphPanel envelopeGraphPanel;
 	public GraphPanel waveGraphPanel;
 	public UIRoot myRoot;
 
@@ -53,6 +54,8 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 		float graphBottom = -1f * (ScreenHeight - 50f);
 		waveGraphPanel.init ( new Vector2 (ScreenWidth - 2*margin_ ,graphTop - graphBottom), 
 		                     new Vector2 (0f ,0.5f * (graphTop+graphBottom)) );
+		envelopeGraphPanel.init ( new Vector2 (ScreenWidth - 2*margin_ ,graphTop - graphBottom), 
+		                     new Vector2 (0f ,0.5f * (graphTop+graphBottom)) );
 
 		float popUpTop = graphTop - 5;
 
@@ -63,6 +66,10 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 		popUpSize = WaveGeneratorPanel.Instance.Size ();
 		popUpBottom = popUpTop - popUpSize.y;
 		WaveGeneratorPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
+
+		popUpSize = EnvelopeGeneratorPanel.Instance.Size ();
+		popUpBottom = popUpTop - popUpSize.y;
+		EnvelopeGeneratorPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
 
 		BaseWaveObject.SetActive (true);
 		EnvelopeObject.SetActive (false);

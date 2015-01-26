@@ -3844,9 +3844,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   xRange: {x: 0, y: 1}
-  yRange: {x: -1, y: 1}
-  xView: {x: -.200000003, y: 1.20000005}
-  yView: {x: -1, y: 1}
+  yRange: {x: 0, y: 1}
+  xView: {x: -.100000001, y: 1}
+  yView: {x: -.100000001, y: 1}
   axisDefinitions:
   - {fileID: 11400116}
   - {fileID: 11400058}
@@ -3856,8 +3856,8 @@ MonoBehaviour:
   pointSize: 4
   selectedPointMaxSize: 16
   selectedPointThrobTime: 1
-  allowCrossingXAxis: 1
-  loop: 1
+  allowCrossingXAxis: 0
+  loop: 0
 --- !u!114 &11400160
 MonoBehaviour:
   m_ObjectHideFlags: 1

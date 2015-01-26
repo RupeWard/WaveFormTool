@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class CreateGraphMenu : Menu 
+public class CreateBaseWaveMenu : Menu 
 {
 	static readonly string functionsOption = "Functions";
 	static readonly string clearOption = "Clear";

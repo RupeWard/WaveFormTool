@@ -27,7 +27,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 //		HUDManager.Instance.AddPopup (gameObject);		
 
 		frequencyInput.text = frequency_.ToString ();
-//		this.gameObject.SetActive (false);
+		this.gameObject.SetActive (false);
 	}
 
 	public Vector2 Size()

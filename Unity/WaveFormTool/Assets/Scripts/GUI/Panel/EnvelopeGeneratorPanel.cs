@@ -2,11 +2,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >  
+public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorPanel >  
 {
 	public UIPopupList generatorTypeList;
 	public UIInput numSamplesInput;
-	public WaveGraphPanel graphPanel;
+	public EnvelopeGraphPanel graphPanel;
 	public UILabel messageLabel;
 	public UISprite background_;
 
@@ -30,7 +30,7 @@ public class WaveGeneratorPanel : SingletonSceneLifetime< WaveGeneratorPanel >
 
 		numSamplesInput.text = numSamples_.ToString ();
 
-		this.gameObject.SetActive (false);
+//		this.gameObject.SetActive (false);
 	}
 
 	public Vector2 Size()
