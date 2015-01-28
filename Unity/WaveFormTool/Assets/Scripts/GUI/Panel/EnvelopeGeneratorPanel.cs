@@ -17,11 +17,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	public UILabel messageLabel;
 	public UISprite background_;
 
-	private float leadInLength_ = 0.4f;
-	private float leadInPeakValue_ = 1.5f;
-	private float leadInPeakTime_ = 0.3f;
-	private float tailOutLength_ = 0.8f;
-	private float midLength_ = 0.3f;
+	private BasicEnvelopeSettings settings_ = new BasicEnvelopeSettings();
 
 	private Dictionary< string, EnvelopeGenerator > generatorDB_ = new Dictionary<string, EnvelopeGenerator>();
 	private int numSamples_ = 32;
@@ -41,11 +37,11 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		}
 
 		numSamplesInput.text = numSamples_.ToString ();
-		tailOutLengthInput.text = tailOutLength_.ToString ();
-		leadInLengthInput.text = leadInLength_.ToString ();
-		leadInPeakValueInput.text = leadInPeakValue_.ToString ();
-		leadInPeakTimeInput.text = leadInPeakTime_.ToString ();
-		midLengthInput.text = midLength_.ToString ();
+		tailOutLengthInput.text = settings_.tailOutLength.ToString ();
+		leadInLengthInput.text = settings_.leadInLength.ToString ();
+		leadInPeakValueInput.text = settings_.leadInPeakValue.ToString ();
+		leadInPeakTimeInput.text = settings_.leadInPeakTime.ToString ();
+		midLengthInput.text = settings_.midLength.ToString ();
 
 		//		this.gameObject.SetActive (false);
 	}
@@ -92,15 +88,15 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			}
 			else
 			{
-				tailOutLength_ = newValue;
-				Debug.Log ("TailOutDuration changed to "+tailOutLength_);
+				settings_.tailOutLength = newValue;
+				Debug.Log ("TailOutDuration changed to "+settings_.tailOutLength);
 			}
 		}
 		else
 		{
 			messageLabel.text = "TailOut length must be a number!";
 		}
-		tailOutLengthInput.text = tailOutLength_.ToString ();
+		tailOutLengthInput.text = settings_.tailOutLength.ToString ();
 	}
 		
 	public void OnLeadInDurationInputChanged(string str)
@@ -114,20 +110,20 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			}
 			else
 			{
-				if (leadInPeakTime_ > newValue)
+				if (settings_.leadInPeakTime > newValue)
 				{
-					leadInPeakTime_ = newValue * leadInPeakTime_ / leadInLength_;
-					leadInPeakTimeInput.text = leadInPeakTime_.ToString();
+					settings_.leadInPeakTime = newValue * settings_.leadInPeakTime / settings_.leadInLength;
+					leadInPeakTimeInput.text = settings_.leadInPeakTime.ToString();
 				}
-				leadInLength_ = newValue;
-				Debug.Log ("LeadInLength changed to "+leadInLength_);
+				settings_.leadInLength = newValue;
+				Debug.Log ("LeadInLength changed to "+settings_.leadInLength);
 			}
 		}
 		else
 		{
 			messageLabel.text = "LeadIn length must be a number!";
 		}
-		leadInLengthInput.text = leadInLength_.ToString ();
+		leadInLengthInput.text = settings_.leadInLength.ToString ();
 	}
 
 	public void OnLeadInInputPeakValueChanged(string str)
@@ -141,15 +137,15 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			}
 			else
 			{
-				leadInPeakValue_ = newValue;
-				Debug.Log ("LeadInPeakValue changed to "+leadInPeakValue_);
+				settings_.leadInPeakValue = newValue;
+				Debug.Log ("LeadInPeakValue changed to "+settings_.leadInPeakValue);
 			}
 		}
 		else
 		{
 			messageLabel.text = "LeadIn peak must be a number!";
 		}
-		leadInPeakValueInput.text = leadInPeakValue_.ToString ();
+		leadInPeakValueInput.text = settings_.leadInPeakValue.ToString ();
 	}
 
 	public void OnLeadInPeakTimeInputChanged(string str)
@@ -161,21 +157,21 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			{
 				messageLabel.text = "LeadIn must have peak time > 0";
 			}
-			else if (newValue > leadInLength_ )
+			else if (newValue > settings_.leadInLength )
 			{
 				messageLabel.text = "LeadIn time must be < length";
 			}
 			else
 			{
-				leadInPeakTime_ = newValue;
-				Debug.Log ("LeadInPeakTime changed to "+leadInPeakTime_);
+				settings_.leadInPeakTime = newValue;
+				Debug.Log ("LeadInPeakTime changed to "+settings_.leadInPeakTime);
 			}
 		}
 		else
 		{
 			messageLabel.text = "LeadIn peak time must be a number!";
 		}
-		leadInPeakTimeInput.text = leadInPeakTime_.ToString ();
+		leadInPeakTimeInput.text = settings_.leadInPeakTime.ToString ();
 	}
 
 	public void OnMidDurationInputChanged(string str)
@@ -189,15 +185,15 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			}
 			else
 			{
-				midLength_ = newValue;
-				Debug.Log ("MidDuration changed to "+midLength_);
+				settings_.midLength = newValue;
+				Debug.Log ("MidDuration changed to "+settings_.midLength);
 			}
 		}
 		else
 		{
 			messageLabel.text = "Mid length must be a number!";
 		}
-		midLengthInput.text = midLength_.ToString ();
+		midLengthInput.text = settings_.midLength.ToString ();
 	}
 
 
@@ -229,7 +225,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 //		Debug.Log ("GenerateGraphButton clicked with selection = '"+selected+"'");
 		if (generatorDB_.ContainsKey (selected))
 		{
-			graphPanel.CreateGraph (generatorDB_ [selected], numSamples_, false);
+			graphPanel.CreateGraph (generatorDB_ [selected], numSamples_, settings_, false);
 		}
 		else
 		{

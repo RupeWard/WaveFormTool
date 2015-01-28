@@ -21,13 +21,13 @@ public class EnvelopeGraphPanel : GraphPanel
 	 
 //	private WaveFormDataRegular waveFormData_ = null;
 
-	public void CreateGraph(IEnvelopeProvider efp, int numSamples, bool visibleOnly)
+	public void CreateGraph(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings settings, bool visibleOnly)
 	{
 		ResetView ();
-		StartCoroutine (CreateGraphCR(efp, numSamples, visibleOnly));
+		StartCoroutine (CreateGraphCR(efp, numSamples, settings, visibleOnly));
 	}
 
-	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, bool visibleOnly)
+	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings settings, bool visibleOnly)
 	{
 		Debug.LogWarning ("Not yet implemented");
 		yield return null;

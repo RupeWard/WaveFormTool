@@ -3,14 +3,6 @@ using UnityEngine;
 
 public abstract class EnvelopeGenerator : IEnvelopeProvider
 {
-	public float leadInDuration;
-	public float leadInPeakValue;
-	public float leadInPeakTime;
-
-	public float constSectionDuration;
-
-	public float leadOutDuration;
-
 	private string generatorName_;
 	public string GeneratorName
 	{
