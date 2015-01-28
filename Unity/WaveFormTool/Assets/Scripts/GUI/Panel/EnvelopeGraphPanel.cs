@@ -3,15 +3,23 @@ using System.Collections;
 
 public class EnvelopeGraphPanel : GraphPanel 
 {
-	private static readonly bool DEBUG_TONE_GEN = false;
+	/* TODO
+	 * 
+	 * subgraph concept 
+	 * what needs overriding?
+	 * 
+	 */
+
+
+//	private static readonly bool DEBUG_TONE_GEN = false;
 
 	public int numSamples_ = 100;
 
 	public Transform playButton;
 
 	private static readonly bool DEBUG_GENERATION = true;
-
-	private WaveFormDataRegular waveFormData_ = null;
+	 
+//	private WaveFormDataRegular waveFormData_ = null;
 
 	private bool isDirty_ = false;
 	public override void HandleDataChange ()
@@ -60,6 +68,9 @@ public class EnvelopeGraphPanel : GraphPanel
 
 	private IEnumerator CreateDataCR()
 	{
+		Debug.LogError ("Not implmeneted");
+		yield return null;
+		/*
 		System.Text.StringBuilder sb = null;
 		int numGraphPoints = NumGraphPoints ();
 
@@ -193,10 +204,14 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log("Points at...\n"+ptssb.ToString());
 		}
 		yield return null;
-	}
+	*/
+}
+
 
 	public void OnPlayButtonClicked()
 	{
+		Debug.LogError ("Not implmeneted");
+		/*
 		if (waveFormData_ == null)
 		{
 			Debug.Log ("Not ready");
@@ -205,6 +220,6 @@ public class EnvelopeGraphPanel : GraphPanel
 		{
 			ToneGeneratorPanel.Instance.SetWaveFormProvider ("Graph", waveFormData_);
 			ToneGeneratorPanel.Instance.SetActive(true);
-		}
+		}*/
 	}
 }

@@ -283,7 +283,7 @@ public class GraphPanel : MonoBehaviour
 
 #region graph
 	private static readonly bool DEBUG_GRAPH = false;
-
+	
 	public void CreateGraph(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
 		ResetView ();
@@ -302,6 +302,8 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.SetActive(false);
 	}
 
+	// FIXME adapt to more generic so it can create subgraph
+	// add subgraph idea (here or in derived?)
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
 		isCreatingGraph_ = true;
