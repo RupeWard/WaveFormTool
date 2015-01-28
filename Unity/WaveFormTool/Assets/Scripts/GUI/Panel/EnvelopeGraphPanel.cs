@@ -21,6 +21,18 @@ public class EnvelopeGraphPanel : GraphPanel
 	 
 //	private WaveFormDataRegular waveFormData_ = null;
 
+	public void CreateGraph(IEnvelopeProvider efp, int numSamples, bool visibleOnly)
+	{
+		ResetView ();
+		StartCoroutine (CreateGraphCR(efp, numSamples, visibleOnly));
+	}
+
+	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, bool visibleOnly)
+	{
+		Debug.LogWarning ("Not yet implemented");
+		yield return null;
+	}
+
 	private bool isDirty_ = false;
 	public override void HandleDataChange ()
 	{

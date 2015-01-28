@@ -16,6 +16,16 @@ public class EnvelopeGeneratorSaw :  EnvelopeGenerator
 	}
 	*/
 
+	protected override float GetLeadInValueForTime (float time)
+	{
+		return 0f;
+	}
+	protected override float GetLeadOutValueForTime (float time)
+	{
+		return 0f;
+	}
+
+	/*
 	public override float GetValueForTime (float phase)
 	{
 		phase = phase - Mathf.Floor(phase);
@@ -29,7 +39,7 @@ public class EnvelopeGeneratorSaw :  EnvelopeGenerator
 			return Mathf.Lerp (1f, -1f, (phase - 0.25f)/(0.5f));
 		}
 		return Mathf.Lerp (-1f, 0f, (phase - 0.75f)/0.25f); 
-	}
+	}*/
 
 	#endregion IEnvelopeProvider
 

@@ -20,13 +20,13 @@ public class GraphPanel : MonoBehaviour
 	public Transform pointsContainer;
 	public Transform axesContainer;
 
-	private GraphPoint firstPoint_ = null;
-	private GraphPoint rangeStart_ = null;
+	protected GraphPoint firstPoint_ = null;
+	protected GraphPoint rangeStart_ = null;
 	public GraphPoint RangeStart
 	{
 		get { return rangeStart_; }
 	}
-	private GraphPoint rangeEnd_ = null;
+	protected GraphPoint rangeEnd_ = null;
 	public GraphPoint RangeEnd
 	{
 		get { return rangeEnd_; }
@@ -38,7 +38,14 @@ public class GraphPanel : MonoBehaviour
 	private float height_;
 
 	private float backgroundMargin = 20f;
+
+	protected bool isCreatingGraph_ = true;
+	public bool IsCreatingGraph
+	{
+		get { return isCreatingGraph_; }
+	}
 	
+
 #region setup
 
 	public void init(Vector2 size, Vector2 pos)
@@ -171,7 +178,7 @@ public class GraphPanel : MonoBehaviour
 		axes_.Clear ();
 	}
 
-	private void DrawAxes()
+	protected void DrawAxes()
 	{
 		ClearAxes ();
 
@@ -282,19 +289,14 @@ public class GraphPanel : MonoBehaviour
 #endregion axes
 
 #region graph
-	private static readonly bool DEBUG_GRAPH = false;
-	
+	protected static readonly bool DEBUG_GRAPH = false;
+	/*
 	public void CreateGraph(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
 		ResetView ();
 		StartCoroutine (CreateGraphCR(wfp, numSamples, visibleOnly));
 	}
-
-	private bool isCreatingGraph_ = true;
-	public bool IsCreatingGraph
-	{
-		get { return isCreatingGraph_; }
-	}
+	 */
 
 	public void ClearGraph()
 	{
@@ -302,6 +304,8 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.SetActive(false);
 	}
 
+	/*
+	 * 
 	// FIXME adapt to more generic so it can create subgraph
 	// add subgraph idea (here or in derived?)
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
@@ -462,6 +466,7 @@ public class GraphPanel : MonoBehaviour
 
 		yield return null;
 	}
+	*/
 
 	private IEnumerator AdjustPointPositionsCR()
 	{
@@ -489,7 +494,7 @@ public class GraphPanel : MonoBehaviour
 	}
 	
 
-	private IEnumerator ClearPointsCR()
+	protected IEnumerator ClearPointsCR()
 	{
 		pointPanel_.SetPoint (null);
 		rangeStart_ = null;
