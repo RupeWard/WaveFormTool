@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class AxisDefinition : MonoBehaviour
+public class AxisDefinition 
 {
 	public string axisName = "Axis";
 	public EXYDirection eDirection = EXYDirection.X;

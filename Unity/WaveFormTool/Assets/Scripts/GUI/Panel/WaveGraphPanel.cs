@@ -45,7 +45,29 @@ public class WaveGraphPanel : GraphPanel
 		yield return StartCoroutine(ClearPointsCR ());
 		if (DEBUG_GRAPH)
 			Debug.Log ("Cleared points");
-		
+
+		AxisDefinition[] axisDefinitions = new AxisDefinition[3];
+
+		AxisDefinition xAxis = new AxisDefinition ();
+		xAxis.axisName = "X";
+		xAxis.eDirection = EXYDirection.X;
+		xAxis.value = 0f;
+		axisDefinitions [0] = xAxis;
+
+		AxisDefinition phaseStartAxis = new AxisDefinition ();
+		phaseStartAxis.axisName = "Start";
+		phaseStartAxis.eDirection = EXYDirection.Y;
+		phaseStartAxis.value = 0f;
+		axisDefinitions [1] = phaseStartAxis;
+
+		AxisDefinition phaseEndAxis = new AxisDefinition ();
+		phaseEndAxis.axisName = "Start";
+		phaseEndAxis.eDirection = EXYDirection.Y;
+		phaseEndAxis.value = 1f;
+		axisDefinitions [2] = phaseEndAxis;
+
+		settings.axisDefinitions = axisDefinitions;
+
 		DrawAxes ();
 		yield return null;
 		
@@ -193,6 +215,7 @@ public class WaveGraphPanel : GraphPanel
 		
 		yield return null;
 	}
+
 	public void Update()
 	{
 		if (isDirty_)

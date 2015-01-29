@@ -17,13 +17,26 @@ public abstract class EnvelopeGenerator : IEnvelopeProvider
 	#region IEnvelopeProvider 
 	
 	//public abstract float GetValueForPhase (float phase, IWaveFormDataInterpolator interpolator);
-	public float GetValueForTime (float time)
+	public float GetValueForTime (float time, BasicEnvelopeSettings settings)
 	{
+		if (settings.isInMid (time))
+		{
+			return settings.midValue;
+		}
+		if (settings.isInTail (time))
+		{
+			return GetTailOutValueForTime(time, settings);
+		}
+		if (settings.isInLeadIn (time))
+		{
+			return GetLeadInValueForTime(time, settings);
+		}
+		Debug.LogError ("Envelope settings don't seem to want to provide anything for" + time);
 		return 0f;
 	}
 
-	abstract protected float GetLeadInValueForTime (float time);
-	abstract protected float GetLeadOutValueForTime (float time);
+	abstract protected float GetLeadInValueForTime (float time, BasicEnvelopeSettings settings);
+	abstract protected float GetTailOutValueForTime (float time, BasicEnvelopeSettings settings);
 
 	virtual public string EnvelopeName()
 	{

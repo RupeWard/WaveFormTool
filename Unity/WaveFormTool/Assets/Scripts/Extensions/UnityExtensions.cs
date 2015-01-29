@@ -43,6 +43,14 @@ public static class UnityExtensions
 
 #region StringBuilder
 
+	public static void Set(this Vector2 v, Vector2 other)
+	{
+		v.Set (v.x, v.y);
+	}
+#endregion
+
+#region StringBuilder
+
 	public static void DebugDescribe(this System.Text.StringBuilder sb, IDebugDescribable dd)
 	{
 		sb.Append ( (dd==null)?("NULL"):(dd.DebugDescribe()));

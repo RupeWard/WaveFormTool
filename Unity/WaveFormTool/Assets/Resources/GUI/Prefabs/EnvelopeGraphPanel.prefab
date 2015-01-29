@@ -348,22 +348,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &100042
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400042}
-  - 114: {fileID: 11400058}
-  m_Layer: 8
-  m_Name: PhaseStart
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &100044
 GameObject:
   m_ObjectHideFlags: 1
@@ -574,22 +558,6 @@ GameObject:
   - 114: {fileID: 11400114}
   m_Layer: 8
   m_Name: Label
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &100068
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400068}
-  - 114: {fileID: 11400116}
-  m_Layer: 8
-  m_Name: XAxis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -849,22 +817,6 @@ GameObject:
   - 4: {fileID: 400100}
   m_Layer: 8
   m_Name: XCoordinate
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!1 &100102
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 4
-  m_Component:
-  - 4: {fileID: 400102}
-  - 114: {fileID: 11400152}
-  m_Layer: 8
-  m_Name: Phase End
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1445,18 +1397,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400062}
   m_RootOrder: 1
---- !u!4 &400042
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100042}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400110}
-  m_RootOrder: 2
 --- !u!4 &400044
 Transform:
   m_ObjectHideFlags: 1
@@ -1612,18 +1552,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 400092}
   m_RootOrder: 1
---- !u!4 &400068
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100068}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 400110}
-  m_RootOrder: 0
 --- !u!4 &400070
 Transform:
   m_ObjectHideFlags: 1
@@ -1826,18 +1754,6 @@ Transform:
   - {fileID: 400106}
   m_Father: {fileID: 400124}
   m_RootOrder: 0
---- !u!4 &400102
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100102}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.98973846e-05, y: -3.05175781e-05, z: 0}
-  m_LocalScale: {x: .999899983, y: .999899983, z: .999899983}
-  m_Children: []
-  m_Father: {fileID: 400110}
-  m_RootOrder: 1
 --- !u!4 &400104
 Transform:
   m_ObjectHideFlags: 1
@@ -1885,10 +1801,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 400068}
-  - {fileID: 400102}
-  - {fileID: 400042}
+  m_Children: []
   m_Father: {fileID: 400090}
   m_RootOrder: 2
 --- !u!4 &400112
@@ -2865,24 +2778,6 @@ MonoBehaviour:
   mShrinkToFit: 0
   mLineWidth: 0
   mMultiline: 1
---- !u!114 &11400058
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100042}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6cc497b3cca7d74a87765e5040e3048, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axisName: Phase Start
-  eDirection: 1
-  value: 0
-  tickLabelSize: 12
-  tickBase: 0
-  tickSpacing: 1
-  axisLineWidth: 2
 --- !u!114 &11400060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3370,24 +3265,6 @@ MonoBehaviour:
   mShrinkToFit: 0
   mLineWidth: 0
   mMultiline: 1
---- !u!114 &11400116
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100068}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6cc497b3cca7d74a87765e5040e3048, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axisName: X axis
-  eDirection: 0
-  value: 0
-  tickLabelSize: 12
-  tickBase: 0
-  tickSpacing: .200000003
-  axisLineWidth: 2
 --- !u!114 &11400118
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3763,24 +3640,6 @@ MonoBehaviour:
   mShrinkToFit: 0
   mLineWidth: 0
   mMultiline: 1
---- !u!114 &11400152
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100102}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6cc497b3cca7d74a87765e5040e3048, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  axisName: Phase End
-  eDirection: 1
-  value: 1
-  tickLabelSize: 12
-  tickBase: 0
-  tickSpacing: 1
-  axisLineWidth: 2
 --- !u!114 &11400154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3847,12 +3706,6 @@ MonoBehaviour:
   yRange: {x: 0, y: 1}
   xView: {x: -.100000001, y: 1}
   yView: {x: -.100000001, y: 1}
-  axisDefinitions:
-  - {fileID: 11400116}
-  - {fileID: 11400058}
-  - {fileID: 11400152}
-  defaultXAxis: {fileID: 11400116}
-  defaultYAxis: {fileID: 11400152}
   pointSize: 4
   selectedPointMaxSize: 16
   selectedPointThrobTime: 1

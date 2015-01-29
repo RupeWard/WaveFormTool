@@ -184,11 +184,16 @@ public class GraphPanel : MonoBehaviour
 
 		foreach (AxisDefinition definition in settings.axisDefinitions)
 		{
-			AxisDefinition thisDef = (GameObject.Instantiate(definition.gameObject) as GameObject).GetComponent<AxisDefinition>();
-
 			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
-			a.init (this, thisDef);
-			axes_.Add(a);
+			if (a == null) 
+			{
+				Debug.LogError("Null Axis");
+			}
+			else
+			{
+				a.init (this, definition);
+				axes_.Add(a);
+			}
 		}
 
 		DoDefaultAxes ();
@@ -228,245 +233,49 @@ public class GraphPanel : MonoBehaviour
 
 		if (!bHasX)
 		{
-			if (settings.defaultXAxis != null)
-			{
-				if (GraphAxis.DEBUG_AXES)
-					Debug.Log ("No visible X axis, creating default");
-				AxisDefinition defn = (GameObject.Instantiate(settings.defaultXAxis.gameObject) as GameObject).GetComponent<AxisDefinition>();
-				defn.value = settings.YViewCentre;
-				defn.axisName = "Default Y";
-				GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
-				a.initTemporary(this, defn);
-				axes_.Add(a);
-			}
+			if (GraphAxis.DEBUG_AXES)
+				Debug.Log ("No visible X axis, creating default");
+
+			AxisDefinition xAxis = new AxisDefinition ();
+			xAxis.axisName = "X";
+			xAxis.eDirection = EXYDirection.X;
+			xAxis.value = settings.YViewCentre;
+			xAxis.axisName = "Default X";
+			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
+			a.init(this, xAxis);
+			axes_.Add(a);
 		}
 
 		if (!bHasY)
 		{
-			if (settings.defaultYAxis != null)
-			{
-				if (GraphAxis.DEBUG_AXES)
-					Debug.Log ("No visible Y axis, creating default");
+			if (GraphAxis.DEBUG_AXES)
+				Debug.Log ("No visible Y axis, creating default");
 
-				AxisDefinition defn = (GameObject.Instantiate(settings.defaultYAxis.gameObject) as GameObject).GetComponent<AxisDefinition>();
-				defn.value = settings.XViewCentre;
-				defn.axisName = "Default Y";
-				GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
-				a.initTemporary (this, defn);
-				axes_.Add(a);
-			}
-		}
-
-	}
-
-	private void RemoveTemporaryAxes()
-	{
-		List <GraphAxis> temps = new List< GraphAxis >();
-		foreach (GraphAxis axis in axes_)
-		{
-			if (axis.IsTemporary)
-			{
-				temps.Add(axis);
-			}
-		}
-		foreach (GraphAxis axis in temps)
-		{
-			axes_.Remove(axis);
-			GameObject.Destroy(axis);
+			AxisDefinition yAxis = new AxisDefinition ();
+			yAxis.eDirection = EXYDirection.Y;
+			yAxis.value = settings.XViewCentre;
+			yAxis.axisName = "Default Y";
+			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
+			a.init (this, yAxis);
+			axes_.Add(a);
 		}
 	}
-	
+
 	public void AdjustAxes()
 	{
-		RemoveTemporaryAxes ();
-		foreach (GraphAxis axis in axes_)
-		{
-			axis.adjustPosition();
-		}
-		DoDefaultAxes ();
+		DrawAxes ();
 	}
 	
 #endregion axes
 
 #region graph
 	protected static readonly bool DEBUG_GRAPH = false;
-	/*
-	public void CreateGraph(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
-	{
-		ResetView ();
-		StartCoroutine (CreateGraphCR(wfp, numSamples, visibleOnly));
-	}
-	 */
 
 	public void ClearGraph()
 	{
 		StartCoroutine (ClearPointsCR ());
 		pointPanel_.SetActive(false);
 	}
-
-	/*
-	 * 
-	// FIXME adapt to more generic so it can create subgraph
-	// add subgraph idea (here or in derived?)
-	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
-	{
-		isCreatingGraph_ = true;
-
-		if (DEBUG_GRAPH)
-			Debug.Log ("CreateGraph( " + numSamples + " )");
-
-		yield return StartCoroutine(ClearPointsCR ());
-		if (DEBUG_GRAPH)
-			Debug.Log ("Cleared points");
-
-		DrawAxes ();
-		yield return null;
-
-		float step = settings.XRangeLength / numSamples;
-
-
-		float currentX = settings.xRange.x;
-		if (settings.loop)
-		{
-			while (currentX > settings.xView.x)
-			{
-				currentX -= step;
-			}
-		}
-
-		float finalX = settings.xRange.y;
-		if (settings.loop)
-		{
-			while (finalX < settings.xView.y)
-			{
-				finalX += step;
-			}
-		}
-
-		GraphPoint previous = null;
-
-		float rangeEndTolerance = step / 10f;
-
-		while (currentX <= finalX)
-		{
-			if (!visibleOnly || (settings.IsXInView(currentX) ))
-			{
-				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-				newPoint.transform.parent = pointsContainer;
-				newPoint.init(this, 
-				              currentX, 
-				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
-				              (currentX >= 0f && currentX <= 1f)
-				              );
-				bool bIsRangeStart = false;
-				if (Mathf.Abs( currentX - settings.xRange.x ) < rangeEndTolerance)
-				{
-					bIsRangeStart = true;
-					rangeStart_ = newPoint;
-				}
-				bool bIsRangeEnd = false;
-				if (!bIsRangeStart && (Mathf.Abs( currentX - settings.xRange.y ) < rangeEndTolerance))
-				{
-					bIsRangeEnd = true;
-					rangeEnd_ = newPoint;
-				}
-				if (bIsRangeStart || bIsRangeEnd) // FIXME specific to wave loop
-				{
-					OnPointSelected(newPoint);
-					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
-
-					yield return null; // yield allows point to pick up on it immediately
-//					newPoint.IsFixed = true;
-				}
-				currentX += step;
-				
-//				Debug.Log ("Created Point : "+newPoint.DebugDescribe());
-				
-				if (firstPoint_ == null)
-				{
-					firstPoint_ = newPoint;
-				}
-				else
-				{
-					newPoint.PreviousPoint = previous;
-					previous.NextPoint = newPoint;
-				}
-				previous = newPoint;
-				yield return null;
-			}
-			OnPointSelected(null);
-		}
-		if (rangeEnd_ == null || rangeStart_ == null)
-		{
-			Debug.LogError ("Range ends not found, looking for closest");
-
-			float minAbsXdist = float.MaxValue;
-			GraphPoint pt = firstPoint_;
-			while (pt != null)
-			{
-				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.x);
-				if (absDist < minAbsXdist)
-				{
-					minAbsXdist = absDist;
-					rangeStart_ = pt;
-				}
-				pt = pt.NextPoint;
-			}
-			minAbsXdist = float.MaxValue;
-			pt = firstPoint_;
-			while (pt != null)
-			{
-				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.y);
-				if (absDist < minAbsXdist)
-				{
-					minAbsXdist = absDist;
-					rangeEnd_ = pt;
-				}
-				pt = pt.NextPoint;
-			}
-
-		}
-		GraphPoint earlyPoint = rangeStart_.PreviousPoint;
-		GraphPoint followedPoint = rangeEnd_.PreviousPoint;
-
-		int earlyPoints = 0;
-		while (earlyPoint != null && followedPoint != null)
-		{
-			earlyPoints++;
-			followedPoint.SetFollower(earlyPoint);
-			earlyPoint = earlyPoint.PreviousPoint;
-			followedPoint = followedPoint.PreviousPoint;
-		}
-		if (earlyPoints > 0 && !settings.loop)
-		{
-			Debug.LogError("Found "+earlyPoints+" early points when not looping");
-		}
-
-		GraphPoint latePoint = rangeEnd_.NextPoint;
-		followedPoint = rangeStart_.NextPoint;
-
-		int latePoints = 0;
-		while (latePoint != null && followedPoint != null)
-		{
-			latePoints++;
-			followedPoint.SetFollower(latePoint);
-			latePoint = latePoint.NextPoint;
-			followedPoint = followedPoint.NextPoint;
-		}
-		if (latePoints > 0 && !settings.loop)
-		{
-			Debug.LogError("Found "+latePoints+" late points when not looping");
-		}
-
-		if (DEBUG_GRAPH)
-			Debug.Log ("Created points");
-
-		isCreatingGraph_ = false;
-		HandleDataChange ();
-
-		yield return null;
-	}
-	*/
 
 	private IEnumerator AdjustPointPositionsCR()
 	{

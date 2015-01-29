@@ -4,16 +4,11 @@ using System.Collections.Generic;
 
 public class GraphAxis : MonoBehaviour 
 {
-	public static readonly bool DEBUG_AXES = false;
+	public static readonly bool DEBUG_AXES = true;
 
 	public UISprite axisSprite;
 	
 	private AxisDefinition definition_ = null;
-	private bool isTemporary_ = false;
-	public bool IsTemporary
-	{
-		get { return isTemporary_; }
-	}
 
 	public EXYDirection Direction
 	{
@@ -55,16 +50,9 @@ public class GraphAxis : MonoBehaviour
 	}
 
 
-	public void initTemporary (GraphPanel p, AxisDefinition d)
-	{
-		isTemporary_ = true;
-		init (p, d);
-	}
-
 	public void init (GraphPanel p, AxisDefinition d)
 	{
 		definition_ = d;
-		definition_.transform.parent = transform;
 
 		gameObject.name = d.axisName;
 
@@ -77,15 +65,6 @@ public class GraphAxis : MonoBehaviour
 		CreateTicks ();
 
 		adjustPosition ();
-	}
-
-	public void OnDestroy()
-	{
-		if (definition_ != null)
-		{
-			GameObject.Destroy(definition_);
-			definition_ = null;
-		}
 	}
 
 	public void CreateTicks()

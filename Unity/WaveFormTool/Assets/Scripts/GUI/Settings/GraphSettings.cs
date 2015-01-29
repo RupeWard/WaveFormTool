@@ -12,8 +12,6 @@ public class GraphSettings : MonoBehaviour
 	public Vector2 yView = new Vector2();
 
 	public AxisDefinition[] axisDefinitions = {};
-	public AxisDefinition defaultXAxis = null;
-	public AxisDefinition defaultYAxis = null;
 
 	public float pointSize = 4f;
 	public float selectedPointMaxSize =16f;

@@ -9,11 +9,11 @@ public class EnvelopeGeneratorSine :  EnvelopeGenerator
 
 	#region IEnvelopeProvider 
 
-	protected override float GetLeadInValueForTime (float time)
+	protected override float GetLeadInValueForTime (float time, BasicEnvelopeSettings settings)
 	{
 		return 0f;
 	}
-	protected override float GetLeadOutValueForTime (float time)
+	protected override float GetTailOutValueForTime (float time, BasicEnvelopeSettings settings)
 	{
 		return 0f;
 	}

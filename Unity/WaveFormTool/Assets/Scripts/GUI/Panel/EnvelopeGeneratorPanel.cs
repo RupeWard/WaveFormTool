@@ -12,6 +12,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	public UIInput leadInPeakTimeInput;
 	public UIInput tailOutLengthInput;
 	public UIInput midLengthInput;
+	public UIInput midValueInput;
 
 	public EnvelopeGraphPanel graphPanel;
 	public UILabel messageLabel;
@@ -20,7 +21,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	private BasicEnvelopeSettings settings_ = new BasicEnvelopeSettings();
 
 	private Dictionary< string, EnvelopeGenerator > generatorDB_ = new Dictionary<string, EnvelopeGenerator>();
-	private int numSamples_ = 32;
+	private int numSamples_ = 8;
 	private static readonly int s_minNumSamples = 4;
 	private static readonly int s_maxNumSamples = 1024;
 
@@ -42,6 +43,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		leadInPeakValueInput.text = settings_.leadInPeakValue.ToString ();
 		leadInPeakTimeInput.text = settings_.leadInPeakTime.ToString ();
 		midLengthInput.text = settings_.midLength.ToString ();
+		midValueInput.text = settings_.midValue.ToString ();
 
 		//		this.gameObject.SetActive (false);
 	}
@@ -131,9 +133,9 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		float newValue;
 		if (float.TryParse (str, out newValue))
 		{
-			if (newValue < 1f)
+			if (newValue < settings_.midValue)
 			{
-				messageLabel.text = "LeadIn must have peak >=1";
+				messageLabel.text = "LeadIn must have peak >= "+settings_.midValue;
 			}
 			else
 			{
@@ -157,7 +159,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 			{
 				messageLabel.text = "LeadIn must have peak time > 0";
 			}
-			else if (newValue > settings_.leadInLength )
+			else if (newValue >= settings_.leadInLength )
 			{
 				messageLabel.text = "LeadIn time must be < length";
 			}
@@ -196,6 +198,32 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		midLengthInput.text = settings_.midLength.ToString ();
 	}
 
+
+	public void OnMidValueInputChanged(string str)
+	{
+		float newValue;
+		if (float.TryParse (str, out newValue))
+		{
+			if (newValue <= 0f)
+			{
+				messageLabel.text = "Midvalue must be positive";
+			}
+			else if (newValue > settings_.leadInPeakValue)
+			{
+				messageLabel.text = "Midvalue can't exceed peak";
+			}
+			else
+			{
+				settings_.midValue = newValue;
+				Debug.Log ("MidValue changed to "+settings_.midValue);
+			}
+		}
+		else
+		{
+			messageLabel.text = "Mid value must be a number!";
+		}
+		midValueInput.text = settings_.midValue.ToString ();
+	}
 
 	public void OnNumSamplesInputChanged(string str)
 	{
