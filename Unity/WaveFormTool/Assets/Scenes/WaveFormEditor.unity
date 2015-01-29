@@ -1434,7 +1434,7 @@ MonoBehaviour:
   activeColor: {r: 0, g: 0, b: 0, a: 1}
   selectOnTab: {fileID: 0}
   eventReceiver: {fileID: 1276365973}
-  functionName: OnLeadInDurationInputChanged
+  functionName: OnLeadInLengthInputChanged
 --- !u!65 &145936173
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1551,7 +1551,7 @@ MonoBehaviour:
   activeColor: {r: 0, g: 0, b: 0, a: 1}
   selectOnTab: {fileID: 0}
   eventReceiver: {fileID: 1276365973}
-  functionName: OnMidValueInputChanged
+  functionName: OnMidLengthInputChanged
 --- !u!65 &152294235
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8181,7 +8181,7 @@ MonoBehaviour:
   activeColor: {r: 0, g: 0, b: 0, a: 1}
   selectOnTab: {fileID: 0}
   eventReceiver: {fileID: 1276365973}
-  functionName: OnMidDurationInputChanged
+  functionName: OnMidValueInputChanged
 --- !u!65 &1080900491
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12078,7 +12078,7 @@ MonoBehaviour:
   activeColor: {r: 0, g: 0, b: 0, a: 1}
   selectOnTab: {fileID: 0}
   eventReceiver: {fileID: 1276365973}
-  functionName: OnLeadOutDurationInputChanged
+  functionName: OnLeadOutLengthInputChanged
 --- !u!65 &1608717335
 BoxCollider:
   m_ObjectHideFlags: 0

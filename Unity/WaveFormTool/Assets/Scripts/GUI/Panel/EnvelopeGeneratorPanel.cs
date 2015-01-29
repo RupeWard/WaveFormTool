@@ -79,7 +79,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		*/
 	}
 
-	public void OnLeadOutDurationInputChanged(string str)
+	public void OnLeadOutLengthInputChanged(string str)
 	{
 		float newValue;
 		if (float.TryParse (str, out newValue))
@@ -101,7 +101,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		tailOutLengthInput.text = settings_.tailOutLength.ToString ();
 	}
 		
-	public void OnLeadInDurationInputChanged(string str)
+	public void OnLeadInLengthInputChanged(string str)
 	{
 		float newValue;
 		if (float.TryParse (str, out newValue))
@@ -176,7 +176,7 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 		leadInPeakTimeInput.text = settings_.leadInPeakTime.ToString ();
 	}
 
-	public void OnMidDurationInputChanged(string str)
+	public void OnMidLengthInputChanged(string str)
 	{
 		float newValue;
 		if (float.TryParse (str, out newValue))

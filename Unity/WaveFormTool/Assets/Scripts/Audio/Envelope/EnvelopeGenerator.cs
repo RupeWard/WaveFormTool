@@ -16,7 +16,6 @@ public abstract class EnvelopeGenerator : IEnvelopeProvider
 
 	#region IEnvelopeProvider 
 	
-	//public abstract float GetValueForPhase (float phase, IWaveFormDataInterpolator interpolator);
 	public float GetValueForTime (float time, BasicEnvelopeSettings settings)
 	{
 		if (settings.isInMid (time))

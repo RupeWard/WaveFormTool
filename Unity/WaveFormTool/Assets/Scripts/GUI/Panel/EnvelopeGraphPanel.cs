@@ -21,9 +21,17 @@ public class EnvelopeGraphPanel : GraphPanel
 	 
 //	private WaveFormDataRegular waveFormData_ = null;
 
+	public override void ResetView ()
+	{
+		settings.ResetViewCentres();
+		viewMinInput.text = settings.xView.x.ToString();
+		viewMaxInput.text = settings.xView.y.ToString();
+		AdjustAxes ();
+		StartCoroutine (AdjustPointPositionsCR ());
+	}
+
 	public void CreateGraph(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
-		ResetView ();
 		StartCoroutine (CreateGraphCR(efp, numSamples, envelopeSettings, visibleOnly));
 	}
 
@@ -38,16 +46,17 @@ public class EnvelopeGraphPanel : GraphPanel
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("Cleared points");
 
-		settings.xRange.x = 0f;
-		settings.xRange.y = envelopeSettings.TotalLength;
-		settings.yRange.x = 0f;
-		settings.yRange.y = envelopeSettings.leadInPeakValue;
-		settings.xView.Set (settings.xRange);
-		settings.yView.Set (settings.yRange);
+		settings.xRange.x = settings.xView.x = 0f;
+		settings.xRange.y = settings.xView.y = envelopeSettings.TotalLength;
+		settings.yRange.x = settings.yView.x = 0f;
+		settings.yRange.y = settings.yView.y = envelopeSettings.leadInPeakValue;
+
 		settings.allowCrossingXAxis = false;
 		settings.loop = false;
-
+		
 		settings.axisDefinitions = envelopeSettings.MakeAxisDefinitions();
+
+		ResetView ();
 
 		DrawAxes ();
 		yield return null;
@@ -66,6 +75,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
 		firstPoint_.gameObject.name = "First";
 		yield return null; // yield allows point to pick up on it immediately
+		pointPanel_.gameObject.SetActive (false);
 
 		GraphPoint previous = firstPoint_;
 		GraphPoint newPoint = null;
@@ -159,7 +169,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		int numToFinish = Mathf.CeilToInt(((float)envelopeSettings.tailOutLength / envelopeSettings.leadInLength) * numSamples);
 		if (numToFinish > 0)
 		{
-			step = envelopeSettings.leadInPeakTime / numToFinish;
+			step = envelopeSettings.tailOutLength / numToFinish;
 			if (DEBUG_ENVELOPE_GRAPH)
 				Debug.Log ("To finish = "+numToFinish+" points with step = "+step);
 			yield return null;
@@ -198,6 +208,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		OnPointSelected(rangeEnd_);
 		pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
 		yield return null; // yield allows point to pick up on it immediately
+		pointPanel_.gameObject.SetActive (false);
 
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("Created points");

@@ -156,7 +156,7 @@ public class GraphPanel : MonoBehaviour
 		return GetYLocationLerp (y.x, y.y, fraction);
 	}
 	
-	public void ResetView ()
+	public virtual void ResetView ()
 	{
 		settings.ResetView();
 		viewMinInput.text = settings.xView.x.ToString();
@@ -277,7 +277,7 @@ public class GraphPanel : MonoBehaviour
 		pointPanel_.SetActive(false);
 	}
 
-	private IEnumerator AdjustPointPositionsCR()
+	protected IEnumerator AdjustPointPositionsCR()
 	{
 		GraphPoint pt = firstPoint_;
 		while (pt != null)

@@ -45,7 +45,7 @@ public static class UnityExtensions
 
 	public static void Set(this Vector2 v, Vector2 other)
 	{
-		v.Set (v.x, v.y);
+		v.Set (other.x, other.y);
 	}
 #endregion
 

@@ -33,7 +33,7 @@ public class GraphSettings : MonoBehaviour
 		get { return yViewCentre_; }
 	}
 
-	private void ResetViewCentres()
+	public void ResetViewCentres()
 	{
 		xViewCentre_ = 0.5f * (xView.y + xView.x);
 		yViewCentre_ = 0.5f * (yView.y + yView.x);
