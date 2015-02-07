@@ -81,9 +81,6 @@ public class GraphPointPanel : MonoBehaviour
 		positionsByPositions_ [p] = v;
 	}
 
-
-
-
 	private GraphPoint point_ = null;
 	public GraphPoint Point
 	{
@@ -117,8 +114,7 @@ public class GraphPointPanel : MonoBehaviour
 				pointMoverSelection.items.Add (mover.moverName);			}
 		}
 		pointMoverSelection.enabled = true;
-
-
+		
 	}
 
 	private GraphPointMoverBase GetPointMover()

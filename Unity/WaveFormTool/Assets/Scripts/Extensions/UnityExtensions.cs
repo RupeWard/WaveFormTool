@@ -41,7 +41,7 @@ public static class UnityExtensions
 
 #endregion
 
-#region StringBuilder
+#region Vector
 
 	public static void Set(this Vector2 v, Vector2 other)
 	{

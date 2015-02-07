@@ -108,13 +108,13 @@ public class WaveGraphPanel : GraphPanel
 				              (currentX >= 0f && currentX <= 1f)
 				              );
 				bool bIsRangeStart = false;
-				if (Mathf.Abs( currentX - settings.xRange.x ) < rangeEndTolerance)
+				if (currentX.EqualsApprox(settings.xRange.x, rangeEndTolerance))
 				{
 					bIsRangeStart = true;
 					rangeStart_ = newPoint;
 				}
 				bool bIsRangeEnd = false;
-				if (!bIsRangeStart && (Mathf.Abs( currentX - settings.xRange.y ) < rangeEndTolerance))
+				if (!bIsRangeStart && currentX.EqualsApprox (settings.xRange.y, rangeEndTolerance))
 				{
 					bIsRangeEnd = true;
 					rangeEnd_ = newPoint;

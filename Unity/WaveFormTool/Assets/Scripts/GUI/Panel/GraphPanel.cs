@@ -117,13 +117,13 @@ public class GraphPanel : MonoBehaviour
 	public float GetXLocationForPoint(float xIn)
 	{
 		float xFraction = (xIn - settings.xView.x)/(settings.XViewLength);
-		return -0.5f* width_ + xFraction * width_;  // ( xFraction - 0.5f) * (width_); // FIXME assumes centred on zero
+		return Mathf.Lerp(-0.5f* width_, 0.5f*width_,xFraction);  // ( xFraction - 0.5f) * (width_); // FIXME assumes centred on zero
 	}
 	
 	public float GetYLocationForPoint(float yIn)
 	{
 		float yFraction = (yIn - settings.yView.x)/(settings.YViewLength);
-		return -0.5f * height_ + yFraction * height_; // y * ((height_ ) / 2f); // FIXME assumes centred on zero
+		return Mathf.Lerp (-0.5f * height_, 0.5f*height_, yFraction); // y * ((height_ ) / 2f); // FIXME assumes centred on zero
 	}
 	
 	public Vector2 GetLocationForPoint(float x, float y)
@@ -138,7 +138,7 @@ public class GraphPanel : MonoBehaviour
 	
 	public float GetXLocationLerp(float x1, float x2, float fraction)
 	{
-		return GetXLocationForPoint(x1 + fraction * (x2 - x1));
+		return GetXLocationForPoint(Mathf.Lerp (x1, x2, fraction));
 	}
 	
 	public float GetXLocationLerp(Vector2 x, float fraction)
@@ -148,7 +148,7 @@ public class GraphPanel : MonoBehaviour
 	
 	public float GetYLocationLerp(float y1, float y2, float fraction)
 	{
-		return GetYLocationForPoint(y1 + fraction * (y2 - y1));
+		return GetYLocationForPoint( Mathf.Lerp (y1, y2, fraction));
 	}
 	
 	public float GetYLocationLerp(Vector2 y, float fraction)

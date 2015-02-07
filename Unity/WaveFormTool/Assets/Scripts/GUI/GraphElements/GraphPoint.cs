@@ -118,8 +118,6 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			isFunctional_ = value;
 			isAppearanceDirty_ = true;
 		}
-		
-
 	}
 
 	private Vector2 graphPosition_;
@@ -238,9 +236,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 				float xDist = nextPointPosition.x - pointPosition.x;
 				float yDist =  nextPointPosition.y - pointPosition.y;
-				lineSprite.transform.SetLocalXYPosition 
-					( 0.5f*xDist , 
-					 0.5f*yDist);
+				lineSprite.transform.SetLocalXYPosition( 0.5f*xDist, 0.5f*yDist );
 
 				float length = Mathf.Sqrt( xDist * xDist + yDist*yDist );
 				lineSprite.transform.SetLocalXYSize (length, 2f);
@@ -276,12 +272,12 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	{
 		if (isFunctional_)
 		{
-			Debug.Log ("Point Selected: " + DebugDescribe ());
+			Debug.Log ("Point Selected: " + this.DebugDescribe ());
 			myGraph_.OnPointSelected (this);
 		}
 		else
 		{
-			Debug.Log ("Attempt to click "+DebugDescribe());
+			Debug.Log ("Attempt to click "+this.DebugDescribe());
 		}
 	}
 	
@@ -301,7 +297,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			if (!isSelected)
 			{
 				if (DEBUG_POINT)
-					Debug.Log("Point selection detected: "+DebugDescribe());
+					Debug.Log("Point selection detected: "+this.DebugDescribe());
 			}
 			isSelected = true;
 
@@ -320,7 +316,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			if (isSelected)
 			{
 				if (DEBUG_POINT && !myGraph_.IsCreatingGraph)
-					Debug.Log("Point deselection detected: "+DebugDescribe());
+					Debug.Log("Point deselection detected: "+this.DebugDescribe());
 				pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
 			}
 			isSelected = false;
@@ -349,6 +345,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		return result;
 	}
 
+#region IDebugDescribable
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		sb.Append ("[GraphPoint ( ");
@@ -369,12 +366,6 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		sb.Append (" ]");
 	}
 
-	public string DebugDescribe()
-	{
-		System.Text.StringBuilder sb = new System.Text.StringBuilder ();
-		DebugDescribe (sb);
-		return sb.ToString ();
-	}
-
+#endregion
 
 }

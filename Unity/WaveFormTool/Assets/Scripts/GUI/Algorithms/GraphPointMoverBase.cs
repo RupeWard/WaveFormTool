@@ -16,13 +16,8 @@ public abstract class GraphPointMoverBase : MonoBehaviour , IDebugDescribable
 		MoveGraphPoint (pt, new Vector2 (pt.Point.x, newY));
 	}
 
+#region IDebugDescribable
 	public abstract void DebugDescribe(System.Text.StringBuilder sb);
-	public string DebugDescribe()
-	{
-		System.Text.StringBuilder sb = new System.Text.StringBuilder ();
-		DebugDescribe (sb);
-		return sb.ToString ();
-	}
-
+#endregion
 
 }

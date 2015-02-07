@@ -60,14 +60,12 @@ public class WaveFormDataRegular : IWaveFormProvider, IDebugDescribable
 		}
 		return true;
 	}
-	
-
 
 	public float getSampleConstrained(int i)
 	{
 		if (i < 0 || i >= samples_.Length)
 		{
-			throw new System.ArgumentOutOfRangeException("WaveFormData asked for sample #"+i+" :"+DebugDescribe());
+			throw new System.ArgumentOutOfRangeException("WaveFormData asked for sample #"+i+" :"+ this.DebugDescribe());
 		}
 		return samples_ [i];
 	}
@@ -85,6 +83,11 @@ public class WaveFormDataRegular : IWaveFormProvider, IDebugDescribable
 		return samples_ [i];
 	}
 	
+	private float getIndexForPhase(float phase)
+	{
+		phase = phase - Mathf.Floor (phase);
+		return phase * NumSamples; 
+	}
 
 	private bool Validate()
 	{
@@ -92,6 +95,7 @@ public class WaveFormDataRegular : IWaveFormProvider, IDebugDescribable
 		return true;
 	}
 
+#region IDebugDescribable
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		sb.Append ("[WFD: '");
@@ -116,21 +120,7 @@ public class WaveFormDataRegular : IWaveFormProvider, IDebugDescribable
 		}
 		sb.Append (" ]");
 	}
-
-	public string DebugDescribe()
-	{
-		System.Text.StringBuilder sb = new System.Text.StringBuilder ();
-		DebugDescribe (sb);
-		return sb.ToString ();
-	}
-
-
-
-	private float getIndexForPhase(float phase)
-	{
-		phase = phase - Mathf.Floor (phase);
-		return phase * NumSamples; 
-	}
+#endregion
 
 #region IWaveFormProvider 
 
