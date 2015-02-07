@@ -58,7 +58,9 @@ public static class UnityExtensions
 
 	public static string DebugDescribe(this IDebugDescribable dd)
 	{
-		return ( (dd==null)?("NULL"):(dd.DebugDescribe()));
+		System.Text.StringBuilder sb = new System.Text.StringBuilder ( );
+		dd.DebugDescribe(sb);
+		return sb.ToString ( );
 	}
 
 
