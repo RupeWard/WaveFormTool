@@ -5224,7 +5224,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1810400334}
-  functionName: OnGenerateToneButtonClicked
+  functionName: OnPlayButtonClicked
   trigger: 0
   includeChildren: 0
 --- !u!114 &742675479
@@ -11282,6 +11282,7 @@ GameObject:
   - 114: {fileID: 1440835882}
   - 82: {fileID: 1440835884}
   - 114: {fileID: 1440835883}
+  - 114: {fileID: 1440835886}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -11301,7 +11302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   toneGenerator: {fileID: 1440835883}
-  gainGenerator: {fileID: 0}
+  envelopeGain: {fileID: 1440835886}
 --- !u!114 &1440835883
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11383,6 +11384,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &1440835886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1440835881}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d831bf0d4b6a78498d83895706ff507, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1452245603
 GameObject:
   m_ObjectHideFlags: 0

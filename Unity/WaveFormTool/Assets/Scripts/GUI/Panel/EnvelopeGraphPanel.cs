@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnvelopeGraphPanel : GraphPanel 
+public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 {
 	/* TODO
 	 * 
@@ -14,14 +14,21 @@ public class EnvelopeGraphPanel : GraphPanel
 //	private static readonly bool DEBUG_TONE_GEN = false;
 
 	public int numSamples_ = 100;
-	
+
+	private BasicEnvelopeSettings envelopeSettings_;
+
 	private static readonly bool DEBUG_ENVELOPE_GRAPH = true;
 	 
+	public void Start()
+	{
+		ToneGeneratorPanel.Instance.envelopeProvider_ = this;
+	}
+
 	public override void ResetView ()
 	{
-		settings.ResetViewCentres();
-		viewMinInput.text = settings.xView.x.ToString();
-		viewMaxInput.text = settings.xView.y.ToString();
+		graphSettings.ResetViewCentres();
+		viewMinInput.text = graphSettings.xView.x.ToString();
+		viewMaxInput.text = graphSettings.xView.y.ToString();
 		AdjustAxes ();
 		StartCoroutine (AdjustPointPositionsCR ());
 	}
@@ -33,24 +40,25 @@ public class EnvelopeGraphPanel : GraphPanel
 
 	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
+		envelopeSettings_ = envelopeSettings;
 		isCreatingGraph_ = true;
 		
 		if (DEBUG_ENVELOPE_GRAPH)
-			Debug.Log ("CreateEnvelope( " + numSamples + " )\n"+envelopeSettings.DebugDescribe());
+			Debug.Log ("CreateEnvelope( " + numSamples + " )\n"+envelopeSettings_.DebugDescribe());
 		
 		yield return StartCoroutine(ClearPointsCR ());
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("Cleared points");
 
-		settings.xRange.x = settings.xView.x = 0f;
-		settings.xRange.y = settings.xView.y = envelopeSettings.TotalLength;
-		settings.yRange.x = settings.yView.x = 0f;
-		settings.yRange.y = settings.yView.y = envelopeSettings.leadInPeakValue;
+		graphSettings.xRange.x = graphSettings.xView.x = 0f;
+		graphSettings.xRange.y = graphSettings.xView.y = envelopeSettings_.TotalLength;
+		graphSettings.yRange.x = graphSettings.yView.x = 0f;
+		graphSettings.yRange.y = graphSettings.yView.y = envelopeSettings_.leadInPeakValue;
 
-		settings.allowCrossingXAxis = false;
-		settings.loop = false;
+		graphSettings.allowCrossingXAxis = false;
+		graphSettings.loop = false;
 		
-		settings.axisDefinitions = envelopeSettings.MakeAxisDefinitions();
+		graphSettings.axisDefinitions = envelopeSettings_.MakeAxisDefinitions();
 
 		ResetView ();
 
@@ -76,8 +84,8 @@ public class EnvelopeGraphPanel : GraphPanel
 		GraphPoint previous = firstPoint_;
 		GraphPoint newPoint = null;
 
-		int numToPeak = Mathf.CeilToInt(((float)envelopeSettings.leadInPeakTime / (float)envelopeSettings.leadInLength) * (float)numSamples);
-		float step = envelopeSettings.leadInPeakTime / numToPeak;
+		int numToPeak = Mathf.CeilToInt(((float)envelopeSettings_.leadInPeakTime / (float)envelopeSettings_.leadInLength) * (float)numSamples);
+		float step = envelopeSettings_.leadInPeakTime / numToPeak;
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("To peak = "+numToPeak+" points with step = "+step);
 		yield return null;
@@ -89,7 +97,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			newPoint.transform.parent = pointsContainer;
 			newPoint.init(this, 
 			                 time, 
-			                 efp.GetValueForTime(time, envelopeSettings),
+			                 efp.GetValueForTime(time, envelopeSettings_),
 			                 true
 			                 );
 			newPoint.gameObject.name = "1";
@@ -104,19 +112,19 @@ public class EnvelopeGraphPanel : GraphPanel
 		int numToEnd = numSamples - numToPeak;
 		if (numToEnd > 0)
 		{
-			step = (envelopeSettings.leadInLength - envelopeSettings.leadInPeakTime) / numToEnd;
+			step = (envelopeSettings_.leadInLength - envelopeSettings_.leadInPeakTime) / numToEnd;
 			if (DEBUG_ENVELOPE_GRAPH)
 				Debug.Log ("To leadInEnd = "+numToEnd+" points with step = "+step);
 			yield return null;
 
 			for (int i = 1; i < numToEnd; i++)
 			{
-				time = envelopeSettings.leadInPeakTime + i*step;
+				time = envelopeSettings_.leadInPeakTime + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
 				newPoint.init(this, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings),
+				              efp.GetValueForTime(time, envelopeSettings_),
 				              true
 				              );
 				newPoint.gameObject.name = "2";
@@ -129,12 +137,12 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At leadInEnd = "+previous.DebugDescribe());
 		yield return null;
 
-		time = envelopeSettings.leadInLength;
+		time = envelopeSettings_.leadInLength;
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
 		newPoint.init(this, 
 		              time, 
-		              envelopeSettings.midValue,
+		              envelopeSettings_.midValue,
 		              true
 		              );
 		newPoint.gameObject.name = "3";
@@ -145,13 +153,13 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At mid start = "+previous.DebugDescribe());
 		yield return null;
 
-		time = envelopeSettings.leadInLength + envelopeSettings.midLength;
+		time = envelopeSettings_.leadInLength + envelopeSettings_.midLength;
 
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
 		newPoint.init(this, 
 		              time, 
-		              envelopeSettings.midValue,
+		              envelopeSettings_.midValue,
 		              true
 		              );
 		newPoint.gameObject.name = "4";
@@ -162,22 +170,22 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At mid end = "+previous.DebugDescribe());
 		yield return null;
 
-		int numToFinish = Mathf.CeilToInt(((float)envelopeSettings.tailOutLength / envelopeSettings.leadInLength) * numSamples);
+		int numToFinish = Mathf.CeilToInt(((float)envelopeSettings_.tailOutLength / envelopeSettings_.leadInLength) * numSamples);
 		if (numToFinish > 0)
 		{
-			step = envelopeSettings.tailOutLength / numToFinish;
+			step = envelopeSettings_.tailOutLength / numToFinish;
 			if (DEBUG_ENVELOPE_GRAPH)
 				Debug.Log ("To finish = "+numToFinish+" points with step = "+step);
 			yield return null;
 
 			for (int i = 1; i <= numToFinish; i++)
 			{
-				time = envelopeSettings.leadInLength + envelopeSettings.midLength + i*step;
+				time = envelopeSettings_.leadInLength + envelopeSettings_.midLength + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
 				newPoint.init(this, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings),
+				              efp.GetValueForTime(time, envelopeSettings_),
 				              true
 				              );
 				newPoint.gameObject.name = "5";
@@ -193,7 +201,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		rangeEnd_.transform.parent = pointsContainer;
 		rangeEnd_.init(this, 
-		              envelopeSettings.TotalLength, 
+		              envelopeSettings_.TotalLength, 
 		              0f,
 		              true
 		              );
@@ -404,5 +412,99 @@ public class EnvelopeGraphPanel : GraphPanel
 		}
 		yield return null;
 	*/
-}
+	}
+
+#region IEnvelopeProvider
+	GraphPoint currentProvidingPoint = null;
+
+	public float GetValueForTime(float time, BasicEnvelopeSettings settings)
+	{
+		float f = 0f;
+		currentProvidingPoint = FindPointBeforeTime ( currentProvidingPoint, time );
+		if (currentProvidingPoint != null)
+		{
+			GraphPoint nextPoint = currentProvidingPoint.NextPoint;
+			if (nextPoint == null)
+			{
+				f = currentProvidingPoint.Point.y;
+			}
+			else
+			{
+				float timeFraction = (time - currentProvidingPoint.Point.x)/(nextPoint.Point.x - currentProvidingPoint.Point.x);
+				f = Mathf.Lerp ( currentProvidingPoint.Point.y, nextPoint.Point.y, timeFraction);
+			}
+		}
+		return f;
+	}
+
+	private GraphPoint FindPointBeforeTime(GraphPoint p, float t)
+	{
+		GraphPoint result = null;
+		if ( firstPoint_ == null )
+		{
+			Debug.LogWarning ( "No first point!" );
+		}
+		else
+		{
+			if ( p == null )
+			{
+				Debug.LogWarning("null passed, startig at first");
+				p = firstPoint_;
+			}
+			if ( p.Point.x > t )
+			{
+				Debug.LogWarning ("Current point is too late, going back");
+				while (p != null && p.Point.x > t)
+				{
+					p = p.PreviousPoint;
+				}
+				if (p == null)
+				{
+					Debug.LogWarning ("Went back to the start and didn't find a point before time" +t);
+				}
+				else
+				{
+					result = p;
+				}
+			}
+			else
+			{
+				while (p.NextPoint != null && p.NextPoint.Point.x < t)
+				{
+					p = p.NextPoint;
+				}
+				if (p.NextPoint == null && p.Point.x < t)
+				{
+					Debug.LogWarning ("Got to the end and still earlier than time "+t);
+				}
+				else
+				{
+					result = p;
+				}
+			}
+
+		}
+		return result;
+	}
+
+	public string EnvelopeName() 
+	{
+		return "EnvelopeGraph";
+	}	
+
+	public bool IsReady()
+	{
+		return ( NumGraphPoints ( ) > 1 );
+	}
+
+	
+	public float EnvelopeLength(BasicEnvelopeSettings unused)
+	{
+		return envelopeSettings_.TotalLength;
+	}
+
+
+
+
+#endregion
 }

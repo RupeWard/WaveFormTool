@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -190,7 +190,7 @@ public class GraphPointMoverSpline : GraphPointMoverBase // FIXME refactor to Y
 			sb.Append ("\nmoved the point itself");
 		pt.SetY(newY);
 		GraphPanel graph = pt.graphPanel;
-		GraphSettings settings = graph.settings;
+		GraphSettings settings = graph.graphSettings;
 
 		List< GraphPoint> splinePoints = new List< GraphPoint >();
 		bool bFoundAPointToMove = false;

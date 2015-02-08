@@ -170,10 +170,10 @@ public class GraphPointPanel : MonoBehaviour
 		actionMenu.SetPoint (point_);
 		if (point_ != null)
 		{
-			if (point_.Point.y >= point_.graphPanel.settings.YViewCentre)
+			if (point_.Point.y >= point_.graphPanel.graphSettings.YViewCentre)
 			{ 
 				// top
-				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
+				if (point_.Point.x >= point_.graphPanel.graphSettings.XViewCentre)
 				{
 					SetPosition(EPositions.BottomLeft);
 				}
@@ -185,7 +185,7 @@ public class GraphPointPanel : MonoBehaviour
 			else
 			{
 				// bottom
-				if (point_.Point.x >= point_.graphPanel.settings.XViewCentre)
+				if (point_.Point.x >= point_.graphPanel.graphSettings.XViewCentre)
 				{
 					SetPosition(EPositions.TopLeft);
 				}

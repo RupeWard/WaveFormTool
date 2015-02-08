@@ -66,27 +66,27 @@ public class WaveGraphPanel : GraphPanel
 		phaseEndAxis.value = 1f;
 		axisDefinitions [2] = phaseEndAxis;
 
-		settings.axisDefinitions = axisDefinitions;
+		graphSettings.axisDefinitions = axisDefinitions;
 
 		DrawAxes ();
 		yield return null;
 		
-		float step = settings.XRangeLength / numSamples;
+		float step = graphSettings.XRangeLength / numSamples;
 		
 		
-		float currentX = settings.xRange.x;
-		if (settings.loop)
+		float currentX = graphSettings.xRange.x;
+		if (graphSettings.loop)
 		{
-			while (currentX > settings.xView.x)
+			while (currentX > graphSettings.xView.x)
 			{
 				currentX -= step;
 			}
 		}
 		
-		float finalX = settings.xRange.y;
-		if (settings.loop)
+		float finalX = graphSettings.xRange.y;
+		if (graphSettings.loop)
 		{
-			while (finalX < settings.xView.y)
+			while (finalX < graphSettings.xView.y)
 			{
 				finalX += step;
 			}
@@ -98,7 +98,7 @@ public class WaveGraphPanel : GraphPanel
 		
 		while (currentX <= finalX)
 		{
-			if (!visibleOnly || (settings.IsXInView(currentX) ))
+			if (!visibleOnly || (graphSettings.IsXInView(currentX) ))
 			{
 				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
@@ -108,13 +108,13 @@ public class WaveGraphPanel : GraphPanel
 				              (currentX >= 0f && currentX <= 1f)
 				              );
 				bool bIsRangeStart = false;
-				if (currentX.EqualsApprox(settings.xRange.x, rangeEndTolerance))
+				if (currentX.EqualsApprox(graphSettings.xRange.x, rangeEndTolerance))
 				{
 					bIsRangeStart = true;
 					rangeStart_ = newPoint;
 				}
 				bool bIsRangeEnd = false;
-				if (!bIsRangeStart && currentX.EqualsApprox (settings.xRange.y, rangeEndTolerance))
+				if (!bIsRangeStart && currentX.EqualsApprox (graphSettings.xRange.y, rangeEndTolerance))
 				{
 					bIsRangeEnd = true;
 					rangeEnd_ = newPoint;
@@ -153,7 +153,7 @@ public class WaveGraphPanel : GraphPanel
 			GraphPoint pt = firstPoint_;
 			while (pt != null)
 			{
-				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.x);
+				float absDist = Mathf.Abs(pt.Point.x - graphSettings.xRange.x);
 				if (absDist < minAbsXdist)
 				{
 					minAbsXdist = absDist;
@@ -165,7 +165,7 @@ public class WaveGraphPanel : GraphPanel
 			pt = firstPoint_;
 			while (pt != null)
 			{
-				float absDist = Mathf.Abs(pt.Point.x - settings.xRange.y);
+				float absDist = Mathf.Abs(pt.Point.x - graphSettings.xRange.y);
 				if (absDist < minAbsXdist)
 				{
 					minAbsXdist = absDist;
@@ -186,7 +186,7 @@ public class WaveGraphPanel : GraphPanel
 			earlyPoint = earlyPoint.PreviousPoint;
 			followedPoint = followedPoint.PreviousPoint;
 		}
-		if (earlyPoints > 0 && !settings.loop)
+		if (earlyPoints > 0 && !graphSettings.loop)
 		{
 			Debug.LogError("Found "+earlyPoints+" early points when not looping");
 		}
@@ -202,7 +202,7 @@ public class WaveGraphPanel : GraphPanel
 			latePoint = latePoint.NextPoint;
 			followedPoint = followedPoint.NextPoint;
 		}
-		if (latePoints > 0 && !settings.loop)
+		if (latePoints > 0 && !graphSettings.loop)
 		{
 			Debug.LogError("Found "+latePoints+" late points when not looping");
 		}

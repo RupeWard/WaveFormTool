@@ -176,7 +176,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	{
 		point_.x = x;
 		point_.y = y;
-		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -195,7 +195,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void SetY (float y)
 	{
 		point_.y = y;
-		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -211,7 +211,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void SetX (float x)
 	{
 		point_.x = x;
-		pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -301,14 +301,14 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			}
 			isSelected = true;
 
-			float phase = throbTime / myGraph_.settings.selectedPointThrobTime; // 0 to 1
-			float size = Mathf.Lerp (myGraph_.settings.pointSize, myGraph_.settings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
+			float phase = throbTime / myGraph_.graphSettings.selectedPointThrobTime; // 0 to 1
+			float size = Mathf.Lerp (myGraph_.graphSettings.pointSize, myGraph_.graphSettings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
 			pointSprite.transform.SetLocalXYSize (size); 
 				
 			throbTime += Time.deltaTime;
-			if (throbTime > myGraph_.settings.selectedPointThrobTime)
+			if (throbTime > myGraph_.graphSettings.selectedPointThrobTime)
 			{
-				throbTime -= myGraph_.settings.selectedPointThrobTime;
+				throbTime -= myGraph_.graphSettings.selectedPointThrobTime;
 			}
 		}
 		else
@@ -317,7 +317,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			{
 				if (DEBUG_POINT && !myGraph_.IsCreatingGraph)
 					Debug.Log("Point deselection detected: "+this.DebugDescribe());
-				pointSprite.transform.SetLocalXYSize (myGraph_.settings.pointSize); 
+				pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
 			}
 			isSelected = false;
 		}

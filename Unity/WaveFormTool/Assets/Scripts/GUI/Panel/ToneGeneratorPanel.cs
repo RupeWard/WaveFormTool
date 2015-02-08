@@ -14,6 +14,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	public UIPopupList modeSelection;
 
 	public IWaveFormProvider waveFormProvider_ = null;
+	public IEnvelopeProvider envelopeProvider_ = null;
 
 	public UICheckbox envCheckBox;
 
@@ -106,7 +107,12 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		frequencyInput.text = frequency_.ToString ();
 	}
 
-	public void OnGenerateToneButtonClicked()
+	public void OnPlayButtonClicked()
+	{
+		StartCoroutine ( PlayCR());
+	}
+
+	private IEnumerator PlayCR()
 	{
 //		Debug.Log ("Generate clicked");
 		if (isPlaying)
@@ -119,7 +125,28 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		{
 			if (waveFormProvider_ != null)
 			{
+				SetPlayButtonLabel();
+
 				player_.toneGenerator.init ( waveFormProvider_, frequency_);
+
+				if (useEnvelope_)
+				{
+					if (player_.envelopeGain.EnvelopeProvider == null)
+					{
+						Debug.LogError ("Player has no envelope provider, disabling");
+						player_.envelopeGain.enabled = false;
+					}
+					else
+					{
+						if (player_.envelopeGain.enabled == false)
+						{
+							Debug.LogWarning ("Enabling envelope gain");
+							player_.envelopeGain.enabled = true;
+						}
+						player_.envelopeGain.ResetTime();
+					}
+
+				}
 				player_.audio.Play();
 				messageLabel.text = "Playing '" + waveFormProvider_.WaveFormName() + "' at "+frequency_.ToString();
 				isPlaying = true;
@@ -129,7 +156,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 				messageLabel.text = "No source defined";
 			}
 		}
-		SetPlayButtonLabel();
+		yield return null;
 	}
 
 	public void OnCloseButtonClicked()
@@ -151,13 +178,30 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	public void OnEnvCheckBox(bool b)
 	{
 		Debug.Log ( "UseEnvelope = " + b );
+		SetUseEnvelope(b);
+	}
+
+	private void SetUseEnvelope(bool b)
+	{
 		useEnvelope_ = b;
 		SetupModeSelecter();
+		player_.envelopeGain.enabled = useEnvelope_;
+		if ( useEnvelope_ )
+		{
+			player_.envelopeGain.EnvelopeProvider = envelopeProvider_;
+		}
 	}
 
 	public void ToggleEnv()
 	{
-		SetEnv ( !useEnvelope_ );
+		if ( !useEnvelope_ && !envelopeProvider_.IsReady ( ) )
+		{
+			messageLabel.text = "Can't use Envelope, the graph isn't ready";
+		}
+		else
+		{
+			SetEnv ( !useEnvelope_ );
+		}
 	}
 
 	private void SetEnv(bool b)

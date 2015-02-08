@@ -39,11 +39,11 @@ public class GraphAxis : MonoBehaviour
 		{
 			case EXYDirection.X:
 			{
-				return graph_.settings.xView;
+				return graph_.graphSettings.xView;
 			}
 			case EXYDirection.Y:
 			{
-				return graph_.settings.yView;
+				return graph_.graphSettings.yView;
 			}
 		}
 		return Vector2.zero;
@@ -134,7 +134,7 @@ public class GraphAxis : MonoBehaviour
 			{
 				transform.localPosition 
 					= new Vector3 (
-						graph_.GetXLocationLerp ( graph_.settings.xView, 0.5f ), 
+						graph_.GetXLocationLerp ( graph_.graphSettings.xView, 0.5f ), 
 						graph_.GetYLocationForPoint( Value ), 
 						transform.localPosition.z);
 				break;
@@ -144,7 +144,7 @@ public class GraphAxis : MonoBehaviour
 				transform.localPosition 
 					= new Vector3 (
 						graph_.GetXLocationForPoint ( Value ), 
-						graph_.GetYLocationLerp(graph_.settings.yView, 0.5f),
+						graph_.GetYLocationLerp(graph_.graphSettings.yView, 0.5f),
 						transform.localPosition.z);
 				break;
 			}
@@ -167,7 +167,7 @@ public class GraphAxis : MonoBehaviour
 			{
 				axisSprite.transform.localScale 
 					= new Vector3 ( 
-					               graph_.GetXLocationForPoint(graph_.settings.xView.y) - graph_.GetXLocationForPoint(graph_.settings.xView.x), 
+					               graph_.GetXLocationForPoint(graph_.graphSettings.xView.y) - graph_.GetXLocationForPoint(graph_.graphSettings.xView.x), 
 					               definition_.axisLineWidth,
 					               axisSprite.transform.localScale.z);
 
@@ -178,7 +178,7 @@ public class GraphAxis : MonoBehaviour
 				axisSprite.transform.localScale 
 					= new Vector3 ( 
 					               definition_.axisLineWidth,
-					               graph_.GetYLocationForPoint(graph_.settings.yView.y) - graph_.GetYLocationForPoint(graph_.settings.yView.x), 
+					               graph_.GetYLocationForPoint(graph_.graphSettings.yView.y) - graph_.GetYLocationForPoint(graph_.graphSettings.yView.x), 
 					               axisSprite.transform.localScale.z);
 				break;
 			}
@@ -193,12 +193,12 @@ public class GraphAxis : MonoBehaviour
 		{
 			case EXYDirection.X:
 			{
-				result = graph_.settings.IsYInView(Value);
+				result = graph_.graphSettings.IsYInView(Value);
 				break;
 			}
 			case EXYDirection.Y:
 			{
-				result = graph_.settings.IsXInView(Value);
+				result = graph_.graphSettings.IsXInView(Value);
 				break;
 			}
 		}

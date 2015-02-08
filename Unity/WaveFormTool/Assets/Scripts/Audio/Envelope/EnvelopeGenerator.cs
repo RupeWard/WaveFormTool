@@ -41,7 +41,17 @@ public abstract class EnvelopeGenerator : IEnvelopeProvider
 	{
 		return generatorName_;
 	}
-	
+
+	public bool IsReady()
+	{
+		return ( true );
+	}
+
+	public float EnvelopeLength(BasicEnvelopeSettings settings)
+	{
+		return settings.TotalLength;
+	}
+
 
 	#endregion IEnvelopeProvider
 

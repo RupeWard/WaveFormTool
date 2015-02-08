@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,7 +17,7 @@ public class GraphPointMoverLinearB : GraphPointMoverBase // FIXME refactor to Y
 		float oldY = pt.Point.y;
 		pt.SetY(newY);
 		GraphPanel graph = pt.graphPanel;
-		GraphSettings settings = graph.settings;
+		GraphSettings settings = graph.graphSettings;
 		
 		int sign = (newY + oldY < 0f)?(-1):(1);
 		float oldAbs = Mathf.Abs(oldY);

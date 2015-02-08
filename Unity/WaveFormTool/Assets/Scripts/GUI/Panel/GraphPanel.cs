@@ -6,7 +6,7 @@ public class GraphPanel : MonoBehaviour
 {
 	public UILabel messageLabel;
 
-	public GraphSettings settings;
+	public GraphSettings graphSettings;
 
 	public GameObject title;
 
@@ -54,8 +54,8 @@ public class GraphPanel : MonoBehaviour
 		height_ = size.y  - 2f*backgroundMargin;
 		background.transform.SetLocalXYSize(size.x, size.y);		
 		transform.SetLocalXYPosition(pos);
-		viewMinInput.text = settings.xView.x.ToString();
-		viewMaxInput.text = settings.xView.y.ToString();
+		viewMinInput.text = graphSettings.xView.x.ToString();
+		viewMaxInput.text = graphSettings.xView.y.ToString();
 
 		DrawAxes ();
 
@@ -96,17 +96,17 @@ public class GraphPanel : MonoBehaviour
 
 	public bool IsXInView(float x)
 	{
-		return settings.IsXInView (x);
+		return graphSettings.IsXInView (x);
 	}
 
 	public bool IsYInView(float y)
 	{
-		return settings.IsYInView (y);
+		return graphSettings.IsYInView (y);
 	}
 
 	public bool IsInView(float x, float y)
 	{
-		return settings.IsInView (x, y);
+		return graphSettings.IsInView (x, y);
 	}
 
 	public bool IsInView(Vector2 v)
@@ -116,13 +116,13 @@ public class GraphPanel : MonoBehaviour
 
 	public float GetXLocationForPoint(float xIn)
 	{
-		float xFraction = (xIn - settings.xView.x)/(settings.XViewLength);
+		float xFraction = (xIn - graphSettings.xView.x)/(graphSettings.XViewLength);
 		return Mathf.Lerp(-0.5f* width_, 0.5f*width_,xFraction);  // ( xFraction - 0.5f) * (width_); // FIXME assumes centred on zero
 	}
 	
 	public float GetYLocationForPoint(float yIn)
 	{
-		float yFraction = (yIn - settings.yView.x)/(settings.YViewLength);
+		float yFraction = (yIn - graphSettings.yView.x)/(graphSettings.YViewLength);
 		return Mathf.Lerp (-0.5f * height_, 0.5f*height_, yFraction); // y * ((height_ ) / 2f); // FIXME assumes centred on zero
 	}
 	
@@ -158,9 +158,9 @@ public class GraphPanel : MonoBehaviour
 	
 	public virtual void ResetView ()
 	{
-		settings.ResetView();
-		viewMinInput.text = settings.xView.x.ToString();
-		viewMaxInput.text = settings.xView.y.ToString();
+		graphSettings.ResetView();
+		viewMinInput.text = graphSettings.xView.x.ToString();
+		viewMaxInput.text = graphSettings.xView.y.ToString();
 		AdjustAxes ();
 		StartCoroutine (AdjustPointPositionsCR ());
 	}
@@ -182,7 +182,7 @@ public class GraphPanel : MonoBehaviour
 	{
 		ClearAxes ();
 
-		foreach (AxisDefinition definition in settings.axisDefinitions)
+		foreach (AxisDefinition definition in graphSettings.axisDefinitions)
 		{
 			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
 			if (a == null) 
@@ -239,7 +239,7 @@ public class GraphPanel : MonoBehaviour
 			AxisDefinition xAxis = new AxisDefinition ();
 			xAxis.axisName = "X";
 			xAxis.eDirection = EXYDirection.X;
-			xAxis.value = settings.YViewCentre;
+			xAxis.value = graphSettings.YViewCentre;
 			xAxis.axisName = "Default X";
 			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
 			a.init(this, xAxis);
@@ -253,7 +253,7 @@ public class GraphPanel : MonoBehaviour
 
 			AxisDefinition yAxis = new AxisDefinition ();
 			yAxis.eDirection = EXYDirection.Y;
-			yAxis.value = settings.XViewCentre;
+			yAxis.value = graphSettings.XViewCentre;
 			yAxis.axisName = "Default Y";
 			GraphAxis a = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/Axis"))as GameObject).GetComponent< GraphAxis>();
 			a.init (this, yAxis);
@@ -337,7 +337,7 @@ public class GraphPanel : MonoBehaviour
 			
 			System.Text.StringBuilder errSb = new System.Text.StringBuilder ();
 			
-			if (settings.allowYChange (oldY, newY, errSb))
+			if (graphSettings.allowYChange (oldY, newY, errSb))
 			{
 				mover.MoveGraphPointY (p, newY);
 //				StartCoroutine(UpdateLinesCR());
@@ -386,13 +386,13 @@ public class GraphPanel : MonoBehaviour
 		float newVal;
 		if (float.TryParse (inStr, out newVal))
 		{
-			if (newVal >= settings.xView.y)
+			if (newVal >= graphSettings.xView.y)
 			{
 				messageLabel.text = "Must be less than the right hand value";
 			}
 			else
 			{
-				settings.xView.x = newVal;
+				graphSettings.xView.x = newVal;
 
 				AdjustAxes ();
 
@@ -404,7 +404,7 @@ public class GraphPanel : MonoBehaviour
 		{
 			messageLabel.text = ("That's not a number");
 		}
-		viewMinInput.text = settings.xView.x.ToString();
+		viewMinInput.text = graphSettings.xView.x.ToString();
 	}
 
 	public void OnViewMaxChanged(string inStr)
@@ -414,13 +414,13 @@ public class GraphPanel : MonoBehaviour
 		float newVal;
 		if (float.TryParse (inStr, out newVal))
 		{
-			if (newVal <= settings.xView.x)
+			if (newVal <= graphSettings.xView.x)
 			{
 				messageLabel.text = "Must be greater than the left hand value";
 			}
 			else
 			{
-				settings.xView.y = newVal;
+				graphSettings.xView.y = newVal;
 
 				AdjustAxes ();
 
@@ -432,7 +432,7 @@ public class GraphPanel : MonoBehaviour
 		{
 			messageLabel.text = ("That's not a number");
 		}
-		viewMaxInput.text = settings.xView.y.ToString();
+		viewMaxInput.text = graphSettings.xView.y.ToString();
 	}
 
 #endregion controls
