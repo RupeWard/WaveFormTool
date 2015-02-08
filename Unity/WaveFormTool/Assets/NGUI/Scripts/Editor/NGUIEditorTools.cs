@@ -705,10 +705,11 @@ public class NGUIEditorTools
 				EditorUtility.SetDirty(obj);
 			}
 		}
+		/*
 		else
 		{
 			Undo.RegisterSceneUndo(name);
-		}
+		}*/
 	}
 
 	/// <summary>

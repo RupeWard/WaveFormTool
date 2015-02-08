@@ -118,7 +118,7 @@ public class UIAtlasMaker : EditorWindow
 #endif
 
 #if UNITY_ANDROID || UNITY_IPHONE
-		#if !UNITY_3_5 && !UNITY_4_0  
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_6
 		if (PlayerSettings.targetGlesGraphics == TargetGlesGraphics.OpenGLES_1_x)
 		{
 			maxSize = Mathf.Min(maxSize, 1024);

@@ -37,8 +37,6 @@ static public class NGUIMenu
 
 		if (go != null)
 		{
-			Undo.RegisterSceneUndo("Add a Sprite");
-			
 			UISprite sprite = NGUITools.AddWidget<UISprite>(go);
 			sprite.name = "Sprite";
 			sprite.atlas = NGUISettings.atlas;
@@ -58,6 +56,10 @@ static public class NGUIMenu
 			sprite.cachedTransform.localScale = new Vector3(100f, 100f, 1f);
 			sprite.MakePixelPerfect();
 			Selection.activeGameObject = sprite.gameObject;
+
+			Undo.RecordObject(sprite.gameObject, "Add a Sprite");
+			
+
 		}
 		else
 		{
@@ -72,8 +74,6 @@ static public class NGUIMenu
 
 		if (go != null)
 		{
-			Undo.RegisterSceneUndo("Add a Label");
-
 			UILabel lbl = NGUITools.AddWidget<UILabel>(go);
 			lbl.name = "Label";
 			lbl.font = NGUISettings.font;
@@ -82,6 +82,8 @@ static public class NGUIMenu
 			lbl.cachedTransform.localScale = new Vector3(100f, 100f, 1f);
 			lbl.MakePixelPerfect();
 			Selection.activeGameObject = lbl.gameObject;
+
+			Undo.RecordObject(lbl.gameObject, "Add a Label");			
 		}
 		else
 		{
@@ -96,13 +98,13 @@ static public class NGUIMenu
 
 		if (go != null)
 		{
-			Undo.RegisterSceneUndo("Add a Texture");
-
 			UITexture tex = NGUITools.AddWidget<UITexture>(go);
 			tex.name = "Texture";
 			tex.pivot = NGUISettings.pivot;
 			tex.cachedTransform.localScale = new Vector3(100f, 100f, 1f);
 			Selection.activeGameObject = tex.gameObject;
+
+			Undo.RecordObject(tex.gameObject, "Add a Texture");			
 		}
 		else
 		{
