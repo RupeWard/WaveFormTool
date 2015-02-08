@@ -52,7 +52,7 @@ public class UIPanelInspector : Editor
 		UIPanel panel = target as UIPanel;
 		BetterList<UIDrawCall> drawcalls = panel.drawCalls;
 		drawcalls.Sort(delegate(UIDrawCall w1, UIDrawCall w2) { return w1.depth.CompareTo(w2.depth); });
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIExtensions.LookLikeControls(80f);
 
 		//NGUIEditorTools.DrawSeparator();
 		EditorGUILayout.Space();
@@ -218,7 +218,7 @@ public class UIPanelInspector : Editor
 				}
 			}
 
-#if !UNITY_3_5 && !UNITY_4_0 && (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8 || UNITY_BLACKBERRY)
+#if !UNITY_3_5 && !UNITY_4_0  && (UNITY_ANDROID || UNITY_IPHONE || UNITY_WP8 || UNITY_BLACKBERRY)
 			if (PlayerSettings.targetGlesGraphics == TargetGlesGraphics.OpenGLES_1_x)
 			{
 				EditorGUILayout.HelpBox("Clipping requires shader support!\n\nOpen File -> Build Settings -> Player Settings -> Other Settings, then set:\n\n- Graphics Level: OpenGL ES 2.0.", MessageType.Error);

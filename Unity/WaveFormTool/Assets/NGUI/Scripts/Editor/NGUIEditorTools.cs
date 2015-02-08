@@ -644,13 +644,13 @@ public class NGUIEditorTools
 			GUILayout.Label(prefix, GUILayout.Width(74f));
 		}
 
-		EditorGUIUtility.LookLikeControls(48f);
+		NGUIExtensions.LookLikeControls(48f);
 
 		IntVector retVal;
 		retVal.x = EditorGUILayout.IntField(leftCaption, x, GUILayout.MinWidth(30f));
 		retVal.y = EditorGUILayout.IntField(rightCaption, y, GUILayout.MinWidth(30f));
 
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIExtensions.LookLikeControls(80f);
 
 		GUILayout.EndHorizontal();
 		return retVal;
@@ -701,7 +701,7 @@ public class NGUIEditorTools
 			foreach (Object obj in objects)
 			{
 				if (obj == null) continue;
-				Undo.RegisterUndo(obj, name);
+				Undo.RecordObject(obj, name);
 				EditorUtility.SetDirty(obj);
 			}
 		}
@@ -1024,7 +1024,7 @@ public class NGUIEditorTools
 		{
 			if (!NGUIEditorTools.IsUniform(t.localScale))
 			{
-				Undo.RegisterUndo(t, "Uniform scaling fix");
+				Undo.RecordObject(t, "Uniform scaling fix");
 				t.localScale = Vector3.one;
 				EditorUtility.SetDirty(t);
 			}

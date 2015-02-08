@@ -59,7 +59,7 @@ public class SpriteSelector : ScriptableWizard
 
 	void OnGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIExtensions.LookLikeControls(80f);
 
 		if (mAtlas == null)
 		{

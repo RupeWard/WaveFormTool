@@ -154,7 +154,7 @@ public class UICameraTool : EditorWindow
 
 	void OnGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIExtensions.LookLikeControls(80f);
 
 		List<Camera> list = NGUIEditorTools.FindInScene<Camera>();
 

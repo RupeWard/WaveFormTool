@@ -178,7 +178,7 @@ public class NGUITransformInspector : Editor
 
 	public override void OnInspectorGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(15f);
+		NGUIExtensions.LookLikeControls(15f);
 
 		serializedObject.Update();
 

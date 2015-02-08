@@ -94,7 +94,7 @@ public class InvDatabaseInspector : Editor
 
 	public override void OnInspectorGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIExtensions.LookLikeControls(80f);
 		InvDatabase db = target as InvDatabase;
 		NGUIEditorTools.DrawSeparator();
 
