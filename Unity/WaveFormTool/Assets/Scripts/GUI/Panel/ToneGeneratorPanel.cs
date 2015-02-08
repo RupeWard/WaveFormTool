@@ -11,7 +11,11 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	public WaveFormPlayer player_;
 	public UILabel sourceLabel;
 
+	public UIPopupList modeSelection;
+
 	public IWaveFormProvider waveFormProvider_ = null;
+
+	public UICheckbox envCheckBox;
 
 	private float frequency_ = 220f;
 	private bool isPlaying = false;
@@ -21,13 +25,25 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 
 	private static readonly string playStr = "Play";
 	private static readonly string stopStr = "Stop";
-	
+
+	private bool useEnvelope_ =  false;
+	public bool UseEnvelope
+	{
+		get { return useEnvelope_; }
+	}
+
+	private static readonly string constantMode = "Constant";
+	private static readonly string repeatMode = "Repeat";
+	private static readonly string singleMode = "Single";
+
 	public void Start()
 	{
 //		HUDManager.Instance.AddPopup (gameObject);		
 
 		frequencyInput.text = frequency_.ToString ();
 		this.gameObject.SetActive (false);
+
+//		modeSelection.items.Add ( );
 	}
 
 	public Vector2 Size()
@@ -51,9 +67,17 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		waveFormProvider_ = i;
 		if (isPlaying)
 		{
+			if (waveFormProvider_ == null)
+			{
+				player_.audio.Stop();
+			}
+			else
+			{
+				messageLabel.text = "Playing '" + waveFormProvider_.WaveFormName() + "' at "+frequency_.ToString();
+			}
 			player_.toneGenerator.init ( waveFormProvider_, frequency_);
-			messageLabel.text = "Playing '" + waveFormProvider_.WaveFormName() + "' at "+frequency_.ToString();
 		}
+		SetupModeSelecter();
 	}
 
 	public void OnFrequencyInputChanged(string str)
@@ -122,5 +146,42 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	private void SetPlayButtonLabel()
 	{
 		playButtonLabel.text = (player_!= null && player_.audio.isPlaying) ? (stopStr) : (playStr);
+	}
+
+	public void OnEnvCheckBox(bool b)
+	{
+		Debug.Log ( "UseEnvelope = " + b );
+		useEnvelope_ = b;
+		SetupModeSelecter();
+	}
+
+	public void ToggleEnv()
+	{
+		SetEnv ( !useEnvelope_ );
+	}
+
+	private void SetEnv(bool b)
+	{
+		if ( useEnvelope_ != b )
+		{
+			envCheckBox.isChecked = ! envCheckBox.isChecked;
+		}
+	}
+
+	private void SetupModeSelecter()
+	{
+		modeSelection.items.Clear ( );
+		if ( waveFormProvider_ != null )
+		{
+			if (useEnvelope_)
+			{
+				modeSelection.items.Add(repeatMode);
+				modeSelection.items.Add(singleMode);
+			}
+			else
+			{
+				modeSelection.items.Add(constantMode);
+			}
+		}
 	}
 }

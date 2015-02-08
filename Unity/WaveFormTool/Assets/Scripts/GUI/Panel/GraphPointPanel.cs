@@ -92,6 +92,12 @@ public class GraphPointPanel : MonoBehaviour
 
 	public void Start()
 	{
+		System.Array enumValues = System.Enum.GetValues(typeof(EPositions));
+		for (int i =0; i<10; i++)
+		{
+			EPositions e = (EPositions)enumValues.GetValue(UnityEngine.Random.Range(0, enumValues.Length));
+			Debug.Log (e.ToString ());
+		}
 //		HUDManager.Instance.AddPopup (this.gameObject);
 
 		buttonsByPositions_ [EPositions.TopLeft] = topLeftButton;
@@ -114,6 +120,8 @@ public class GraphPointPanel : MonoBehaviour
 				pointMoverSelection.items.Add (mover.moverName);			}
 		}
 		pointMoverSelection.enabled = true;
+
+
 		
 	}
 

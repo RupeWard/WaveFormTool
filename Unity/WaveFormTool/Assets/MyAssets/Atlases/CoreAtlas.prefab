@@ -81,13 +81,13 @@ MonoBehaviour:
     outer:
       serializedVersion: 2
       x: 0
-      y: 30
+      y: 15
       width: 2
       height: 2
     inner:
       serializedVersion: 2
       x: 0
-      y: 30
+      y: 15
       width: 2
       height: 2
     rotated: 0
@@ -95,6 +95,24 @@ MonoBehaviour:
     paddingRight: 0
     paddingTop: 0
     paddingBottom: 0
+  - name: checkbox_check01
+    outer:
+      serializedVersion: 2
+      x: 0
+      y: 18
+      width: 15
+      height: 14
+    inner:
+      serializedVersion: 2
+      x: 0
+      y: 18
+      width: 15
+      height: 14
+    rotated: 0
+    paddingLeft: .0666666701
+    paddingRight: .0666666701
+    paddingTop: .0714285746
+    paddingBottom: .142857149
   mCoordinates: 0
   mPixelSize: 1
   mReplacement: {fileID: 0}
