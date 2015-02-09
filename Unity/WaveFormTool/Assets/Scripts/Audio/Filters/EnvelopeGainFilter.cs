@@ -12,13 +12,24 @@ public class EnvelopeGainFilter : MonoBehaviour
 		set { envelopeProvider_ = value; }
 	}
 
-	private double increment_;
-	private double currentTime = 0;
-	private double sampling_frequency = 48000;
+	private static double s_increment_;
+	private double currentTime_ = 0;
+	private static double s_sampling_frequency = -1;
+
+	public void Awake()
+	{
+		if (s_sampling_frequency == -1)
+		{
+			s_sampling_frequency = AudioSettings.outputSampleRate;
+			s_increment_ = 1f / s_sampling_frequency;
+
+			Debug.Log("Audio output sampling rate is "+s_sampling_frequency.ToString ());
+		}
+	}
 
 	public void ResetTime()
 	{
-		currentTime = 0;
+		currentTime_ = 0;
 	}
 
 	public void init(IEnvelopeProvider i)
@@ -33,12 +44,11 @@ public class EnvelopeGainFilter : MonoBehaviour
 		if (envelopeProvider_ != null)
 		{
 			// update increment in case frequency has changed
-			increment_ = 1f / sampling_frequency;
 			for (var i = 0; i < data.Length; i = i + channels)
 			{
-				currentTime = currentTime + increment_;
+				currentTime_ = currentTime_ + s_increment_;
 				
-				data[i] *= envelopeProvider_.GetValueForTime((float)currentTime, null); // TODO null settings?
+				data[i] *= envelopeProvider_.GetValueForTime((float)currentTime_, null); // TODO null settings?
 				
 				// if we have stereo, we copy the mono data to each channel
 				if (channels == 2) data[i + 1] = data[i];
