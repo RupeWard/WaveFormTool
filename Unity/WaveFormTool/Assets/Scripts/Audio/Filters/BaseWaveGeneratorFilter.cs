@@ -3,7 +3,7 @@ using System;
 
 //http://www.develop-online.net/tools-and-tech/procedural-audio-with-unity/0117433
 
-public class ToneGeneratorFilter : MonoBehaviour 
+public class BaseWaveGeneratorFilter : MonoBehaviour 
 {
 	private IWaveFormProvider waveFormProvider_ = null;
 	private double frequency_;

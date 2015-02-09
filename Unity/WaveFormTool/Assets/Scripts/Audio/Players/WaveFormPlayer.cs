@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class WaveFormPlayer : MonoBehaviour 
 {
-	public ToneGeneratorFilter toneGenerator = null;
+	public BaseWaveGeneratorFilter toneGenerator = null;
 	public EnvelopeGainFilter envelopeGain = null;
 }
 

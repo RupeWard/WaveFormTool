@@ -5998,7 +5998,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageLabel: {fileID: 1234804147}
-  settings: {fileID: 1343482808}
+  graphSettings: {fileID: 0}
   title: {fileID: 1421447368}
   background: {fileID: 814217677}
   viewMinInput: {fileID: 1296804819}
@@ -7309,7 +7309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageLabel: {fileID: 1234804147}
-  settings: {fileID: 551924599}
+  graphSettings: {fileID: 0}
   title: {fileID: 2034408166}
   background: {fileID: 1616183226}
   viewMinInput: {fileID: 1499126643}
@@ -11311,7 +11311,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1440835881}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a444c9ad85cfea545a50b8eb83a899c8, type: 3}
+  m_Script: {fileID: 11500000, guid: ebee6999eb005cd41ad6aa25f742f079, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!82 &1440835884
@@ -11328,7 +11328,7 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Priority: 128
+  Priority: 255
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
