@@ -3,6 +3,7 @@ using System;
 
 //http://www.develop-online.net/tools-and-tech/procedural-audio-with-unity/0117433
 
+/*
 public class GainWaveFilter : MonoBehaviour 
 {
 	private IWaveFormProvider waveFormProvider_ = null;
@@ -49,3 +50,4 @@ public class GainWaveFilter : MonoBehaviour
 	
 	}
 }
+*/

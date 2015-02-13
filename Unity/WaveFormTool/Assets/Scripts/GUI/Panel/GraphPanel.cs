@@ -312,13 +312,13 @@ public class GraphPanel : MonoBehaviour
 		GraphPoint pt = firstPoint_;
 		while (pt != null)
 		{
-			pt.PreviousPoint = null;
+//			pt.PreviousPoint = null;
 			GraphPoint nextPoint = pt.NextPoint;
-			pt.NextPoint = null;
+//			pt.NextPoint = null;
 			GameObject.Destroy(pt.gameObject);
 
 			pt = nextPoint;
-			yield return null;
+//			yield return null;
 		}
 		yield return null;
 	}

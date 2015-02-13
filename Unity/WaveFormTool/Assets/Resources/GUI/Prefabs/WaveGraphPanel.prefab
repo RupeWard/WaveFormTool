@@ -2690,7 +2690,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageLabel: {fileID: 0}
-  settings: {fileID: 11400068}
+  graphSettings: {fileID: 11400068}
   title: {fileID: 100212}
   background: {fileID: 11400228}
   viewMinInput: {fileID: 11400214}

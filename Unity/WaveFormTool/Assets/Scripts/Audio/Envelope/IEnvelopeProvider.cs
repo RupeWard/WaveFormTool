@@ -10,4 +10,6 @@ public interface IEnvelopeProvider
 	bool IsReady();
 
 	float EnvelopeLength(BasicEnvelopeSettings settings);
+
+	IEnvelopeProvider Clone();
 }

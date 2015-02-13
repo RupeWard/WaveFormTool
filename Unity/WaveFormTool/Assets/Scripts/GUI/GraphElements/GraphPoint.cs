@@ -34,7 +34,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		set 
 		{ 
 			previousPoint_ = value;
-			updateLine (); 
+			updateLine ( ); 
 		}
 	}
 
@@ -231,6 +231,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		{
 			if (nextPoint_ != null)
 			{
+
 				Vector2 pointPosition = myGraph_.GetLocationForPoint (point_.x, point_.y);
 				Vector2 nextPointPosition = myGraph_.GetLocationForPoint (nextPoint_.Point.x, nextPoint_.Point.y);
 
@@ -243,9 +244,11 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 				lineSprite.transform.localRotation = flatLineRotation_;
 				float angle = Mathf.Atan( yDist / xDist);
+				Debug.Log ("line between "+this.DebugDescribe()+" "+nextPoint_.DebugDescribe());
 				lineSprite.transform.Rotate(0f, 0f, 180f * angle / Mathf.PI);
 
 				bShow = true;
+
 			}
 			else
 			{

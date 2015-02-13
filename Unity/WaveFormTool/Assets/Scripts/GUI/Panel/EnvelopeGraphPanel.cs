@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
+public class EnvelopeGraphPanel : GraphPanel
 {
 	/* TODO
 	 * 
@@ -11,17 +11,18 @@ public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 	 */
 
 
-//	private static readonly bool DEBUG_TONE_GEN = false;
+	private static readonly bool DEBUG_ENVELOPE_GEN = true;
 
 	public int numSamples_ = 100;
 
 	private BasicEnvelopeSettings envelopeSettings_;
 
+	private BasicEnvelopeProvider envelopeProvider_ = null;
+
 	private static readonly bool DEBUG_ENVELOPE_GRAPH = true;
 	 
 	public void Start()
 	{
-		ToneGeneratorPanel.Instance.envelopeProvider_ = this;
 	}
 
 	public override void ResetView ()
@@ -198,16 +199,23 @@ public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 			Debug.Log ("At finish = "+previous.DebugDescribe());
 		yield return null;
 
-		rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		rangeEnd_.transform.parent = pointsContainer;
-		rangeEnd_.init(this, 
-		              envelopeSettings_.TotalLength, 
-		              0f,
-		              true
-		              );
-		rangeEnd_.gameObject.name = "6";
-		rangeEnd_.PreviousPoint = previous;
-		previous.NextPoint = rangeEnd_;
+		if (previous.Point.x < envelopeSettings_.TotalLength)
+		{
+			rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+			rangeEnd_.transform.parent = pointsContainer;
+			rangeEnd_.init(this, 
+			               envelopeSettings_.TotalLength, 
+			               0f,
+			               true
+			               );
+			rangeEnd_.gameObject.name = "6";
+			rangeEnd_.PreviousPoint = previous;
+			previous.NextPoint = rangeEnd_;
+		}
+		else
+		{
+			rangeEnd_ = previous;
+		}
 
 		OnPointSelected(rangeEnd_);
 		pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
@@ -226,33 +234,31 @@ public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 
 	public void Update()
 	{
-		/*
 		if (isDirty_)
 		{
 			if (isCreating_)
 			{
-				if (DEBUG_GENERATION)
+				if (DEBUG_ENVELOPE_GEN)
 				{
-					Debug.Log("WGP: restarting");
+					Debug.Log("EGP: restarting");
 				}
 				isCreating_ = false;
 				messageLabel.color = Color.red;
-				messageLabel.text = "Restarted tone creation";
+				messageLabel.text = "Restarted envelope creation";
 				StopCoroutine ("CreateDataCR");
 			}
 			else
 			{
-				if (DEBUG_GENERATION)
+				if (DEBUG_ENVELOPE_GEN)
 				{
-					Debug.Log("WGP: starting");
+					Debug.Log("EGP: starting");
 				}
 				messageLabel.color = Color.red;
-				messageLabel.text = "Started tone creation";
+				messageLabel.text = "Started envelope creation";
 			}
 			isDirty_ = false;
 			StartCoroutine("CreateDataCR");
 		}
-		*/
 	}
 
 	private bool isDirty_ = false;
@@ -261,7 +267,7 @@ public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 		isDirty_ = true;
 	}
 
-//	private bool isCreating_ = false;
+	private bool isCreating_ = false;
 
 	protected override void postInit()
 	{
@@ -275,236 +281,50 @@ public class EnvelopeGraphPanel : GraphPanel, IEnvelopeProvider
 
 	private IEnumerator CreateDataCR()
 	{
-		Debug.LogError ("Not implmeneted");
-		yield return null;
-		/*
-		System.Text.StringBuilder sb = null;
-		int numGraphPoints = NumGraphPoints ();
-
-		if (DEBUG_TONE_GEN)
+		if ( NumGraphPoints() < 3 )
 		{
-			sb = new System.Text.StringBuilder();
-			Debug.Log("WGP: START. num = "+numSamples_+", with "+numGraphPoints+" graph points");
+			Debug.LogWarning ( "Not enough points!" );
 		}
-
-		// validate points
-		// validate settings
-
-		float[] newSamples = new float[ numSamples_ ];
-
-		float phase = 0f;
-		float step = 1f / numSamples_;
-
-		GraphPoint p = RangeStart;
-		int numDone = 0;
-		newSamples [0] = p.Point.y;
-
-		int numSkipped = 0;
-
-		System.Text.StringBuilder ptssb = null;
-		if (DEBUG_TONE_GEN)
+		else
 		{
-			ptssb = new System.Text.StringBuilder ();
-			ptssb.Append(""+phase+","+ newSamples[0]+"\n");
-		}
+			BasicEnvelopeProvider provider = new BasicEnvelopeProvider ( );
 
-		phase += step;
+			System.Text.StringBuilder sb = null;
+			int numGraphPoints = NumGraphPoints ();
 
-		GraphPoint nextPt = null;
-
-
-		while (p!= null && numDone < numSamples_ && numSkipped < numGraphPoints)
-		{
-			if (DEBUG_TONE_GEN)
+			if (DEBUG_ENVELOPE_GEN)
 			{
-				Debug.Log("PHASE is "+ phase);
+				sb = new System.Text.StringBuilder();
+				Debug.Log("EGP: START. num = "+numSamples_+", with "+numGraphPoints+" graph points");
 			}
 
-			nextPt = p.NextPoint;
-			if (DEBUG_TONE_GEN)
-			{
-				Debug.Log("NextPoint is "+ UnityExtensions.DebugDescribe(nextPt));
-			}
-			float nextX = nextPt.Point.x;
-			float nextY = nextPt.Point.y;
+			GraphPoint p = RangeStart;
 
-			if (nextPt == null || nextPt == RangeEnd)
+			System.Text.StringBuilder ptssb = null;
+			if (DEBUG_ENVELOPE_GEN)
 			{
-				nextX = RangeEnd.Point.x;
-				if (DEBUG_TONE_GEN)
-				{
-					Debug.Log("Found the penultimate graph point, with numDone =  "+numDone+", so nextX = "+nextX);
-				}
-
+				ptssb = new System.Text.StringBuilder ();
 			}
 
-			if (p.Point.x <= phase && nextX > phase && p != RangeEnd)
+			while ( p!= null)
 			{
-				float x1 = p.Point.x;
-				float y1 = p.Point.y;
+				provider.AddPoint(p.Point);
+				ptssb.Append("\nEnvPt "+p.Point);
+				p = p.NextPoint;
 
-				float val;
-				if (phase == x1)
-				{
-					val = y1;
-				}
-				else if (nextX == x1)
-				{
-					val = y1;
-					Debug.LogError("x1 == x2");
-				}
-				else
-				{
-					val = y1 + (nextY-y1) * (phase - x1)/(nextX-x1);
-				}
-
-				numDone++;
-				newSamples[numDone] = val;
-				if (DEBUG_TONE_GEN)
-				{
-					Debug.Log("Set point at "+phase+", "+ val);
-				}
-				if (ptssb != null)
-				{
-					ptssb.Append(""+phase+","+ val+"\n");
-				}
-			}
-			else
-			{
-				p = nextPt;
-				if (DEBUG_TONE_GEN)
-				{
-					Debug.Log("Moved to next point "+nextPt.DebugDescribe());
-				}
-				numSkipped++;
-			}
-
-			phase += step;
-
+			}	//	while (p!= null && p != RangeEnd && numDone < numSamples_)
 			yield return null;
-		}	//	while (p!= null && p != RangeEnd && numDone < numSamples_)
-		Debug.Log ("Finished Creation: "
-			+ "\nNumSamples = " + numSamples_
-			+ "\nNumDone = " + numDone
-			+ "\nNumSkipped = " + numSkipped
-			+ "\np = " + UnityExtensions.DebugDescribe (p)
-		    + "\nn = " + UnityExtensions.DebugDescribe (nextPt));
 
-
-		waveFormData_ = new WaveFormDataRegular("Graph", newSamples);
-
-		if (waveFormData_ != null)
-		{
-			Debug.Log ("Created: " + waveFormData_.DebugDescribe ());
-			ToneGeneratorPanel.Instance.SetWaveFormProvider ("Graph", waveFormData_);
-			//ToneGeneratorPanel.Instance.SetActive (true);
-			messageLabel.color = Color.black;
-			messageLabel.text = "Changed base tone";
-		}
-		else
-		{
-			messageLabel.color = Color.black;
-			messageLabel.text = "!! Failed to create base tone";
-		}
-		if (ptssb != null)
-		{
-			Debug.Log("Points at...\n"+ptssb.ToString());
+			Debug.Log ("Finished Creation: ");
+			messageLabel.text = "Created envelope";
+			envelopeProvider_ = provider;
+			ToneGeneratorPanel.Instance.envelopeProvider_ = envelopeProvider_;
+			if (ptssb != null)
+			{
+				Debug.Log("Points at...\n"+ptssb.ToString());
+			}
 		}
 		yield return null;
-	*/
 	}
 
-#region IEnvelopeProvider
-	GraphPoint currentProvidingPoint = null;
-
-	public float GetValueForTime(float time, BasicEnvelopeSettings settings)
-	{
-		float f = 0f;
-		currentProvidingPoint = FindPointBeforeTime ( currentProvidingPoint, time );
-		if (currentProvidingPoint != null)
-		{
-			GraphPoint nextPoint = currentProvidingPoint.NextPoint;
-			if (nextPoint == null)
-			{
-				f = currentProvidingPoint.Point.y;
-			}
-			else
-			{
-				float timeFraction = (time - currentProvidingPoint.Point.x)/(nextPoint.Point.x - currentProvidingPoint.Point.x);
-				f = Mathf.Lerp ( currentProvidingPoint.Point.y, nextPoint.Point.y, timeFraction);
-			}
-		}
-		return f;
-	}
-
-	private GraphPoint FindPointBeforeTime(GraphPoint p, float t)
-	{
-		GraphPoint result = null;
-		if ( firstPoint_ == null )
-		{
-			Debug.LogWarning ( "No first point!" );
-		}
-		else
-		{
-			if ( p == null )
-			{
-				Debug.LogWarning("null passed, startig at first");
-				p = firstPoint_;
-			}
-			if ( p.Point.x > t )
-			{
-				Debug.LogWarning ("Current point is too late, going back");
-				while (p != null && p.Point.x > t)
-				{
-					p = p.PreviousPoint;
-				}
-				if (p == null)
-				{
-					Debug.LogWarning ("Went back to the start and didn't find a point before time" +t);
-				}
-				else
-				{
-					result = p;
-				}
-			}
-			else
-			{
-				while (p.NextPoint != null && p.NextPoint.Point.x < t)
-				{
-					p = p.NextPoint;
-				}
-				if (p.NextPoint == null && p.Point.x < t)
-				{
-					Debug.LogWarning ("Got to the end and still earlier than time "+t);
-				}
-				else
-				{
-					result = p;
-				}
-			}
-
-		}
-		return result;
-	}
-
-	public string EnvelopeName() 
-	{
-		return "EnvelopeGraph";
-	}	
-
-	public bool IsReady()
-	{
-		return ( NumGraphPoints ( ) > 1 );
-	}
-
-	
-	public float EnvelopeLength(BasicEnvelopeSettings unused)
-	{
-		return envelopeSettings_.TotalLength;
-	}
-
-
-
-
-#endregion
 }

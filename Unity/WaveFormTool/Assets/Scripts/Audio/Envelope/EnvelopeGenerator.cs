@@ -52,6 +52,11 @@ public abstract class EnvelopeGenerator : IEnvelopeProvider
 		return settings.TotalLength;
 	}
 
+	public IEnvelopeProvider Clone()
+	{
+		Debug.LogError ( "Don't call this!" );
+		return null;
+	}
 
 	#endregion IEnvelopeProvider
 

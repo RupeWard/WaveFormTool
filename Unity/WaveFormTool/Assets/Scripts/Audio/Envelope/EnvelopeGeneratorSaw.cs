@@ -41,6 +41,7 @@ public class EnvelopeGeneratorSaw :  EnvelopeGenerator
 		return result;
 	}
 
+	private static float s_tolerance = 0.001f;
 	protected override float GetTailOutValueForTime (float time, BasicEnvelopeSettings settings)
 	{
 		float result = 0f;
@@ -48,9 +49,10 @@ public class EnvelopeGeneratorSaw :  EnvelopeGenerator
 		{
 			time -= (settings.leadInLength + settings.midLength);
 			float timeFraction = time/ settings.tailOutLength;
-			if (timeFraction < 0f || timeFraction > 1f)
+			if (timeFraction < (0f-s_tolerance) || (timeFraction > 1f+s_tolerance))
 			{
 				Debug.LogError ("TimeFraction shouldn't be "+timeFraction);
+				timeFraction = Mathf.Clamp (timeFraction, 0f,1f);
 			}
 			result = settings.midValue - settings.midValue * timeFraction;
 		}

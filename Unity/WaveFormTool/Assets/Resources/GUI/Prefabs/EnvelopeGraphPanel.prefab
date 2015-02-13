@@ -3490,7 +3490,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   messageLabel: {fileID: 0}
-  settings: {fileID: 11400158}
+  graphSettings: {fileID: 11400158}
   title: {fileID: 100008}
   background: {fileID: 11400054}
   viewMinInput: {fileID: 11400062}
@@ -3499,7 +3499,6 @@ MonoBehaviour:
   pointsContainer: {fileID: 400074}
   axesContainer: {fileID: 400034}
   numSamples_: 100
-  playButton: {fileID: 400020}
 --- !u!114 &11400138
 MonoBehaviour:
   m_ObjectHideFlags: 1

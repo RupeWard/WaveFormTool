@@ -10,6 +10,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 	public UISprite background_;
 	public WaveFormPlayer player_;
 	public UILabel sourceLabel;
+	public UICheckbox envelopeCheckbox;
 
 	public UIPopupList modeSelection;
 
@@ -125,8 +126,6 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		{
 			if (waveFormProvider_ != null)
 			{
-				SetPlayButtonLabel();
-
 				player_.toneGenerator.init ( waveFormProvider_, frequency_);
 
 				if (useEnvelope_)
@@ -145,17 +144,35 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 						}
 						player_.envelopeGain.ResetTime();
 					}
-
 				}
 				player_.audio.Play();
 				messageLabel.text = "Playing '" + waveFormProvider_.WaveFormName() + "' at "+frequency_.ToString();
+				SetPlayButtonLabel();
+				yield return null;
+
 				isPlaying = true;
+				if (useEnvelope_ )
+				{
+					yield return new WaitForSeconds( envelopeProvider_.EnvelopeLength(null));
+					player_.audio.Stop();
+					string msg = "Finished Playing ";
+					messageLabel.text = msg;
+					 
+					int numBufs;
+					int bufLen;
+					AudioSettings.GetDSPBufferSize(out bufLen, out numBufs);
+					Debug.Log (msg+player_.envelopeGain.numCalls
+					           +" calls of "+bufLen+" ("+numBufs+"), received "+player_.envelopeGain.numData
+					           +" in "+player_.envelopeGain.numChannels+" channels");
+					player_.envelopeGain.ResetTime();
+				}
 			}
 			else
 			{
 				messageLabel.text = "No source defined";
 			}
 		}
+		SetPlayButtonLabel();
 		yield return null;
 	}
 
@@ -188,7 +205,24 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 		player_.envelopeGain.enabled = useEnvelope_;
 		if ( useEnvelope_ )
 		{
-			player_.envelopeGain.EnvelopeProvider = envelopeProvider_;
+			if (envelopeProvider_ == null)
+			{
+				Debug.Log ("Null envelope on SetUseEnvelope " + b );
+				messageLabel.text = "No envelope to use";
+				envelopeCheckbox.isChecked = false;
+				player_.envelopeGain.init (null);
+			}
+			else if (false == envelopeProvider_.IsReady())
+			{
+				Debug.Log ("Envelope not ready on SetUseEnvelope " + b );
+				messageLabel.text = "Envelope not ready to use";
+				envelopeCheckbox.isChecked = false;
+				player_.envelopeGain.init (null);
+			}
+			else
+			{
+				player_.envelopeGain.init(envelopeProvider_.Clone());
+			}
 		}
 	}
 

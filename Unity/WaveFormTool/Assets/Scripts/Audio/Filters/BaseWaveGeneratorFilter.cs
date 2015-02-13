@@ -40,7 +40,7 @@ public class BaseWaveGeneratorFilter : MonoBehaviour
 		if (waveFormProvider_ != null)
 		{
 			increment_ = frequency_ / s_sampling_frequency;
-			for (var i = 0; i < data.Length; i = i + channels)
+			for (int i = 0; i < data.Length; i = i + channels)
 			{
 				phase = phase + increment_;
 				

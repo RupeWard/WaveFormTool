@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class BasicEnvelopeSettings : IDebugDescribable
@@ -61,6 +61,8 @@ public class BasicEnvelopeSettings : IDebugDescribable
 		return axisDefinitions;
 	}
 
+#region IDebugDescribable
+
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		sb.Append("leadInLength "+leadInLength+"\n");
@@ -70,12 +72,5 @@ public class BasicEnvelopeSettings : IDebugDescribable
 		sb.Append("midLength "+midLength+"\n");
 		sb.Append("midValue "+midValue+"\n");
 	}
-
-	public string DebugDescribe()
-	{
-		System.Text.StringBuilder sb = new System.Text.StringBuilder ();
-		DebugDescribe (sb);
-		return sb.ToString ();
-	}
-
+#endregion
 }
