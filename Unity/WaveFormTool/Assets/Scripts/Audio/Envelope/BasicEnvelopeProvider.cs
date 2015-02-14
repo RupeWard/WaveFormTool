@@ -5,34 +5,36 @@ using System.Collections.Generic;
 public class BasicEnvelopeProvider : IEnvelopeProvider 
 {
 	private static readonly bool LOCAL_DEBUG = false;
+
 	private List< Vector2 > points_ = new List <Vector2>();
+	private int currentPointIndex_ = -1;
+
 	public void Clear() 
 	{
 		points_.Clear ( );
 	}
+
 	public void AddPoint(Vector2 v)
 	{
 		points_.Add ( v );
 	}
-
-	int currentPointIndex = -1;
 
 	#region IEnvelopeProvider
 
 	public float GetValueForTime(float time, BasicEnvelopeSettings settings)
 	{
 		float f = 0f;
-		currentPointIndex = FindPointBeforeTime ( currentPointIndex, time );
-		if (currentPointIndex >= 0 && currentPointIndex < points_.Count)
+		currentPointIndex_ = FindPointBeforeTime ( currentPointIndex_, time );
+		if (currentPointIndex_ >= 0 && currentPointIndex_ < points_.Count)
 		{
-			Vector2 currentPoint = points_[currentPointIndex];
-			if (currentPointIndex >= (points_.Count -1))
+			Vector2 currentPoint = points_[currentPointIndex_];
+			if (currentPointIndex_ >= (points_.Count -1))
 			{
 				f = currentPoint.y;
 			}
 			else
 			{
-				Vector2 nextPoint = points_[currentPointIndex+1];
+				Vector2 nextPoint = points_[currentPointIndex_+1];
 				float timeFraction = (time - currentPoint.x)/(nextPoint.x - currentPoint.x);
 				f = Mathf.Lerp ( currentPoint.y, nextPoint.y, timeFraction);
 			}
@@ -49,15 +51,15 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 			{
 				Debug.LogWarning ( "Time " + t+" passed" );
 			}
-			return result;
+			// result stays -1
 		}
-		if ( points_.Count < 3)
+		else if ( points_.Count < 3)
 		{
 			if (LOCAL_DEBUG)
 			{
 				Debug.LogWarning ( "Only " + points_.Count+" points" );
 			}
-			return result;
+			// result stays -1
 		}
 		else
 		{
@@ -86,7 +88,7 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 					{
 						Debug.LogWarning ("Went back to the start and didn't find a point before time" +t);
 					}
-					return result;
+					// result stays -1
 				}
 				else
 				{
@@ -105,14 +107,13 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 					{
 						Debug.LogWarning ("Got to the end and still earlier than time "+t);
 					}
-					return result;
+					// result stays -1
 				}
 				else
 				{
 					result = startIndex;
 				}
-			}
-			
+			}			
 		}
 		return result;
 	}
@@ -129,9 +130,12 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 		
 	public float EnvelopeLength(BasicEnvelopeSettings unused)
 	{
-		if ( !IsReady ( ) )
-			return 0f;
-		return ( points_[points_.Count-1].x - points_[0].x);
+		float result = 0f;
+		if ( IsReady ( ) )
+		{
+			result = points_ [ points_.Count - 1 ].x - points_ [ 0 ].x;
+		}
+		return result;
 	}
 
 	public IEnvelopeProvider Clone()
@@ -144,8 +148,5 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 		return bep;
 	}
 
-	
-	
-	
 	#endregion
 }

@@ -13,7 +13,10 @@ public class BasicEnvelopeSettings : IDebugDescribable
 
 	public float TotalLength 
 	{
-		get {return leadInLength + midLength + tailOutLength; } 
+		get 
+		{
+			return leadInLength + midLength + tailOutLength; 
+		} 
 	}
 
 	public bool isInMid(float time)
