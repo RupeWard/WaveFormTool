@@ -1449,7 +1449,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400220}
-  m_RootOrder: 4
+  m_RootOrder: 3
 --- !u!4 &400090
 Transform:
   m_ObjectHideFlags: 1
@@ -1996,8 +1996,8 @@ Transform:
   - {fileID: 400006}
   - {fileID: 400096}
   - {fileID: 400104}
-  - {fileID: 449130}
   - {fileID: 400088}
+  - {fileID: 449130}
   m_Father: {fileID: 400120}
   m_RootOrder: 1
 --- !u!4 &449130
@@ -2011,7 +2011,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400220}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!65 &6500002
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2940,7 +2940,6 @@ MonoBehaviour:
   - {fileID: 11400014}
   - {fileID: 11400126}
   - {fileID: 11400120}
-  - {fileID: 11449130}
 --- !u!114 &11400156
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -716,7 +716,7 @@ GameObject:
   - 4: {fileID: 400088}
   - 114: {fileID: 11400134}
   m_Layer: 8
-  m_Name: Splinear
+  m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3471,13 +3471,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graphPanel: {fileID: 11400136}
-  moverName: Splinear
+  moverName: Spline
   fixStartSlope: 1
   fixEndSlope: 1
   fixStartAdjustSlope: 1
   fixEndAdjustSlope: 1
-  numToAdjust: 1
-  numEachSide: 2
 --- !u!114 &11400136
 MonoBehaviour:
   m_ObjectHideFlags: 1
