@@ -10,6 +10,27 @@ public class UnityHelpers
         Object.Destroy(theObject);
 #endif
     }
+
+
+	public static double DLerp(double from, double to, double fraction)
+	{
+		if ( fraction < 0 || fraction > 1 )
+		{
+			Debug.LogError ( "Out of range at "+fraction);
+		}
+		return from + ( to - from ) * fraction;
+	}
+	
+	public static double DLerpFree(double from, double to, double fraction)
+	{
+		return from + ( to - from ) * fraction;
+	}
+	
+	public static float LerpFree(float from, float to, float fraction)
+	{
+		return from + ( to - from ) * fraction;
+	}
+
     /*
     /// <summary>
     /// Gets a gui style logging a warning if the style isn't present in the skin

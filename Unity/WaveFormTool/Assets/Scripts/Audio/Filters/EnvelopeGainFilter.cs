@@ -28,7 +28,7 @@ public class EnvelopeGainFilter : MonoBehaviour
 			s_sampling_frequency = AudioSettings.outputSampleRate;
 			increment_ = (double)numToSkip / s_sampling_frequency;
 
-			Debug.Log("Audio output sampling rate is "+s_sampling_frequency.ToString ());
+			//Debug.Log("Audio output sampling rate is "+s_sampling_frequency.ToString ());
 		}
 	}
 
@@ -60,15 +60,6 @@ public class EnvelopeGainFilter : MonoBehaviour
 		}
 	}
 
-	private double Lerp(double from, double to, double fraction)
-	{
-		if ( fraction < 0 || fraction > 1 )
-		{
-			Debug.LogError ( "Out of range at "+fraction);
-		}
-		return from + ( to - from ) * fraction;
-	}
-
 	void OnAudioFilterRead(float[] data, int channels)
 	{
 		if ( numChannels == -1 )
@@ -93,18 +84,6 @@ public class EnvelopeGainFilter : MonoBehaviour
 				else
 				{
  					currentTime_ = currentTime_ + increment_;
-					/*
-					if (currentTime_ < 0.5*envelopeLength_)
-					{
-//						data[i] = data[i] * 0.8f;
-						data[i] *= (float)Lerp(0, 1, currentTime_/(0.5*envelopeLength_));
-					}
-					else
-					{
-//						data[i] = data[i] * 0.4f;
-						data[i] *= (float)Lerp(1, 0, (currentTime_ - 0.5*envelopeLength_)/(0.5*envelopeLength_));
-					}
-					*/
 					data[i] *= envelopeProvider_.GetValueForTime((float)currentTime_, null); // TODO null settings?
 					numSinceSkip = 0;
 					lastValue = data[i];

@@ -51,8 +51,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 			if (value != null)
 			{
-				if (!value.IsFunctional)
-				{
+				value.IsFunctional = false;
+//				if (!value.IsFunctional)
+//				{
 					if (value.HasFollower)
 					{
 						Debug.LogWarning ("Shouldn't chain following, aborting set follower to "
@@ -60,11 +61,11 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 						return;
 					}
 					follower_ = value;
-				}
-				else
-				{
-					Debug.LogWarning ("Can't be functional follower " + value.DebugDescribe () +" of "+ this.DebugDescribe ());
-				}
+//				}
+//				else
+//				{
+//					Debug.LogWarning ("Can't be functional follower " + value.DebugDescribe () +" of "+ this.DebugDescribe ());
+//				}
 				Debug.Log ("Set follower: " + value.DebugDescribe () +" of "+ this.DebugDescribe ());
 			}
 			else
@@ -261,7 +262,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 				lineSprite.transform.localRotation = flatLineRotation_;
 				float angle = Mathf.Atan( yDist / xDist);
-				Debug.Log ("line between "+this.DebugDescribe()+" "+nextPoint_.DebugDescribe());
+				// Debug.Log ("line between "+this.DebugDescribe()+" "+nextPoint_.DebugDescribe());
 				lineSprite.transform.Rotate(0f, 0f, 180f * angle / Mathf.PI);
 
 				bShow = true;
@@ -339,7 +340,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			if (isSelected)
 			{
 				if (DEBUG_POINT && !myGraph_.IsCreatingGraph)
-					Debug.Log("Point deselection detected: "+this.DebugDescribe());
+				{
+				//	Debug.Log("Point deselection detected: "+this.DebugDescribe());
+				}
 				pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
 			}
 			isSelected = false;
@@ -395,6 +398,14 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		if (!isFunctional_)
 		{
 			sb.Append ("Dead ");
+		}
+		if ( HasFollower )
+		{
+			sb.Append (" Followed by "+follower_.DebugDescribe());
+		}
+		else
+		{
+			sb.Append (" NotFollower");
 		}
 		sb.Append (" ]");
 	}

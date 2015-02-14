@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class GraphPanel : MonoBehaviour 
 {
+	public static readonly bool DEBUG_ADD_DELETE = true;
+
 	public UILabel messageLabel;
 
 	public GraphSettings graphSettings;
@@ -117,13 +119,13 @@ public class GraphPanel : MonoBehaviour
 	public float GetXLocationForPoint(float xIn)
 	{
 		float xFraction = (xIn - graphSettings.xView.x)/(graphSettings.XViewLength);
-		return Mathf.Lerp(-0.5f* width_, 0.5f*width_,xFraction);  // ( xFraction - 0.5f) * (width_); // FIXME assumes centred on zero
+		return UnityHelpers.LerpFree(-0.5f* width_, 0.5f*width_,xFraction);  // ( xFraction - 0.5f) * (width_); // FIXME assumes centred on zero
 	}
 	
 	public float GetYLocationForPoint(float yIn)
 	{
 		float yFraction = (yIn - graphSettings.yView.x)/(graphSettings.YViewLength);
-		return Mathf.Lerp (-0.5f * height_, 0.5f*height_, yFraction); // y * ((height_ ) / 2f); // FIXME assumes centred on zero
+		return UnityHelpers.LerpFree (-0.5f * height_, 0.5f*height_, yFraction); // y * ((height_ ) / 2f); // FIXME assumes centred on zero
 	}
 	
 	public Vector2 GetLocationForPoint(float x, float y)
@@ -382,22 +384,26 @@ public class GraphPanel : MonoBehaviour
 		{
 			ptToAddAfter = pt;
 			if (pt != null) pt = pt.NextPoint;
-		} while (ptToAddAfter != null && AddPointBefore(ptToAddAfter));
+		} while (ptToAddAfter != null && AddPointAfter(ptToAddAfter));
 	}
 
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{
+		if ( DEBUG_ADD_DELETE )
+		{
+			Debug.Log ("AddBefore "+pt.DebugDescribe()
+			           +( (isFollower)?(" (follower)"):("not follower")));
+		}
 		if ( pt.PreviousPoint == null )
 		{
 			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because no previous");
 			return null;
 		}
-		if ( !pt.PreviousPoint.IsFunctional )
+		if (!isFollower && !pt.PreviousPoint.IsFunctional )
 		{
 			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because previous non-functional"); 
 			return null;
 		}
-
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
 		newPoint.init(this, 
@@ -411,10 +417,33 @@ public class GraphPanel : MonoBehaviour
 		pt.PreviousPoint.NextPoint = newPoint;
 		pt.PreviousPoint = newPoint;
 
-		if (pt.HasFollower)
+		if (!isFollower)
 		{
-			GraphPoint follower = AddFollowerBefore(pt.Follower); 
-			newPoint.Follower = follower;
+			if (pt.HasFollower)
+			{
+				GraphPoint follower = AddFollowerBefore(pt.Follower); 
+				if (follower != null)
+				{
+					newPoint.Follower = follower;
+					
+					if (DEBUG_ADD_DELETE)
+					{
+						Debug.Log ("Added "+follower.DebugDescribe() 
+						           +" as follower of "+newPoint.DebugDescribe()); 
+					}
+				}
+			}
+			else
+			{
+				Debug.Log ("Not adding follower because has no follower "+pt.DebugDescribe()); 
+			}
+		}
+		else
+		{
+			if (DEBUG_ADD_DELETE)
+			{
+				Debug.Log ("Not adding follower to follower "+newPoint.DebugDescribe()); 
+			}
 		}
 		return newPoint;
 	}
@@ -431,12 +460,18 @@ public class GraphPanel : MonoBehaviour
 
 	private GraphPoint AddPointAfter(GraphPoint pt, bool isFollower)
 	{
+		if ( DEBUG_ADD_DELETE )
+		{
+			Debug.Log ("AddAfter "+pt.DebugDescribe()
+			           +( (isFollower)?(" (follower)"):("")));
+		}
+
 		if ( pt.NextPoint == null )
 		{
 			Debug.LogWarning ("Can't add point after "+pt.DebugDescribe()+" because no next");
 			return null;
 		}
-		if ( !pt.IsFunctional )
+		if (!isFollower && !pt.IsFunctional )
 		{
 			Debug.LogWarning ("Can't add point after "+pt.DebugDescribe()+" because non-functional"); 
 			return null;
@@ -455,11 +490,34 @@ public class GraphPanel : MonoBehaviour
 		pt.NextPoint.PreviousPoint = newPoint;
 		pt.NextPoint = newPoint;
 
-		if (pt.HasFollower)
+		if (!isFollower)
 		{
-			GraphPoint follower = AddFollowerAfter(pt.Follower); 
-			newPoint.Follower = follower;
+			if (pt.HasFollower)
+			{
+				GraphPoint follower = AddFollowerAfter(pt.Follower); 
+				if (follower != null)
+				{
+					newPoint.Follower = follower;
+					if (DEBUG_ADD_DELETE)
+					{
+						Debug.Log ("Added "+follower.DebugDescribe() 
+						           +" as follower of "+newPoint.DebugDescribe()); 
+					}
+				}
+			}
+			else
+			{
+				Debug.Log ("Not adding follower because has no follower "+pt.DebugDescribe()); 
+			}
 		}
+		else
+		{
+			if (DEBUG_ADD_DELETE)
+			{
+				Debug.Log ("Not adding follower because is follower "+pt.DebugDescribe()); 
+			}
+		}
+
 		return newPoint;
 	}
 	
