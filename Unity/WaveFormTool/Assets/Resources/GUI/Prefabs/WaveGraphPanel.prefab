@@ -401,7 +401,7 @@ GameObject:
   - 4: {fileID: 400088}
   - 114: {fileID: 11400112}
   m_Layer: 8
-  m_Name: Splinear
+  m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1113,6 +1113,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &149130
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 449130}
+  - 114: {fileID: 11449130}
+  m_Layer: 8
+  m_Name: SplineOld
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400002
 Transform:
   m_ObjectHideFlags: 1
@@ -1429,11 +1445,11 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: .000106822205, y: 9.15618875e-05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400220}
-  m_RootOrder: 3
+  m_RootOrder: 4
 --- !u!4 &400090
 Transform:
   m_ObjectHideFlags: 1
@@ -1980,9 +1996,22 @@ Transform:
   - {fileID: 400006}
   - {fileID: 400096}
   - {fileID: 400104}
+  - {fileID: 449130}
   - {fileID: 400088}
   m_Father: {fileID: 400120}
   m_RootOrder: 1
+--- !u!4 &449130
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149130}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400220}
+  m_RootOrder: 3
 --- !u!65 &6500002
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -2712,13 +2741,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graphPanel: {fileID: 11400110}
-  moverName: Splinear
+  moverName: Spline
   fixStartSlope: 1
   fixEndSlope: 1
   fixStartAdjustSlope: 1
   fixEndAdjustSlope: 1
-  numToAdjust: 1
-  numEachSide: 2
 --- !u!114 &11400114
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2913,6 +2940,7 @@ MonoBehaviour:
   - {fileID: 11400014}
   - {fileID: 11400126}
   - {fileID: 11400120}
+  - {fileID: 11449130}
 --- !u!114 &11400156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4003,6 +4031,25 @@ MonoBehaviour:
   mFillDirection: 4
   mFillAmount: 1
   mInvert: 0
+--- !u!114 &11449130
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 149130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d512cedf5772f748a3f8277e851561b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  graphPanel: {fileID: 11400110}
+  moverName: SplineOld
+  fixStartSlope: 1
+  fixEndSlope: 1
+  fixStartAdjustSlope: 1
+  fixEndAdjustSlope: 1
+  numToAdjust: 1
+  numEachSide: 2
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
