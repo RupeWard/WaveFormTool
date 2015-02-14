@@ -6,6 +6,8 @@ public class GraphPointActionMenu : Menu
 {
 	public static readonly string nullOption = "ACTIONS";
 	public static readonly string deletePointOption = "Delete";
+	public static readonly string addBeforeOption = "Add Before";
+	public static readonly string addAfterOption = "Add After";
 
 	private GraphPoint point_ = null;
 	private GraphPointPanel panel_;
@@ -14,6 +16,8 @@ public class GraphPointActionMenu : Menu
 	{
 		AddOption ( nullOption, true );
 		AddOption (deletePointOption, false);
+		AddOption (addBeforeOption, false);
+		AddOption (addAfterOption, false);
 	}
 
 	public void SetPoint(GraphPointPanel panel)
@@ -21,6 +25,12 @@ public class GraphPointActionMenu : Menu
 		panel_ = panel;
 		point_ = panel_.Point;
 		SetOptionActive(deletePointOption, point_!= null && false == point_.IsFixed && point_.IsFunctional);
+		SetOptionActive(addBeforeOption, 
+		                point_!= null  
+		                && point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional);
+		SetOptionActive(addAfterOption, 
+		                point_!= null && point_.IsFunctional 
+		                && point_.PreviousPoint != null);
 	}
 	
 	public override void OnOptionSelected(string option)
@@ -31,6 +41,14 @@ public class GraphPointActionMenu : Menu
 			{
 				point_.graphPanel.DeletePoint(point_);
 				panel_.SetPoint(null);
+			}
+			else if (option == addBeforeOption)
+			{
+				point_.graphPanel.AddPointBefore(point_);
+			}
+			else if (option ==  addAfterOption)
+			{
+				point_.graphPanel.AddPointAfter(point_);
 			}
 		}
 	}

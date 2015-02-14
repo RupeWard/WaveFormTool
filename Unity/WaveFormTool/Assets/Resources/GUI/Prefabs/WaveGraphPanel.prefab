@@ -2906,6 +2906,7 @@ MonoBehaviour:
   bottomLeftButton: {fileID: 100140}
   bottomRightButton: {fileID: 100040}
   closeButton: {fileID: 100084}
+  fixFreeButton: {fileID: 100208}
   pointMovers_:
   - {fileID: 11400112}
   - {fileID: 11400014}
@@ -3887,7 +3888,6 @@ MonoBehaviour:
   highlightColor: {r: .596078455, g: 1, b: .200000003, a: 1}
   isAnimated: 1
   isLocalized: 0
-  autoSelectFirstOptionOnStart: 1
   eventReceiver: {fileID: 100028}
   functionName: OnOptionSelected
   mSelectedItem: 
@@ -3978,7 +3978,6 @@ MonoBehaviour:
   highlightColor: {r: .596078455, g: 1, b: .200000003, a: 1}
   isAnimated: 1
   isLocalized: 0
-  autoSelectFirstOptionOnStart: 1
   eventReceiver: {fileID: 100120}
   functionName: OnPointHeightChangeStrategyChange
   mSelectedItem: 

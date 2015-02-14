@@ -36,6 +36,8 @@ public class GraphPointPanel : MonoBehaviour
 	public GameObject bottomRightButton;
 	public GameObject closeButton;
 
+	public GameObject fixFreeButton;
+
 	private Vector2 topLeftPosition;
 	private Vector2 topRightPosition;
 	private Vector2 bottomLeftPosition;
@@ -205,15 +207,17 @@ public class GraphPointPanel : MonoBehaviour
 
 	private void SetUpFixFreeButton()
 	{
-		if (point_ == null)
+		if (point_ == null || point_.MustBeFixed())
 		{
 			fixFreeButtonLabel.text = "";
+			fixFreeButton.gameObject.SetActive(false);
 		}
 		else
 		{
 			fixFreeButtonLabel.text = (point_.IsFixed) ? ("Free") : ("Fix");
 			fixFreeButtonLabel.color = (point_.IsFixed) ? (Color.red) : (Color.black);
 			yInput.enabled = !point_.IsFixed;
+			fixFreeButton.gameObject.SetActive(true);
 		}
 	}
 

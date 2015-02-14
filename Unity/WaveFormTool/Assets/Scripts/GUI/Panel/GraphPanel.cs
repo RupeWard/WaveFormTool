@@ -355,6 +355,95 @@ public class GraphPanel : MonoBehaviour
 		}
 	}
 
+	public GraphPoint AddPointBefore(GraphPoint pt)
+	{
+		return AddPointBefore ( pt, false );
+	}
+
+	public GraphPoint AddFollowerBefore(GraphPoint pt)
+	{
+		return AddPointBefore ( pt, true );
+	}
+
+	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
+	{
+		if ( pt.PreviousPoint == null )
+		{
+			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because no previous");
+			return null;
+		}
+		if ( !pt.PreviousPoint.IsFunctional )
+		{
+			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because previous non-functional"); 
+			return null;
+		}
+
+		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+		newPoint.transform.parent = pointsContainer;
+		newPoint.init(this, 
+	              0.5f *(pt.Point.x + pt.PreviousPoint.Point.x), 
+	              0.5f *(pt.Point.y + pt.PreviousPoint.Point.y), 
+	              !isFollower
+	              );
+		newPoint.PreviousPoint = pt.PreviousPoint;
+		newPoint.NextPoint = pt;
+
+		pt.PreviousPoint.NextPoint = newPoint;
+		pt.PreviousPoint = newPoint;
+
+		if (pt.HasFollower)
+		{
+			GraphPoint follower = AddFollowerBefore(pt.Follower); 
+			newPoint.Follower = follower;
+		}
+		return newPoint;
+	}
+
+	public GraphPoint AddPointAfter(GraphPoint pt)
+	{
+		return AddPointAfter (pt, false );
+	}
+
+	public GraphPoint AddFollowerAfter(GraphPoint pt)
+	{
+		return AddPointAfter (pt, true );
+	}
+
+	private GraphPoint AddPointAfter(GraphPoint pt, bool isFollower)
+	{
+		if ( pt.NextPoint == null )
+		{
+			Debug.LogWarning ("Can't add point after "+pt.DebugDescribe()+" because no next");
+			return null;
+		}
+		if ( !pt.IsFunctional )
+		{
+			Debug.LogWarning ("Can't add point after "+pt.DebugDescribe()+" because non-functional"); 
+			return null;
+		}
+		
+		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+		newPoint.transform.parent = pointsContainer;
+		newPoint.init(this, 
+		              0.5f *(pt.Point.x + pt.NextPoint.Point.x), 
+		              0.5f *(pt.Point.y + pt.NextPoint.Point.y), 
+		              true
+		              );
+		newPoint.NextPoint = pt.NextPoint;
+		newPoint.PreviousPoint = pt;
+		
+		pt.NextPoint.PreviousPoint = newPoint;
+		pt.NextPoint = newPoint;
+
+		if (pt.HasFollower)
+		{
+			GraphPoint follower = AddFollowerAfter(pt.Follower); 
+			newPoint.Follower = follower;
+		}
+		return newPoint;
+	}
+	
+
 	public void DeletePoint(GraphPoint pt)
 	{
 		DeletePoint ( pt, false );

@@ -169,7 +169,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		{
 			pointSprite.color = s_nonFunctionalColor;
 		}
-		if (isFunctional_ || (nextPoint_ != null && nextPoint_.IsFunctional))
+		if (isFunctional_ && nextPoint_.IsFunctional)
 		{
 			// TODO separate colours for lines & points
 			lineSprite.color = s_functionalColor;
