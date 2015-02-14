@@ -9,6 +9,9 @@ public class GraphPointActionMenu : Menu
 	public static readonly string addBeforeOption = "Add Before";
 	public static readonly string addAfterOption = "Add After";
 
+	public static readonly string addAllBeforeOption = "Add All Before";
+	public static readonly string addAllAfterOption = "Add All After";
+
 	private GraphPoint point_ = null;
 	private GraphPointPanel panel_;
 
@@ -18,6 +21,8 @@ public class GraphPointActionMenu : Menu
 		AddOption (deletePointOption, false);
 		AddOption (addBeforeOption, false);
 		AddOption (addAfterOption, false);
+		AddOption (addAllBeforeOption, false);
+		AddOption (addAllAfterOption, false);
 	}
 
 	public void SetPoint(GraphPointPanel panel)
@@ -29,6 +34,12 @@ public class GraphPointActionMenu : Menu
 		                point_!= null  
 		                && point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional);
 		SetOptionActive(addAfterOption, 
+		                point_!= null && point_.IsFunctional 
+		                && point_.PreviousPoint != null);
+		SetOptionActive(addAllBeforeOption, 
+		                point_!= null  
+		                && point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional);
+		SetOptionActive(addAllAfterOption, 
 		                point_!= null && point_.IsFunctional 
 		                && point_.PreviousPoint != null);
 	}
@@ -49,6 +60,14 @@ public class GraphPointActionMenu : Menu
 			else if (option ==  addAfterOption)
 			{
 				point_.graphPanel.AddPointAfter(point_);
+			}
+			else if (option == addAllBeforeOption)
+			{
+				point_.graphPanel.AddAllPointsBefore(point_);
+			}
+			else if (option ==  addAllAfterOption)
+			{
+				point_.graphPanel.AddAllPointsAfter(point_);
 			}
 		}
 	}

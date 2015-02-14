@@ -365,6 +365,26 @@ public class GraphPanel : MonoBehaviour
 		return AddPointBefore ( pt, true );
 	}
 
+	public void AddAllPointsBefore(GraphPoint pt)
+	{
+		GraphPoint ptToAddBefore = null;
+		do
+		{
+			ptToAddBefore = pt;
+			if (pt != null) pt = pt.PreviousPoint;
+		} while (ptToAddBefore!=null && AddPointBefore(ptToAddBefore));
+	}
+
+	public void AddAllPointsAfter(GraphPoint pt)
+	{
+		GraphPoint ptToAddAfter = null;
+		do
+		{
+			ptToAddAfter = pt;
+			if (pt != null) pt = pt.NextPoint;
+		} while (ptToAddAfter != null && AddPointBefore(ptToAddAfter));
+	}
+
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{
 		if ( pt.PreviousPoint == null )

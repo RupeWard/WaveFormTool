@@ -25,7 +25,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		set 
 		{ 
 			nextPoint_ = value;
-			updateLine (); 
+			isAppearanceDirty_ = true; 
 		}
 	}
 	public GraphPoint PreviousPoint
@@ -34,7 +34,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		set 
 		{ 
 			previousPoint_ = value;
-			updateLine ( ); 
+			isAppearanceDirty_ = true; 
 		}
 	}
 
@@ -169,15 +169,18 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		{
 			pointSprite.color = s_nonFunctionalColor;
 		}
-		if (isFunctional_ && nextPoint_.IsFunctional)
+		if ( lineSprite != null )
 		{
-			// TODO separate colours for lines & points
-			lineSprite.color = s_functionalColor;
-		}
-		else
-		{
-			// TODO separate colours for lines & points
-			lineSprite.color = s_nonFunctionalColor;
+			if (isFunctional_ && nextPoint_ != null && nextPoint_.IsFunctional)
+			{
+				// TODO separate colours for lines & points
+				lineSprite.color = s_functionalColor;
+			}
+			else
+			{
+				// TODO separate colours for lines & points
+				lineSprite.color = s_nonFunctionalColor;
+			}
 		}
 	}
 
@@ -289,7 +292,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	{
 		if (isFunctional_)
 		{
-			Debug.Log ("Point Selected: " + this.DebugDescribe ());
+//			Debug.Log ("Point Selected: " + this.DebugDescribe ());
 			myGraph_.OnPointSelected (this);
 		}
 		else
@@ -305,6 +308,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	{
 		if (isAppearanceDirty_)
 		{
+			updateLine();
 			SetColour();
 			ClearAppearanceDirty();
 		}
@@ -314,7 +318,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			if (!isSelected)
 			{
 				if (DEBUG_POINT)
-					Debug.Log("Point selection detected: "+this.DebugDescribe());
+				{
+//					Debug.Log("Point selection detected: "+this.DebugDescribe());
+				}
 			}
 			isSelected = true;
 
