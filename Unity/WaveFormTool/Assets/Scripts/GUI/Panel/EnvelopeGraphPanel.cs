@@ -77,7 +77,8 @@ public class EnvelopeGraphPanel : GraphPanel
 		              );
 		rangeStart_ = firstPoint_;
 		OnPointSelected(rangeStart_);
-		pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
+
+		rangeStart_.IsFixed = true;
 		firstPoint_.gameObject.name = "First";
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
@@ -218,7 +219,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		}
 
 		OnPointSelected(rangeEnd_);
-		pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
+		rangeEnd_.IsFixed = true;
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
 
@@ -300,16 +301,10 @@ public class EnvelopeGraphPanel : GraphPanel
 
 			GraphPoint p = RangeStart;
 
-			System.Text.StringBuilder ptssb = null;
-			if (DEBUG_ENVELOPE_GEN)
-			{
-				ptssb = new System.Text.StringBuilder ();
-			}
-
 			while ( p!= null)
 			{
 				provider.AddPoint(p.Point);
-				ptssb.Append("\nEnvPt "+p.Point);
+				sb.Append("\nEnvPt "+p.Point);
 				p = p.NextPoint;
 
 			}	//	while (p!= null && p != RangeEnd && numDone < numSamples_)
@@ -319,10 +314,11 @@ public class EnvelopeGraphPanel : GraphPanel
 			messageLabel.text = "Created envelope";
 			envelopeProvider_ = provider;
 			ToneGeneratorPanel.Instance.envelopeProvider_ = envelopeProvider_;
-			if (ptssb != null)
+			if (sb != null)
 			{
-				Debug.Log("Points at...\n"+ptssb.ToString());
+				Debug.Log(sb.ToString());
 			}
+
 		}
 		yield return null;
 	}

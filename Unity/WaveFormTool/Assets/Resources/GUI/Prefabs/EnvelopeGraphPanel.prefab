@@ -2221,6 +2221,7 @@ MonoBehaviour:
   highlightColor: {r: .596078455, g: 1, b: .200000003, a: 1}
   isAnimated: 1
   isLocalized: 0
+  autoSelectFirstOptionOnStart: 1
   eventReceiver: {fileID: 100070}
   functionName: OnPointHeightChangeStrategyChange
   mSelectedItem: 
@@ -2311,6 +2312,7 @@ MonoBehaviour:
   highlightColor: {r: .596078455, g: 1, b: .200000003, a: 1}
   isAnimated: 1
   isLocalized: 0
+  autoSelectFirstOptionOnStart: 1
   eventReceiver: {fileID: 100122}
   functionName: OnOptionSelected
   mSelectedItem: 

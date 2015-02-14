@@ -158,7 +158,7 @@ public class GraphPointPanel : MonoBehaviour
 		point_ = p;
 		SetXYLabels();
 		SetUpFixFreeButton ();
-		actionMenu.SetPoint (point_);
+		actionMenu.SetPoint (this);
 		if (point_ != null)
 		{
 			if (point_.Point.y >= point_.graphPanel.graphSettings.YViewCentre)
@@ -254,7 +254,7 @@ public class GraphPointPanel : MonoBehaviour
 		if (point_ != null && point_.IsDataDirty)
 		{
 			SetUpFixFreeButton ();
-			actionMenu.SetPoint(point_);
+			actionMenu.SetPoint(this);
 			point_.ClearDataDirty();
 		}
 	}
@@ -334,7 +334,14 @@ public class GraphPointPanel : MonoBehaviour
 				{
 					Debug.LogWarning ("FixPoint : " + point_.DebugDescribe ());
 				}
-				point_.IsFixed = !point_.IsFixed;
+				if (point_.IsFixed && point_.MustBeFixed())
+				{
+					Debug.LogWarning ("Fixed Point : " + point_.DebugDescribe ()+" can't be freed");
+				}
+				else
+				{
+					point_.IsFixed = !point_.IsFixed;
+				}
 			}
 		}
 	}

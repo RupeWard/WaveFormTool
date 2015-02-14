@@ -41,30 +41,44 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public bool showLine = true;
 
 	private GraphPoint follower_ = null;
-	public void SetFollower(GraphPoint f)
+	public GraphPoint Follower
 	{
-//		Debug.Log ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+		get { return follower_; }
 
-		if (f != null)
+		set 
 		{
-			if (!f.IsFunctional)
+//			Debug.Log ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+
+			if (value != null)
 			{
-				if (f.HasFollower)
+				if (!value.IsFunctional)
 				{
-					Debug.LogWarning ("Shouldn't chain following, removing the other's follower");
-					f.SetFollower (null);
+					if (value.HasFollower)
+					{
+						Debug.LogWarning ("Shouldn't chain following, aborting set follower to "
+						                  +value.DebugDescribe()+ " for " +this.DebugDescribe());
+						return;
+					}
+					follower_ = value;
 				}
-				follower_ = f;
-//				Debug.Log ("Set follower: " + f.DebugDescribe () + this.DebugDescribe ());
+				else
+				{
+					Debug.LogWarning ("Can't be functional follower " + value.DebugDescribe () +" of "+ this.DebugDescribe ());
+				}
+				Debug.Log ("Set follower: " + value.DebugDescribe () +" of "+ this.DebugDescribe ());
 			}
 			else
 			{
-				Debug.LogWarning ("Follower can't be functional " + f.DebugDescribe () + this.DebugDescribe ());
+				if (follower_ == null)
+				{
+					Debug.LogWarning ("Follower already null for " + this.DebugDescribe ());
+				}
+				else
+				{
+					Debug.Log ("Removing follower: " + value.DebugDescribe () + " of " +this.DebugDescribe ());
+				}
+				follower_ = null;
 			}
-		}
-		else
-		{
-			follower_ = null;
 		}
 	}
 	public bool HasFollower
@@ -344,6 +358,16 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		if (result != b.slopeBetween (a))
 		{
 			Debug.LogError ("slopebtween!");
+		}
+		return result;
+	}
+
+	public bool MustBeFixed()
+	{
+		bool result = false;
+		if ( this == graphPanel.RangeStart || this == graphPanel.RangeEnd )
+		{
+			result = true;
 		}
 		return result;
 	}

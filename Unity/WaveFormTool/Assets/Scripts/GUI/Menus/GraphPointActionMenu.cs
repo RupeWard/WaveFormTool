@@ -4,54 +4,33 @@ using System.Collections.Generic;
 
 public class GraphPointActionMenu : Menu 
 {
-	public static readonly string fixPointOption = "Fix";
-	public static readonly string freePointOption = "Free";
+	public static readonly string nullOption = "ACTIONS";
+	public static readonly string deletePointOption = "Delete";
 
 	private GraphPoint point_ = null;
+	private GraphPointPanel panel_;
 
 	public void Awake ()
 	{
-		// Not needed
-		AddOption (fixPointOption, false);
-		AddOption (freePointOption, false);
+		AddOption ( nullOption, true );
+		AddOption (deletePointOption, false);
 	}
 
-	public void SetPoint(GraphPoint p)
+	public void SetPoint(GraphPointPanel panel)
 	{
-		point_ = p;
-		SetOptionActive(freePointOption, point_!= null && point_.IsFixed);
-		SetOptionActive(fixPointOption, point_!= null && !point_.IsFixed);
+		panel_ = panel;
+		point_ = panel_.Point;
+		SetOptionActive(deletePointOption, point_!= null && false == point_.IsFixed && point_.IsFunctional);
 	}
 	
 	public override void OnOptionSelected(string option)
 	{
 		if (point_ != null)
 		{
-			if (option == fixPointOption)
+			if (option == deletePointOption)
 			{
-				if (point_.IsFunctional)
-				{
-					if (!point_.graphPanel.IsCreatingGraph)
-					{
-						Debug.LogWarning ("FixPoint : "+point_.DebugDescribe());
-					}
-					point_.IsFixed = true;
-				}
-			}
-			else if (option == freePointOption)
-			{
-				if (point_.IsFunctional)
-				{
-					if (!point_.graphPanel.IsCreatingGraph)
-					{
-						Debug.LogWarning ("FreePoint"+point_.DebugDescribe());
-					}
-					point_.IsFixed = false;
-				}
-			}
-			else
-			{
-				Debug.LogWarning ("Menu '" + gameObject.name + "' doesn't know about option '" + option + "'");
+				point_.graphPanel.DeletePoint(point_);
+				panel_.SetPoint(null);
 			}
 		}
 	}

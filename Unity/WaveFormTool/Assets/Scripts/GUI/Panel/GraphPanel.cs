@@ -355,6 +355,59 @@ public class GraphPanel : MonoBehaviour
 		}
 	}
 
+	public void DeletePoint(GraphPoint pt)
+	{
+		DeletePoint ( pt, false );
+	}
+
+	public void DeleteFollower(GraphPoint pt)
+	{
+		DeletePoint ( pt, true );
+	}
+
+	private void DeletePoint(GraphPoint pt, bool isFollower)
+	{
+		Debug.Log ( "DeletePoint " + pt );
+		if ( isCreatingGraph_ )
+		{
+			Debug.LogWarning ("Attempt to delete point while creating ");
+			return;
+		}
+		if (!isFollower && !pt.IsFunctional)
+		{
+			Debug.LogWarning ("Attempt to delete non-functional point "+pt.DebugDescribe());
+			return;
+		}
+		if (pt.IsFixed)
+		{
+			Debug.LogWarning ("Attempt to delete fixed point "+pt.DebugDescribe());
+			return;
+		}
+		if (pt == rangeStart_)
+		{
+			Debug.LogWarning ("Attempt to delete start point "+pt.DebugDescribe());
+			return;
+		}
+		if (pt == rangeEnd_)
+		{
+			Debug.LogWarning ("Attempt to delete end point "+pt.DebugDescribe());
+			return;
+		}
+		if ( pt.PreviousPoint != null )
+		{
+			pt.PreviousPoint.NextPoint = pt.NextPoint;
+		}
+		if ( pt.NextPoint != null )
+		{
+			pt.NextPoint.PreviousPoint = pt.PreviousPoint;
+		}
+		if (!isFollower && pt.HasFollower )
+		{
+			DeleteFollower(pt.Follower);
+		}
+		GameObject.Destroy ( pt.gameObject );
+	}
+
 	protected int NumGraphPoints()
 	{
 		int n = 0;

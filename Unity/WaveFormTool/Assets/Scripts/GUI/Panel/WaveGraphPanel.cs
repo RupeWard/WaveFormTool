@@ -119,11 +119,9 @@ public class WaveGraphPanel : GraphPanel
 					bIsRangeEnd = true;
 					rangeEnd_ = newPoint;
 				}
-				if (bIsRangeStart || bIsRangeEnd) // FIXME specific to wave loop
+				if (bIsRangeStart || bIsRangeEnd) 
 				{
-					OnPointSelected(newPoint);
-					pointPanel_.actionMenu.OnOptionSelected(GraphPointActionMenu.fixPointOption);
-					
+					newPoint.IsFixed = true;
 					yield return null; // yield allows point to pick up on it immediately
 					//					newPoint.IsFixed = true;
 				}
@@ -182,13 +180,13 @@ public class WaveGraphPanel : GraphPanel
 		while (earlyPoint != null && followedPoint != null)
 		{
 			earlyPoints++;
-			followedPoint.SetFollower(earlyPoint);
+			followedPoint.Follower = earlyPoint;
 			earlyPoint = earlyPoint.PreviousPoint;
 			followedPoint = followedPoint.PreviousPoint;
 		}
 		if (earlyPoints > 0 && !graphSettings.loop)
 		{
-			Debug.LogError("Found "+earlyPoints+" early points when not looping");
+			Debug.LogError("Found  "+earlyPoints+" early points when not looping");
 		}
 		
 		GraphPoint latePoint = rangeEnd_.NextPoint;
@@ -198,7 +196,7 @@ public class WaveGraphPanel : GraphPanel
 		while (latePoint != null && followedPoint != null)
 		{
 			latePoints++;
-			followedPoint.SetFollower(latePoint);
+			followedPoint.Follower = latePoint;
 			latePoint = latePoint.NextPoint;
 			followedPoint = followedPoint.NextPoint;
 		}
@@ -270,11 +268,9 @@ public class WaveGraphPanel : GraphPanel
 
 		int numSkipped = 0;
 
-		System.Text.StringBuilder ptssb = null;
-		if (DEBUG_TONE_GEN)
+		if (sb != null)
 		{
-			ptssb = new System.Text.StringBuilder ();
-			ptssb.Append(""+phase+","+ newSamples[0]+"\n");
+			sb.Append("\nPhase "+phase+","+ newSamples[0]);
 		}
 
 		phase += step;
@@ -333,9 +329,9 @@ public class WaveGraphPanel : GraphPanel
 				{
 					Debug.Log("Set point at "+phase+", "+ val);
 				}
-				if (ptssb != null)
+				if (sb != null)
 				{
-					ptssb.Append(""+phase+","+ val+"\n");
+					sb.Append("\nPhase "+phase+","+ val);
 				}
 			}
 			else
@@ -375,9 +371,9 @@ public class WaveGraphPanel : GraphPanel
 			messageLabel.color = Color.black;
 			messageLabel.text = "!! Failed to create base tone";
 		}
-		if (ptssb != null)
+		if (sb != null)
 		{
-			Debug.Log("Points at...\n"+ptssb.ToString());
+			Debug.Log(sb.ToString());
 		}
 		yield return null;
 	}
