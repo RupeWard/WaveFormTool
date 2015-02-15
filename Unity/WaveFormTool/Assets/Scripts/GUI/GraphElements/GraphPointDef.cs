@@ -43,30 +43,32 @@ public class GraphPointDef
 		}
 		throw new System.NotImplementedException ( "Unrecognised EFunctionalState '" + s + "'" );
 	}
-	
-	static public bool ParseBool(string s)
+
+	public int id = -1;
+	public Vector2 pt = new Vector2();
+	public EFixedState eFixedState = EFixedState.None;
+	public EFunctionalState eFunctionalState = EFunctionalState.None;
+	public int followerId = -1;
+
+	public bool isRangeStart = false;
+	public bool isRangeEnd = false;
+
+#region IO
+	public void SaveToFile(System.IO.TextWriter file)
 	{
-		if ( s == "true" )
-		{
-			return true;
-		}
-		else if ( s == "false" )
-		{
-			return false;
-		}
-		throw new System.NotImplementedException ( "Unrecognised bool '" + s + "'" );
+		file.Write ( ">>> Point Start\n" );
+
+		GraphIO.WriteInt(file, "ID", id);
+		GraphIO.WriteVector2(file, "ID", pt);
+		GraphIO.WriteFixedState(file, eFixedState);
+		GraphIO.WriteFunctionalState(file, eFunctionalState);
+		GraphIO.WriteInt(file,"Follower",followerId);
+		GraphIO.WriteBool (file,"RangeStart",isRangeStart);
+
+		file.Write ( "<<< Point End\n" );
+		
 	}
-
-
-	int id = -1;
-	float x = float.NaN;
-	float y =  float.NaN;
-	EFixedState eFixedState = EFixedState.None;
-	EFunctionalState efunctionalState = EFunctionalState.None;
-	bool bIsFollower = false;
-	int followerId = -1;
-
-	bool isRangeStart = false;
-	bool isRangeEnd = false;
+	
+#endregion IO
 
 }

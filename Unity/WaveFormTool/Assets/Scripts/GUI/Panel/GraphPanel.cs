@@ -41,7 +41,7 @@ public class GraphPanel : MonoBehaviour
 
 	private float backgroundMargin = 20f;
 
-	protected bool isCreatingGraph_ = true;
+	protected bool isCreatingGraph_ = false;
 	public bool IsCreatingGraph
 	{
 		get { return isCreatingGraph_; }
@@ -656,5 +656,97 @@ public class GraphPanel : MonoBehaviour
 	}
 
 #endregion controls
+
+#region IO
+	private static readonly bool DEBUG_IO = true;
+
+	public void OnSaveButtonClicked()
+	{
+		SaveToFile ( "graph.txt");
+	}
+
+	public void SaveToFile(string filename)
+	{
+		if ( isCreatingGraph_ )
+		{
+			messageLabel.text = "Can't save while creating";
+		}
+		else if ( NumGraphPoints ( ) < 1 )
+		{
+			Debug.LogWarning("No points to save!");
+		}
+		else
+		{
+			StartCoroutine ( SaveToFileCR ( filename ) );
+		}
+	}
+
+	public IEnumerator SaveToFileCR(string filename)
+	{
+		bool bFoundFolder = false;
+
+		System.IO.DirectoryInfo saveFolder = new System.IO.DirectoryInfo ( GraphIO.SaveFolder );
+		if (!saveFolder.Exists)
+		{
+			saveFolder.Create();
+			saveFolder = new System.IO.DirectoryInfo ( GraphIO.SaveFolder );
+			if (!saveFolder.Exists)
+			{
+				Debug.LogError ("Couldn't create save folder '"+saveFolder+"'");
+			}
+			else
+			{
+				bFoundFolder = true;
+				Debug.Log ("Created save folder '"+saveFolder+"'");
+			}
+			yield return null;
+		}
+		else 
+		{
+			Debug.Log ("Found save folder '"+saveFolder+"'");
+			bFoundFolder = true;
+		}
+		if (bFoundFolder)
+		{
+			string filePath = GraphIO.SaveFolder + filename;
+			System.IO.TextWriter file = new System.IO.StreamWriter(filePath, false);
+			graphSettings.SaveToFile(file);
+
+			yield return StartCoroutine(CreatePointDefsCR());
+
+			GraphPoint p = firstPoint_;
+			while (p != null)
+			{
+				p.pointDef.SaveToFile(file);
+				p = p.NextPoint;
+			}
+
+			file.Close();
+		}
+
+	}
+
+	private IEnumerator CreatePointDefsCR()
+	{
+		Debug.Log ( "Creating point defs" );
+		yield return null;
+		int id = 0;
+		GraphPoint p = firstPoint_;
+		while (p != null)
+		{
+			p.CreatePointDef(id);
+			id++;
+			p = p.NextPoint;
+		}
+		Debug.Log ( "Updating point defs" );
+		yield return null;
+		p = firstPoint_;
+		while (p != null)
+		{
+			p.UpdatePointDef();
+			p = p.NextPoint;
+		}
+	}
+#endregion IO
 
 }

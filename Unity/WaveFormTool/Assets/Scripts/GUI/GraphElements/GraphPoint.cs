@@ -17,6 +17,26 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	private GraphPoint nextPoint_ = null;
 	private GraphPoint previousPoint_ = null;
 
+	public GraphPointDef pointDef = null;
+	public void CreatePointDef(int id)
+	{
+		pointDef = new GraphPointDef ( );
+		pointDef.id = id;
+		pointDef.pt = new Vector2 ( point_.x, point_.y );
+		pointDef.eFixedState = eFixedState_;
+		pointDef.eFunctionalState = eFunctionalState_;
+
+		pointDef.isRangeStart = (this == graphPanel.RangeStart);
+		pointDef.isRangeEnd = (this == graphPanel.RangeEnd);
+	}
+	public void UpdatePointDef()
+	{
+		if ( follower_ != null )
+		{
+			pointDef.followerId = follower_.pointDef.id;
+		}
+	}
+
 	private Quaternion flatLineRotation_ =  new Quaternion(0,0,0,1);
 
 	public GraphPoint NextPoint

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class GraphSettings : MonoBehaviour
 {
-
 	public Vector2 xRange = new Vector2();
 	public Vector2 yRange = Vector2.zero;
 
@@ -144,5 +143,26 @@ public class GraphSettings : MonoBehaviour
 		
 		return true;
 	}
+
+#region IO
+	public void SaveToFile(System.IO.TextWriter file)
+	{
+		file.Write ( ">>> GraphSettings Start\n" );
+		// x range
+		GraphIO.WriteVector2(file, "XRange", xRange);
+		// y range
+		GraphIO.WriteVector2(file, "YRange", yRange);
+		// def xview
+		GraphIO.WriteVector2(file, "Xview", defXView_);
+		// def yview
+		GraphIO.WriteVector2(file, "Xview", defYView_);
+		// allowCrossingYviewXAxis		
+		GraphIO.WriteBool(file, "allowXcrossing", allowCrossingXAxis);
+		// loop 
+		GraphIO.WriteBool(file, "loop", loop);
+		file.Write ( "<<< GraphSettings End\n" );
+
+	}
+#endregion IO
 
 }

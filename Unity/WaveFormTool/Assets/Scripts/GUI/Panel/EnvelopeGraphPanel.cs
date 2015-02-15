@@ -15,7 +15,7 @@ public class EnvelopeGraphPanel : GraphPanel
 
 	public int numSamples_ = 100;
 
-	private BasicEnvelopeSettings envelopeSettings_;
+//	private BasicEnvelopeSettings envelopeSettings_;
 
 	private BasicEnvelopeProvider envelopeProvider_ = null;
 
@@ -41,25 +41,25 @@ public class EnvelopeGraphPanel : GraphPanel
 
 	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
-		envelopeSettings_ = envelopeSettings;
+//		envelopeSettings_ = envelopeSettings;
 		isCreatingGraph_ = true;
 		
 		if (DEBUG_ENVELOPE_GRAPH)
-			Debug.Log ("CreateEnvelope( " + numSamples + " )\n"+envelopeSettings_.DebugDescribe());
+			Debug.Log ("CreateEnvelope( " + numSamples + " )\n"+envelopeSettings.DebugDescribe());
 		
 		yield return StartCoroutine(ClearPointsCR ());
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("Cleared points");
 
 		graphSettings.xRange.x = graphSettings.xView.x = 0f;
-		graphSettings.xRange.y = graphSettings.xView.y = envelopeSettings_.TotalLength;
+		graphSettings.xRange.y = graphSettings.xView.y = envelopeSettings.TotalLength;
 		graphSettings.yRange.x = graphSettings.yView.x = 0f;
-		graphSettings.yRange.y = graphSettings.yView.y = envelopeSettings_.leadInPeakValue;
+		graphSettings.yRange.y = graphSettings.yView.y = envelopeSettings.leadInPeakValue;
 
 		graphSettings.allowCrossingXAxis = false;
 		graphSettings.loop = false;
 		
-		graphSettings.axisDefinitions = envelopeSettings_.MakeAxisDefinitions();
+		graphSettings.axisDefinitions = envelopeSettings.MakeAxisDefinitions();
 
 		ResetView ();
 
@@ -86,8 +86,8 @@ public class EnvelopeGraphPanel : GraphPanel
 		GraphPoint previous = firstPoint_;
 		GraphPoint newPoint = null;
 
-		int numToPeak = Mathf.CeilToInt(((float)envelopeSettings_.leadInPeakTime / (float)envelopeSettings_.leadInLength) * (float)numSamples);
-		float step = envelopeSettings_.leadInPeakTime / numToPeak;
+		int numToPeak = Mathf.CeilToInt(((float)envelopeSettings.leadInPeakTime / (float)envelopeSettings.leadInLength) * (float)numSamples);
+		float step = envelopeSettings.leadInPeakTime / numToPeak;
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("To peak = "+numToPeak+" points with step = "+step);
 		yield return null;
@@ -99,7 +99,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			newPoint.transform.parent = pointsContainer;
 			newPoint.init(this, 
 			                 time, 
-			                 efp.GetValueForTime(time, envelopeSettings_),
+			                 efp.GetValueForTime(time, envelopeSettings),
 			                 GraphPointDef.EFunctionalState.Functional
 			                 );
 			newPoint.gameObject.name = "1";
@@ -114,19 +114,19 @@ public class EnvelopeGraphPanel : GraphPanel
 		int numToEnd = numSamples - numToPeak;
 		if (numToEnd > 0)
 		{
-			step = (envelopeSettings_.leadInLength - envelopeSettings_.leadInPeakTime) / numToEnd;
+			step = (envelopeSettings.leadInLength - envelopeSettings.leadInPeakTime) / numToEnd;
 			if (DEBUG_ENVELOPE_GRAPH)
 				Debug.Log ("To leadInEnd = "+numToEnd+" points with step = "+step);
 			yield return null;
 
 			for (int i = 1; i < numToEnd; i++)
 			{
-				time = envelopeSettings_.leadInPeakTime + i*step;
+				time = envelopeSettings.leadInPeakTime + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
 				newPoint.init(this, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings_),
+				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "2";
@@ -139,12 +139,12 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At leadInEnd = "+previous.DebugDescribe());
 		yield return null;
 
-		time = envelopeSettings_.leadInLength;
+		time = envelopeSettings.leadInLength;
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
 		newPoint.init(this, 
 		              time, 
-		              envelopeSettings_.midValue,
+		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "3";
@@ -155,13 +155,13 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At mid start = "+previous.DebugDescribe());
 		yield return null;
 
-		time = envelopeSettings_.leadInLength + envelopeSettings_.midLength;
+		time = envelopeSettings.leadInLength + envelopeSettings.midLength;
 
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
 		newPoint.init(this, 
 		              time, 
-		              envelopeSettings_.midValue,
+		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "4";
@@ -172,22 +172,22 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At mid end = "+previous.DebugDescribe());
 		yield return null;
 
-		int numToFinish = Mathf.CeilToInt(((float)envelopeSettings_.tailOutLength / envelopeSettings_.leadInLength) * numSamples);
+		int numToFinish = Mathf.CeilToInt(((float)envelopeSettings.tailOutLength / envelopeSettings.leadInLength) * numSamples);
 		if (numToFinish > 0)
 		{
-			step = envelopeSettings_.tailOutLength / numToFinish;
+			step = envelopeSettings.tailOutLength / numToFinish;
 			if (DEBUG_ENVELOPE_GRAPH)
 				Debug.Log ("To finish = "+numToFinish+" points with step = "+step);
 			yield return null;
 
 			for (int i = 1; i <= numToFinish; i++)
 			{
-				time = envelopeSettings_.leadInLength + envelopeSettings_.midLength + i*step;
+				time = envelopeSettings.leadInLength + envelopeSettings.midLength + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
 				newPoint.init(this, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings_),
+				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "5";
@@ -200,12 +200,12 @@ public class EnvelopeGraphPanel : GraphPanel
 			Debug.Log ("At finish = "+previous.DebugDescribe());
 		yield return null;
 
-		if (previous.Point.x < envelopeSettings_.TotalLength)
+		if (previous.Point.x < envelopeSettings.TotalLength)
 		{
 			rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 			rangeEnd_.transform.parent = pointsContainer;
 			rangeEnd_.init(this, 
-			               envelopeSettings_.TotalLength, 
+			               envelopeSettings.TotalLength, 
 			               0f,
 			               GraphPointDef.EFunctionalState.Functional
 			               );
