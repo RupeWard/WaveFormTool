@@ -344,7 +344,7 @@ public class GraphPointPanel : MonoBehaviour
 				}
 				else
 				{
-					point_.IsFixed = !point_.IsFixed;
+					point_.ToggleFixedState();
 				}
 			}
 		}

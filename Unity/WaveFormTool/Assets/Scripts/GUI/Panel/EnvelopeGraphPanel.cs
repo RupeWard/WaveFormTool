@@ -73,12 +73,12 @@ public class EnvelopeGraphPanel : GraphPanel
 		firstPoint_.init(this, 
 		              time, 
 		              0f,
-		              true
+		              GraphPointDef.EFunctionalState.Functional
 		              );
 		rangeStart_ = firstPoint_;
 		OnPointSelected(rangeStart_);
 
-		rangeStart_.IsFixed = true;
+		rangeStart_.SetFixed ();
 		firstPoint_.gameObject.name = "First";
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
@@ -100,7 +100,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			newPoint.init(this, 
 			                 time, 
 			                 efp.GetValueForTime(time, envelopeSettings_),
-			                 true
+			                 GraphPointDef.EFunctionalState.Functional
 			                 );
 			newPoint.gameObject.name = "1";
 			newPoint.PreviousPoint = previous;
@@ -127,7 +127,7 @@ public class EnvelopeGraphPanel : GraphPanel
 				newPoint.init(this, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings_),
-				              true
+				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "2";
 				newPoint.PreviousPoint = previous;
@@ -145,7 +145,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		newPoint.init(this, 
 		              time, 
 		              envelopeSettings_.midValue,
-		              true
+		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "3";
 		newPoint.PreviousPoint = previous;
@@ -162,7 +162,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		newPoint.init(this, 
 		              time, 
 		              envelopeSettings_.midValue,
-		              true
+		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "4";
 		newPoint.PreviousPoint = previous;
@@ -188,7 +188,7 @@ public class EnvelopeGraphPanel : GraphPanel
 				newPoint.init(this, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings_),
-				              true
+				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "5";
 				newPoint.PreviousPoint = previous;
@@ -207,7 +207,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			rangeEnd_.init(this, 
 			               envelopeSettings_.TotalLength, 
 			               0f,
-			               true
+			               GraphPointDef.EFunctionalState.Functional
 			               );
 			rangeEnd_.gameObject.name = "6";
 			rangeEnd_.PreviousPoint = previous;
@@ -219,7 +219,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		}
 
 		OnPointSelected(rangeEnd_);
-		rangeEnd_.IsFixed = true;
+		rangeEnd_.SetFixed ();
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
 

@@ -409,7 +409,7 @@ public class GraphPanel : MonoBehaviour
 		newPoint.init(this, 
 	              0.5f *(pt.Point.x + pt.PreviousPoint.Point.x), 
 	              0.5f *(pt.Point.y + pt.PreviousPoint.Point.y), 
-	              !isFollower
+		      (isFollower)?(GraphPointDef.EFunctionalState.NonFunctional):(GraphPointDef.EFunctionalState.Functional)
 	              );
 		newPoint.PreviousPoint = pt.PreviousPoint;
 		newPoint.NextPoint = pt;
@@ -482,7 +482,7 @@ public class GraphPanel : MonoBehaviour
 		newPoint.init(this, 
 		              0.5f *(pt.Point.x + pt.NextPoint.Point.x), 
 		              0.5f *(pt.Point.y + pt.NextPoint.Point.y), 
-		              true
+		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.NextPoint = pt.NextPoint;
 		newPoint.PreviousPoint = pt;

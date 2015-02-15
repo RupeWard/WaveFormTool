@@ -105,7 +105,8 @@ public class WaveGraphPanel : GraphPanel
 				newPoint.init(this, 
 				              currentX, 
 				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
-				              (currentX >= 0f && currentX <= 1f)
+				              (currentX >= 0f-rangeEndTolerance && currentX <= 1f+rangeEndTolerance)?
+				              (GraphPointDef.EFunctionalState.Functional):(GraphPointDef.EFunctionalState.NonFunctional)
 				              );
 				bool bIsRangeStart = false;
 				if (currentX.EqualsApprox(graphSettings.xRange.x, rangeEndTolerance))
@@ -121,7 +122,7 @@ public class WaveGraphPanel : GraphPanel
 				}
 				if (bIsRangeStart || bIsRangeEnd) 
 				{
-					newPoint.IsFixed = true;
+					newPoint.SetFixed ();
 					yield return null; // yield allows point to pick up on it immediately
 					//					newPoint.IsFixed = true;
 				}

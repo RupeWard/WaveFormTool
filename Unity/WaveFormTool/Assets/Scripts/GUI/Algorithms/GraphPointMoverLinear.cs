@@ -35,7 +35,7 @@ public class GraphPointMoverLinear : GraphPointMoverBase // FIXME refactor to Y
 		List < GraphPoint > pointsToMove = new List< GraphPoint>();
 							
 		GraphPoint tp = pt.PreviousPoint;
-		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
+		while (tp != null && tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
 		{
 			pointsToMove.Add (tp);
 			tp = tp.PreviousPoint;

@@ -51,7 +51,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 			if (value != null)
 			{
-				value.IsFunctional = false;
+				value.SetNonFunctional();
 //				if (!value.IsFunctional)
 //				{
 					if (value.HasFollower)
@@ -112,27 +112,69 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	}
 
 
-	private bool isFixed_ = false;
-	public bool IsFixed
-	{
-		get { return isFixed_; }
+	private GraphPointDef.EFixedState eFixedState_ = GraphPointDef.EFixedState.Free;
+	public GraphPointDef.EFixedState EFixedState 
+	{ 
+		get { return eFixedState_; }
 		set
 		{
-			isFixed_ = value;
-			isAppearanceDirty_ = true;
-			isDataDirty_ = true;
+			if (value != eFixedState_)
+			{
+				eFixedState_ = value;
+				isAppearanceDirty_ = true;
+				isDataDirty_ = true;
+			}
 		}
 	}
-
-	private bool isFunctional_ = true;
-	public bool IsFunctional
+	public bool IsFixed 
+	{ 
+		get { return eFixedState_ == GraphPointDef.EFixedState.Fixed;}
+	}
+	public void SetFixed()
 	{
-		get { return isFunctional_; }
+		EFixedState = GraphPointDef.EFixedState.Fixed;
+	}
+	public void SetFree()
+	{
+		EFixedState = GraphPointDef.EFixedState.Free;
+	}
+	public void ToggleFixedState()
+	{
+		if ( eFixedState_ == GraphPointDef.EFixedState.Free )
+		{
+			SetFixed ();
+		}
+		else if ( eFixedState_ == GraphPointDef.EFixedState.Fixed )
+		{
+			SetFree ();
+		}
+
+	}
+
+	private GraphPointDef.EFunctionalState eFunctionalState_ = GraphPointDef.EFunctionalState.Functional;
+	public GraphPointDef.EFunctionalState EFunctionalState
+	{
+		get { return eFunctionalState_; }
 		set 
 		{
-			isFunctional_ = value;
-			isAppearanceDirty_ = true;
+			if (value != eFunctionalState_)
+			{
+				eFunctionalState_ = value;
+				isAppearanceDirty_ = true;
+			}
 		}
+	}
+	public bool IsFunctional 
+	{ 
+		get { return eFunctionalState_ == GraphPointDef.EFunctionalState.Functional; }
+	}
+	public void SetFunctional()
+	{
+		EFunctionalState = GraphPointDef.EFunctionalState.Functional;
+	}
+	public void SetNonFunctional()
+	{
+		EFunctionalState = GraphPointDef.EFunctionalState.NonFunctional;
 	}
 
 	private Vector2 graphPosition_;
@@ -153,26 +195,40 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return point_; }
 	}
 
-	public void init (GraphPanel p, float x, float y, bool functional)
+	public void init (GraphPanel p, float x, float y, GraphPointDef.EFunctionalState functionalState)
 	{
 		myGraph_ = p;
-		IsFunctional = functional;
+		EFunctionalState = functionalState;
 		SetXY (x, y);
 	}
 
 	private void SetColour()
 	{
-		if (isFunctional_)
+		switch ( eFunctionalState_ )
 		{
-			pointSprite.color = (isFixed_) ? (s_functionalColorFixed) : (s_functionalColor);
-		}
-		else
-		{
-			pointSprite.color = s_nonFunctionalColor;
+			case GraphPointDef.EFunctionalState.Functional:
+			{
+				// TODO Refactor
+				pointSprite.color = 
+					(eFixedState_ == GraphPointDef.EFixedState.Fixed) 
+						? (s_functionalColorFixed) : (s_functionalColor);
+				break;
+			}
+			case GraphPointDef.EFunctionalState.NonFunctional:
+			{
+				pointSprite.color = s_nonFunctionalColor;
+				break;
+			}
+			default :
+			{
+				Debug.LogError ("Unhandled functional state "+eFunctionalState_);
+				break;
+			}
 		}
 		if ( lineSprite != null )
 		{
-			if (isFunctional_ && nextPoint_ != null && nextPoint_.IsFunctional)
+			if (eFunctionalState_ == GraphPointDef.EFunctionalState.Functional 
+			    && nextPoint_ != null && nextPoint_.EFunctionalState == GraphPointDef.EFunctionalState.Functional)
 			{
 				// TODO separate colours for lines & points
 				lineSprite.color = s_functionalColor;
@@ -291,7 +347,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	
 	public void OnSelected()
 	{
-		if (isFunctional_)
+		if (IsFunctional)
 		{
 //			Debug.Log ("Point Selected: " + this.DebugDescribe ());
 			myGraph_.OnPointSelected (this);
@@ -391,11 +447,11 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		sb.Append (" ) at ");
 		sb.Append (transform.localPosition);
 		sb.Append (" ");
-		if (isFixed_)
+		if (IsFixed)
 		{
 			sb.Append ("Fixed ");
 		}
-		if (!isFunctional_)
+		if (!IsFunctional)
 		{
 			sb.Append ("Dead ");
 		}
