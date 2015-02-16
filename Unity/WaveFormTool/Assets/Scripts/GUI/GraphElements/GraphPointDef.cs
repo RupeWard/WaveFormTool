@@ -56,17 +56,96 @@ public class GraphPointDef
 #region IO
 	public void SaveToFile(System.IO.TextWriter file)
 	{
-		file.Write ( ">>> Point Start\n" );
+		GraphIO.WriteStartLine( file, "Point" );
 
 		GraphIO.WriteInt(file, "ID", id);
-		GraphIO.WriteVector2(file, "ID", pt);
+		GraphIO.WriteVector2(file, "Point", pt);
 		GraphIO.WriteFixedState(file, eFixedState);
 		GraphIO.WriteFunctionalState(file, eFunctionalState);
 		GraphIO.WriteInt(file,"Follower",followerId);
 		GraphIO.WriteBool (file,"RangeStart",isRangeStart);
+		GraphIO.WriteBool (file,"RangeEnd",isRangeEnd);
 
-		file.Write ( "<<< Point End\n" );
+		GraphIO.WriteEndLine(file,  "Point" );
+
+	}
+
+	static public GraphPointDef ReadFromFile(System.IO.TextReader file)
+	{
+		GraphPointDef def = new GraphPointDef ( );
+
+		string line = file.ReadLine ( );
+		if ( line == null)
+		{
+			return null;
+		}
+		if ( line.StartsWith ( GraphIO.EndLine("Points")) )
+		{
+			Debug.Log ("Found Points END");
+			return null;
+		}
+		if (! line.StartsWith(GraphIO.StartLine("Point"))) 
+		{
+			Debug.LogError ("No Point START");
+			return null;
+		}
 		
+		line = file.ReadLine ( );
+		if (! GraphIO.ReadInt ( line, "ID", ref def.id ) )
+		{
+			Debug.LogError ("No ID");
+			return null;
+		}
+
+		line = file.ReadLine ( );
+		if (! GraphIO.ReadVector2 ( line, "Point", ref def.pt ) )
+		{
+			Debug.LogError ("No Point");
+			return null;
+		}
+
+		line = file.ReadLine ( );
+		if (! GraphIO.ReadFixedState ( line, ref def.eFixedState ) )
+		{
+			Debug.LogError ("No FixedState");
+			return null;
+		}
+		
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadFunctionalState ( line, ref def.eFunctionalState ) )
+		{
+			Debug.LogError ("No FunctionalState");
+			return null;
+		}
+		
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadInt ( line, "Follower", ref def.followerId ) )
+		{
+			Debug.LogError ("No FollowerID");
+			return null;
+		}
+		
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadBool ( line, "RangeStart", ref def.isRangeStart ) )
+		{
+			Debug.LogError ("No RangeStart");
+			return null;
+		}
+		
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadBool ( line, "RangeEnd", ref def.isRangeEnd ) )
+		{
+			Debug.LogError ("No RangeEnd");
+			return null;
+		}
+		
+		line = file.ReadLine ( );
+		if (line == null || false == line.StartsWith(GraphIO.EndLine("Point"))) 
+		{
+			Debug.LogError ("No Point END");
+			return null;
+		}
+		return def;		
 	}
 	
 #endregion IO

@@ -35,6 +35,35 @@ public class WaveGraphPanel : GraphPanel
 		StartCoroutine (CreateGraphCR(wfp, numSamples, visibleOnly));
 	}
 
+	protected override IEnumerator SetUpAxesCR ( )
+	{
+		AxisDefinition[] axisDefinitions = new AxisDefinition[3];
+		
+		AxisDefinition xAxis = new AxisDefinition ();
+		xAxis.axisName = "X";
+		xAxis.eDirection = EXYDirection.X;
+		xAxis.value = 0f;
+		axisDefinitions [0] = xAxis;
+		
+		AxisDefinition phaseStartAxis = new AxisDefinition ();
+		phaseStartAxis.axisName = "Start";
+		phaseStartAxis.eDirection = EXYDirection.Y;
+		phaseStartAxis.value = 0f;
+		axisDefinitions [1] = phaseStartAxis;
+		
+		AxisDefinition phaseEndAxis = new AxisDefinition ();
+		phaseEndAxis.axisName = "Start";
+		phaseEndAxis.eDirection = EXYDirection.Y;
+		phaseEndAxis.value = 1f;
+		axisDefinitions [2] = phaseEndAxis;
+		
+		graphSettings.axisDefinitions = axisDefinitions;
+		
+		DrawAxes ();
+		yield return null;
+
+	}
+
 	public IEnumerator CreateGraphCR(IWaveFormProvider wfp, int numSamples, bool visibleOnly)
 	{
 		isCreatingGraph_ = true;
@@ -46,31 +75,9 @@ public class WaveGraphPanel : GraphPanel
 		if (DEBUG_GRAPH)
 			Debug.Log ("Cleared points");
 
-		AxisDefinition[] axisDefinitions = new AxisDefinition[3];
+		yield return StartCoroutine ( SetUpAxesCR ( ) );
 
-		AxisDefinition xAxis = new AxisDefinition ();
-		xAxis.axisName = "X";
-		xAxis.eDirection = EXYDirection.X;
-		xAxis.value = 0f;
-		axisDefinitions [0] = xAxis;
 
-		AxisDefinition phaseStartAxis = new AxisDefinition ();
-		phaseStartAxis.axisName = "Start";
-		phaseStartAxis.eDirection = EXYDirection.Y;
-		phaseStartAxis.value = 0f;
-		axisDefinitions [1] = phaseStartAxis;
-
-		AxisDefinition phaseEndAxis = new AxisDefinition ();
-		phaseEndAxis.axisName = "Start";
-		phaseEndAxis.eDirection = EXYDirection.Y;
-		phaseEndAxis.value = 1f;
-		axisDefinitions [2] = phaseEndAxis;
-
-		graphSettings.axisDefinitions = axisDefinitions;
-
-		DrawAxes ();
-		yield return null;
-		
 		float step = graphSettings.XRangeLength / numSamples;
 		
 		

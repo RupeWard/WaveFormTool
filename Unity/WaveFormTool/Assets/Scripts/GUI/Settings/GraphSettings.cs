@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class GraphSettings : MonoBehaviour
+public class GraphSettingsDef
 {
 	public Vector2 xRange = new Vector2();
 	public Vector2 yRange = Vector2.zero;
@@ -10,15 +10,107 @@ public class GraphSettings : MonoBehaviour
 	public Vector2 xView = new Vector2();
 	public Vector2 yView = new Vector2();
 
+	public bool allowCrossingXAxis = true;
+	
+	public bool loop = true;
+
+	public bool ReadFromFile(System.IO.TextReader file)
+	{
+		string line = file.ReadLine ( );
+		if ( line == null )
+		{
+			Debug.LogError ("No line when looking for GraphSettings START");
+			return false;
+		}
+		if (false == line.StartsWith(GraphIO.StartLine("GraphSettings"))) 
+		{
+			Debug.LogError ("No '"+GraphIO.StartLine("GraphSettings")+"' in '"+line+"'");
+			return false;
+		}
+		
+		line = file.ReadLine ( );
+		if (! GraphIO.ReadVector2 ( line, "XRange", ref xRange ) )
+		{
+			Debug.LogError ("No XRange");
+			return false;
+		}
+		
+		line = file.ReadLine ( );
+		if (! GraphIO.ReadVector2 ( line, "YRange", ref yRange ) )
+		{
+			Debug.LogError ("No YRange");
+			return false;
+		}
+
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadVector2 ( line, "Xview", ref xView ) )
+		{
+			Debug.LogError ("No XView");
+			return false;
+		}
+
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadVector2 ( line, "Xview", ref xView ) )
+		{
+			Debug.LogError ("No XView");
+			return false;
+		}
+
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadBool ( line, "allowXcrossing", ref allowCrossingXAxis ) )
+		{
+			Debug.LogError ("No allowXcrossing");
+			return false;
+		}
+		
+		line = file.ReadLine ( );
+		if ( ! GraphIO.ReadBool ( line, "loop", ref loop ) )
+		{
+			Debug.LogError ("No loop");
+			return false;
+		}
+
+		line = file.ReadLine ( );
+		if (line == null || false == line.StartsWith(GraphIO.EndLine("GraphSettings"))) 
+		{
+			Debug.LogError ("No GraphSettings END");
+			return false;
+		}
+		return true;		
+	}
+
+}
+
+public class GraphSettings : MonoBehaviour
+{
+	public void LoadSettings(GraphSettingsDef def)
+	{
+		xRange = def.xRange;
+		yRange = def.yRange;
+		xView.Set ( def.xView );
+		yView.Set ( def.yView );
+		defXView_.Set ( def.xView );
+		defYView_.Set ( def.yView );
+		allowCrossingXAxis = def.allowCrossingXAxis;
+		loop = def.loop;
+		ResetViewCentres();
+	}
+	public Vector2 xRange = new Vector2();
+	public Vector2 yRange = Vector2.zero;
+	
+	public Vector2 xView = new Vector2();
+	public Vector2 yView = new Vector2();
+	
+	public bool allowCrossingXAxis = true;
+	
+	public bool loop = true;
+
 	public AxisDefinition[] axisDefinitions = {};
 
 	public float pointSize = 4f;
 	public float selectedPointMaxSize =16f;
 	public float selectedPointThrobTime = 1f;
 
-	public bool allowCrossingXAxis = true;
-
-	public bool loop = true;
 
 	private float xViewCentre_ = 0f;
 	public float XViewCentre
@@ -147,7 +239,7 @@ public class GraphSettings : MonoBehaviour
 #region IO
 	public void SaveToFile(System.IO.TextWriter file)
 	{
-		file.Write ( ">>> GraphSettings Start\n" );
+		GraphIO.WriteStartLine(file, "GraphSettings" );
 		// x range
 		GraphIO.WriteVector2(file, "XRange", xRange);
 		// y range
@@ -160,9 +252,10 @@ public class GraphSettings : MonoBehaviour
 		GraphIO.WriteBool(file, "allowXcrossing", allowCrossingXAxis);
 		// loop 
 		GraphIO.WriteBool(file, "loop", loop);
-		file.Write ( "<<< GraphSettings End\n" );
+		GraphIO.WriteEndLine(file,  "GraphSettings" );
 
 	}
+
 #endregion IO
 
 }

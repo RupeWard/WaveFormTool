@@ -16,6 +16,27 @@ public class GraphIO
 		}
 	}
 
+	static public string StartLine(string type)
+	{
+		return ">>>> "+type+" START";
+	}
+
+	static public void WriteStartLine(System.IO.TextWriter file, string type)
+	{
+		file.Write ( StartLine ( type )+"\n" );
+	}
+
+	static public string EndLine(string type)
+	{
+		return "<<<< "+type+" END";
+	}
+	
+	static public void WriteEndLine(System.IO.TextWriter file, string type)
+	{
+		file.Write ( EndLine ( type )+"\n");
+	}
+
+
 	static readonly char[] separators = new char[] {' '};
 
 	static private string[] getWords(string line)
@@ -41,6 +62,11 @@ public class GraphIO
 
 	static public bool ReadVector2(string line, string key, ref Vector2 v)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 		float x;
 		float y;
@@ -72,6 +98,11 @@ public class GraphIO
 
 	static public bool ReadBool(string line, string key, ref bool b)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 
 		string[] words = getWords ( "bool", 3, line );
@@ -79,12 +110,12 @@ public class GraphIO
 		{
 			if (words[1] == key)
 			{
-				if (words[2] == "true")
+				if (words[2] == "True")
 				{
 					b = true;
 					valid = true;
 				}
-				else if (words[2] == "false")
+				else if (words[2] == "False")
 				{
 					b = false;
 					valid = true;
@@ -106,6 +137,11 @@ public class GraphIO
 	
 	static public bool ReadInt(string line, string key, ref int i)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 		
 		string[] words = getWords ( "int", 3, line );
@@ -137,6 +173,11 @@ public class GraphIO
 	
 	static public bool ReadString(string line, string key, ref string s)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 		
 		string[] words = getWords ( "text", 3, line );
@@ -163,11 +204,11 @@ public class GraphIO
 
 	static public bool ParseBool(string s)
 	{
-		if ( s == "true" )
+		if ( s == "True" )
 		{
 			return true;
 		}
-		else if ( s == "false" )
+		else if ( s == "False" )
 		{
 			return false;
 		}
@@ -181,6 +222,11 @@ public class GraphIO
 	
 	static public bool ReadFixedState(string line, ref GraphPointDef.EFixedState f)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 		
 		string[] words = getWords ( "FixedState", 2, line );
@@ -213,6 +259,11 @@ public class GraphIO
 	
 	static public bool ReadFunctionalState(string line, ref GraphPointDef.EFunctionalState f)
 	{
+		if ( line == null )
+		{
+			return false;
+		}
+
 		bool valid = false;
 		
 		string[] words = getWords ( "FunctionalState", 2, line );

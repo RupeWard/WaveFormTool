@@ -39,9 +39,46 @@ public class EnvelopeGraphPanel : GraphPanel
 		StartCoroutine (CreateGraphCR(efp, numSamples, envelopeSettings, visibleOnly));
 	}
 
+	private BasicEnvelopeSettings tmpEnvelopeSettings;
+
+	protected override IEnumerator SetUpAxesCR ( )
+	{
+		if ( tmpEnvelopeSettings != null )
+		{
+			graphSettings.axisDefinitions = tmpEnvelopeSettings.MakeAxisDefinitions ( );
+		}
+		else
+		{
+			AxisDefinition[] axisDefinitions = new AxisDefinition[3];
+			
+			AxisDefinition xAxis = new AxisDefinition ();
+			xAxis.axisName = "Time";
+			xAxis.eDirection = EXYDirection.X;
+			xAxis.value = 0f;
+			axisDefinitions [0] = xAxis;
+			
+			AxisDefinition startAxis = new AxisDefinition ();
+			startAxis.axisName = "start";
+			startAxis.eDirection = EXYDirection.Y;
+			startAxis.value = graphSettings.xRange.x;
+			axisDefinitions [1] = startAxis;
+			
+			AxisDefinition endAxis = new AxisDefinition ();
+			endAxis.axisName = "tailOutStart";
+			endAxis.eDirection = EXYDirection.Y;
+			endAxis.value = graphSettings.xRange.y;
+			axisDefinitions [2] = endAxis;
+			
+			graphSettings.axisDefinitions = axisDefinitions;
+		}
+				
+		DrawAxes ();
+		yield return null;
+	}
+
 	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
-//		envelopeSettings_ = envelopeSettings;
+		tmpEnvelopeSettings = envelopeSettings;
 		isCreatingGraph_ = true;
 		
 		if (DEBUG_ENVELOPE_GRAPH)
@@ -58,13 +95,11 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		graphSettings.allowCrossingXAxis = false;
 		graphSettings.loop = false;
-		
-		graphSettings.axisDefinitions = envelopeSettings.MakeAxisDefinitions();
 
 		ResetView ();
 
-		DrawAxes ();
-		yield return null;
+		yield return StartCoroutine ( SetUpAxesCR ( ) );
+		tmpEnvelopeSettings = null;
 
 		float time = 0f;
 

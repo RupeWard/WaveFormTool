@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GraphPanel : MonoBehaviour 
+public abstract class GraphPanel : MonoBehaviour 
 {
 	public static readonly bool DEBUG_ADD_DELETE = true;
 
@@ -171,6 +171,8 @@ public class GraphPanel : MonoBehaviour
 
 #region axes
 
+	protected abstract IEnumerator SetUpAxesCR ( );
+
 	private void ClearAxes()
 	{
 		foreach (GraphAxis a in axes_)
@@ -322,6 +324,7 @@ public class GraphPanel : MonoBehaviour
 			pt = nextPoint;
 //			yield return null;
 		}
+		firstPoint_ = null;
 		yield return null;
 	}
 
@@ -709,16 +712,36 @@ public class GraphPanel : MonoBehaviour
 		if (bFoundFolder)
 		{
 			string filePath = GraphIO.SaveFolder + filename;
+			if (DEBUG_IO)
+			{
+				Debug.Log ("Writing graph to "+filePath);
+			}
+
 			System.IO.TextWriter file = new System.IO.StreamWriter(filePath, false);
 			graphSettings.SaveToFile(file);
 
+			if (DEBUG_IO)
+			{
+				Debug.Log ("opened file "+filePath);
+			}
 			yield return StartCoroutine(CreatePointDefsCR());
+
+			if (DEBUG_IO)
+			{
+				Debug.Log ("writing points ");
+			}
+			GraphIO.WriteStartLine(file, "Points");
 
 			GraphPoint p = firstPoint_;
 			while (p != null)
 			{
 				p.pointDef.SaveToFile(file);
 				p = p.NextPoint;
+			}
+			GraphIO.WriteEndLine(file, "Points");
+			if (DEBUG_IO)
+			{
+				Debug.Log ("Finished writing graph ");
 			}
 
 			file.Close();
@@ -728,7 +751,10 @@ public class GraphPanel : MonoBehaviour
 
 	private IEnumerator CreatePointDefsCR()
 	{
-		Debug.Log ( "Creating point defs" );
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "Creating point defs" );
+		}
 		yield return null;
 		int id = 0;
 		GraphPoint p = firstPoint_;
@@ -738,7 +764,10 @@ public class GraphPanel : MonoBehaviour
 			id++;
 			p = p.NextPoint;
 		}
-		Debug.Log ( "Updating point defs" );
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "Updating point defs" );
+		}
 		yield return null;
 		p = firstPoint_;
 		while (p != null)
@@ -747,6 +776,193 @@ public class GraphPanel : MonoBehaviour
 			p = p.NextPoint;
 		}
 	}
+
+	public void OnLoadButtonClicked()
+	{
+		LoadFromFile ( "graph.txt");
+	}
+	
+	public void LoadFromFile(string filename)
+	{
+		if ( isCreatingGraph_ )
+		{
+			messageLabel.text = "Can't load while creating";
+		}
+		else
+		{
+			StartCoroutine ( LoadFromFileCR ( filename ) );
+		}
+	}
+
+	private IEnumerator LoadFromFileCR(string filename)
+	{
+		string filePath = GraphIO.SaveFolder + filename;
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "Loading graph from "+filePath );
+		}
+		System.IO.FileInfo fileInfo = new System.IO.FileInfo ( filePath );
+		if (!fileInfo.Exists)
+		{
+			Debug.LogError ("Non-existent File '"+filePath+"'");
+			yield break;
+		}
+
+		System.IO.TextReader file = new System.IO.StreamReader(filePath);
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "opened file "+filePath );
+		}
+
+		GraphSettingsDef graphSettingsDef = new GraphSettingsDef();
+		if (!graphSettingsDef.ReadFromFile(file))
+		{
+			Debug.LogError ("No GraphSettings");
+			yield break;
+		}
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "reasd graph settings " );
+		}
+
+		string line = file.ReadLine();
+		if (line == null || line != GraphIO.StartLine("Points"))
+		{
+			Debug.LogError ("No Points START");
+			yield break;
+		}
+		if (DEBUG_IO)
+		{
+			Debug.Log ( "found points start " );
+		}
+
+		List <GraphPointDef> pointDefs = new List< GraphPointDef>();
+
+		GraphPointDef ptDef = GraphPointDef.ReadFromFile(file);
+
+		while ( ptDef != null )
+		{
+			pointDefs.Add(ptDef);
+			ptDef = GraphPointDef.ReadFromFile (file);
+		}
+
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Read "+pointDefs.Count+" points");
+		}
+
+		yield return StartCoroutine( OnLoadComplete( graphSettingsDef, pointDefs ));
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Finished loading graph");
+		}
+
+		yield return null;
+	}
+
+	private IEnumerator OnLoadComplete(GraphSettingsDef settingsDef, List<GraphPointDef> pointDefs)
+	{
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Clearing points");
+		}
+		yield return ClearPointsCR ( );
+		isCreatingGraph_ = true;
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Loading graph settings");
+		}
+
+		graphSettings.LoadSettings ( settingsDef );
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Settign up axes");
+		}
+
+		yield return StartCoroutine(SetUpAxesCR());
+
+		if (DEBUG_IO)
+		{
+			Debug.Log ("loading points");
+		}
+
+		GraphPoint previousPoint = null;
+		foreach( GraphPointDef def in pointDefs)
+		{
+			GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+			newPoint.transform.parent = pointsContainer;
+			newPoint.init(this, 
+			              def.pt.x, 
+			              def.pt.y,
+			              def.eFunctionalState
+			              );
+			newPoint.pointDef = def;
+			if (def.eFixedState == GraphPointDef.EFixedState.Fixed)
+			{
+				newPoint.SetFixed();
+			}
+			if (firstPoint_ == null)
+			{
+				firstPoint_ = newPoint;
+			}
+			if (def.isRangeStart)
+			{
+				if (rangeStart_ != null)
+				{
+					Debug.LogError("Already found RangeStart");
+				}
+				rangeStart_ = newPoint;
+			}
+			if (def.isRangeEnd)
+			{
+				if (rangeEnd_ != null)
+				{
+					Debug.LogError("Already found RangeEnd");
+				}
+				rangeEnd_ = newPoint;
+			}
+			newPoint.PreviousPoint = previousPoint;
+			if (previousPoint != null)
+			{
+				previousPoint.NextPoint = newPoint;
+			}
+			previousPoint = newPoint;
+			Debug.Log ("Loaded point "+newPoint.DebugDescribe());
+			yield return null;
+		}
+		GraphPoint p = firstPoint_;
+		while (p != null)
+		{
+			if (p.pointDef.followerId != -1)
+			{
+				GraphPoint p2 = firstPoint_;
+				while (p2 != null)
+				{
+					if (p2.pointDef.id == p.pointDef.followerId)
+					{
+						p.Follower = p2;
+						break;
+					}
+					p2 = p2.NextPoint;
+				}
+				if (p.Follower == null)
+				{
+					Debug.LogError ("Couldnt find follower with id of "+p.pointDef.followerId+" for "+p.DebugDescribe());
+				}
+			}
+			p = p.NextPoint;
+
+		}
+		if (DEBUG_IO)
+		{
+			Debug.Log ("Created "+NumGraphPoints()+" graph points");
+		}
+		//yield return StartCoroutine(UpdateLinesCR());
+		HandleDataChange();
+		isCreatingGraph_ = false;
+		yield return null;
+	}
+
 #endregion IO
 
 }
