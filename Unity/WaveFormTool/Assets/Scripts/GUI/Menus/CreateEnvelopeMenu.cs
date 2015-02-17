@@ -6,6 +6,8 @@ public class CreateEnvelopeMenu : Menu
 {
 	static readonly string functionsOption = "Functions";
 	static readonly string clearOption = "Clear";
+	static readonly string saveOption = "Save";
+	static readonly string loadOption = "Load";
 
 	public EnvelopeGraphPanel envelopeGraphPanel;
 
@@ -13,6 +15,8 @@ public class CreateEnvelopeMenu : Menu
 	{
 		AddOption (functionsOption, true);
 		AddOption (clearOption, true);
+		AddOption (loadOption, true);
+		AddOption (saveOption, true);
 	}
 
 	public override void OnOptionSelected(string option)
@@ -34,6 +38,16 @@ public class CreateEnvelopeMenu : Menu
 		else if (option == clearOption)
 		{
 			envelopeGraphPanel.ClearGraph();
+		}
+		else if ( option == saveOption )
+		{
+			SaveGraphPanel.Instance.Init(envelopeGraphPanel);
+			SaveGraphPanel.Instance.SetActive(true);
+		}
+		else if ( option == loadOption )
+		{
+			//			SaveGraphPanel.Instance.Init(waveGraphPanel);
+			//			SaveGraphPanel.Instance.SetActive(true);
 		}
 		else
 		{

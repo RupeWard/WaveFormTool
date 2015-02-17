@@ -23,6 +23,9 @@ public class EnvelopeGraphPanel : GraphPanel
 	 
 	public void Start()
 	{
+		saveTypeString_ = "Envelope";
+		filenameExtension_ = "env";
+		defaultFilename_ = "Envelope";
 	}
 
 	public override void ResetView ()

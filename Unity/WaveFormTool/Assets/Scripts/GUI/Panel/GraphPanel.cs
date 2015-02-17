@@ -663,13 +663,51 @@ public abstract class GraphPanel : MonoBehaviour
 #region IO
 	private static readonly bool DEBUG_IO = true;
 
+	protected string saveTypeString_ = "UNSET";
+	public string SaveTypeString
+	{
+		get { return saveTypeString_; }
+	}
+
+	protected string filenameExtension_ = "UNSET";
+	public string FilenameExtension
+	{
+		get { return filenameExtension_; }
+	}
+
+	protected string defaultFilename_ = "UNSET";
+	public string DefaultFilename
+	{
+		get { return defaultFilename_; }
+	}
+	
+
 	public void OnSaveButtonClicked()
 	{
 		SaveToFile ( "graph.txt");
 	}
 
+	public virtual bool CanSave()
+	{
+		if ( isCreatingGraph_ )
+		{
+			return false;
+		}
+		else if ( NumGraphPoints ( ) < 1 )
+		{
+			Debug.LogWarning("No points to save!");
+			return false;
+		}
+		return true;
+	}
+
 	public void SaveToFile(string filename)
 	{
+		if (DEBUG_IO)
+		{
+			Debug.Log (gameObject.name+" Writing graph to "+filename);
+		}
+
 		if ( isCreatingGraph_ )
 		{
 			messageLabel.text = "Can't save while creating";
@@ -686,30 +724,6 @@ public abstract class GraphPanel : MonoBehaviour
 
 	public IEnumerator SaveToFileCR(string filename)
 	{
-		bool bFoundFolder = false;
-
-		System.IO.DirectoryInfo saveFolder = new System.IO.DirectoryInfo ( GraphIO.SaveFolder );
-		if (!saveFolder.Exists)
-		{
-			saveFolder.Create();
-			saveFolder = new System.IO.DirectoryInfo ( GraphIO.SaveFolder );
-			if (!saveFolder.Exists)
-			{
-				Debug.LogError ("Couldn't create save folder '"+saveFolder+"'");
-			}
-			else
-			{
-				bFoundFolder = true;
-				Debug.Log ("Created save folder '"+saveFolder+"'");
-			}
-			yield return null;
-		}
-		else 
-		{
-			Debug.Log ("Found save folder '"+saveFolder+"'");
-			bFoundFolder = true;
-		}
-		if (bFoundFolder)
 		{
 			string filePath = GraphIO.SaveFolder + filename;
 			if (DEBUG_IO)
@@ -748,6 +762,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 
 	}
+
 
 	private IEnumerator CreatePointDefsCR()
 	{
@@ -927,12 +942,19 @@ public abstract class GraphPanel : MonoBehaviour
 				previousPoint.NextPoint = newPoint;
 			}
 			previousPoint = newPoint;
-			Debug.Log ("Loaded point "+newPoint.DebugDescribe());
+			Debug.Log ("Loaded point "+newPoint.DebugDescribe()
+			           +((def.isRangeStart)?(" START"):(""))
+			           +((def.isRangeEnd)?(" END"):(""))
+			           );
 			yield return null;
 		}
 		GraphPoint p = firstPoint_;
 		while (p != null)
 		{
+			if (p.pointDef == null)
+			{
+				Debug.LogError("No def on "+p.DebugDescribe());
+			}
 			if (p.pointDef.followerId != -1)
 			{
 				GraphPoint p2 = firstPoint_;

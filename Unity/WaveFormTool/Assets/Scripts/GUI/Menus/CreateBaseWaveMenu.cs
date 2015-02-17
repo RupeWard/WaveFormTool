@@ -6,6 +6,8 @@ public class CreateBaseWaveMenu : Menu
 {
 	static readonly string functionsOption = "Functions";
 	static readonly string clearOption = "Clear";
+	static readonly string saveOption = "Save";
+	static readonly string loadOption = "Load";
 
 	public WaveGraphPanel waveGraphPanel;
 
@@ -13,27 +15,39 @@ public class CreateBaseWaveMenu : Menu
 	{
 		AddOption (functionsOption, true);
 		AddOption (clearOption, true);
+		AddOption (loadOption, true);
+		AddOption (saveOption, true);
 	}
 
 	public override void OnOptionSelected(string option)
 	{
-		if (option == functionsOption)
+		if ( option == functionsOption )
 		{
 //			Debug.Log ("Menu '" + gameObject.name + "' selected option '" + functionsOption + "'");
-			if (WaveGeneratorPanel.IsInitialised ())
+			if ( WaveGeneratorPanel.IsInitialised ( ) )
 			{
 				bool b = WaveGeneratorPanel.Instance.gameObject.activeSelf;
 //				Debug.Log((b)?("Closing"):("Opening")+ "Functions panel");
-				WaveGeneratorPanel.Instance.SetActive (!b);
+				WaveGeneratorPanel.Instance.SetActive ( !b );
 			}
 			else
 			{
-				Debug.LogError ("WaveGeneratorPanel doesn't exist");
+				Debug.LogError ( "WaveGeneratorPanel doesn't exist" );
 			}
 		}
-		else if (option == clearOption)
+		else if ( option == clearOption )
 		{
-			waveGraphPanel.ClearGraph();
+			waveGraphPanel.ClearGraph ( );
+		}
+		else if ( option == saveOption )
+		{
+			SaveGraphPanel.Instance.Init(waveGraphPanel);
+			SaveGraphPanel.Instance.SetActive(true);
+		}
+		else if ( option == loadOption )
+		{
+//			SaveGraphPanel.Instance.Init(waveGraphPanel);
+//			SaveGraphPanel.Instance.SetActive(true);
 		}
 		else
 		{

@@ -21,6 +21,13 @@ public class WaveGraphPanel : GraphPanel
 
 	private bool isCreating_ = false;
 
+	public void Start()
+	{
+		saveTypeString_ = "BaseWave";
+		filenameExtension_ = "bsw";
+		defaultFilename_ = "BaseWave";
+	}
+
 	protected override void postInit()
 	{
 		Vector2 pos = viewMinInput.transform.GetLocalXYPosition ();

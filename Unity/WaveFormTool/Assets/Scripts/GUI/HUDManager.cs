@@ -71,6 +71,10 @@ public class HUDManager : SingletonApplicationLifetime< HUDManager >
 		popUpBottom = popUpTop - popUpSize.y;
 		EnvelopeGeneratorPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
 
+		popUpSize = SaveGraphPanel.Instance.Size ();
+		popUpBottom = popUpTop - popUpSize.y;
+		SaveGraphPanel.Instance.transform.SetLocalXYPosition(-0.5f * popUpSize.x, 0.5f * (popUpTop + popUpBottom));
+
 		BaseWaveObject.SetActive (true);
 		EnvelopeObject.SetActive (false);
 	}
