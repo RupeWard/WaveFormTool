@@ -837,7 +837,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 		if (DEBUG_IO)
 		{
-			Debug.Log ( "reasd graph settings " );
+			Debug.Log ( "read graph settings " );
 		}
 
 		string line = file.ReadLine();
@@ -881,7 +881,7 @@ public abstract class GraphPanel : MonoBehaviour
 		{
 			Debug.Log ("Clearing points");
 		}
-		yield return ClearPointsCR ( );
+		yield return StartCoroutine(ClearPointsCR ( ));
 		isCreatingGraph_ = true;
 		if (DEBUG_IO)
 		{
@@ -924,7 +924,7 @@ public abstract class GraphPanel : MonoBehaviour
 			{
 				if (rangeStart_ != null)
 				{
-					Debug.LogError("Already found RangeStart");
+					Debug.LogError("Already found RangeStart "+rangeStart_.DebugDescribe()+" but "+def.DebugDescribe());
 				}
 				rangeStart_ = newPoint;
 			}

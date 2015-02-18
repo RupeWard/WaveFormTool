@@ -44,6 +44,7 @@ public class SaveGraphPanel : SingletonSceneLifetime< SaveGraphPanel >
 	{
 		if (b)
 		{
+			LoadGraphPanel.Instance.SetActive(false);
 			HUDManager.Instance.CloseAllPopupsExcept(gameObject);
 		}
 		gameObject.SetActive (b);

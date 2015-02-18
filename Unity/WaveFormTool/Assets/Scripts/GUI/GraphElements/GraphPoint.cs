@@ -479,10 +479,6 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		{
 			sb.Append (" Followed by "+follower_.DebugDescribe());
 		}
-		else
-		{
-			sb.Append (" NotFollower");
-		}
 		sb.Append (" ]");
 	}
 

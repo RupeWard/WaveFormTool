@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class GraphPointDef
+public class GraphPointDef :IDebugDescribable
 {
 	public enum EFixedState
 	{
@@ -149,5 +149,31 @@ public class GraphPointDef
 	}
 	
 #endregion IO
+
+#region IDebugDescribable
+	public void DebugDescribe(System.Text.StringBuilder sb)
+	{
+		sb.Append ("[GraphPointDef ( ");
+		sb.Append ( id );
+		sb.Append(" ) @ ");
+		sb.Append (pt.x);
+		sb.Append (", ");
+		sb.Append (pt.y);
+		sb.Append (" ) ");
+		if (eFixedState == EFixedState.Fixed)
+		{
+			sb.Append ("Fixed ");
+		}
+		if (eFunctionalState == EFunctionalState.NonFunctional)
+		{
+			sb.Append ("Dead ");
+		}
+		if ( followerId >=0 )
+		{
+			sb.Append (" Followed by "+followerId);
+		}
+		sb.Append (" ]");
+	}
+#endregion
 
 }

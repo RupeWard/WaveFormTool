@@ -46,8 +46,8 @@ public class CreateEnvelopeMenu : Menu
 		}
 		else if ( option == loadOption )
 		{
-			//			SaveGraphPanel.Instance.Init(waveGraphPanel);
-			//			SaveGraphPanel.Instance.SetActive(true);
+			LoadGraphPanel.Instance.Init(envelopeGraphPanel);
+			LoadGraphPanel.Instance.SetActive(true);
 		}
 		else
 		{
