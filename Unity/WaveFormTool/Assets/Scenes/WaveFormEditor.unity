@@ -2484,7 +2484,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 199549862}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 10, y: 0, z: 0}
   m_LocalScale: {x: 24, y: 24, z: 1}
   m_Children: []
   m_Father: {fileID: 404959936}
@@ -3888,7 +3888,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mDepth: 132
+  mDepth: 162
   mFont: {fileID: 11400000, guid: e74236fb05ed63d4282b631af4c5032e, type: 2}
   mText: Cancel
   mMaxLineWidth: 0
@@ -10721,7 +10721,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mDepth: 131
+  mDepth: 161
   mFont: {fileID: 11400000, guid: e74236fb05ed63d4282b631af4c5032e, type: 2}
   mText: "Confirm Save\t"
   mMaxLineWidth: 0
@@ -11454,7 +11454,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 1, g: 1, b: 1, a: .392156869}
   mPivot: 4
-  mDepth: 131
+  mDepth: 161
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
   mSpriteName: white_box01
   mFillCenter: 1
@@ -11503,7 +11503,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 1, g: 1, b: 1, a: .392156869}
   mPivot: 4
-  mDepth: 131
+  mDepth: 161
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
   mSpriteName: white_box01
   mFillCenter: 1
@@ -13487,7 +13487,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1387984199}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 400, y: 240, z: 1}
   m_Children: []
   m_Father: {fileID: 1465427493}
@@ -13517,7 +13517,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 1, g: 1, b: 1, a: 1}
   mPivot: 4
-  mDepth: 130
+  mDepth: 160
   mAtlas: {fileID: 11400000, guid: 147bc25cc3ab9374fa5a6f2f38ad3af3, type: 2}
   mSpriteName: white_box01
   mFillCenter: 1
@@ -14745,7 +14745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mDepth: 131
+  mDepth: 161
   mFont: {fileID: 11400000, guid: e74236fb05ed63d4282b631af4c5032e, type: 2}
   mText: 
   mMaxLineWidth: 0
@@ -17673,7 +17673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mColor: {r: 0, g: 0, b: 0, a: 1}
   mPivot: 4
-  mDepth: 132
+  mDepth: 162
   mFont: {fileID: 11400000, guid: e74236fb05ed63d4282b631af4c5032e, type: 2}
   mText: "Confirm\t"
   mMaxLineWidth: 0
