@@ -131,6 +131,8 @@ public class SaveGraphPanel : SingletonSceneLifetime< SaveGraphPanel >
 			Debug.Log("Confirm");
 		}
 		graphPanel.SaveToFile ( filename_ );
+		confirmPopUp.SetActive(false);
+		this.SetActive(false);
 	}
 
 	public void OnCancelButtonClicked()
