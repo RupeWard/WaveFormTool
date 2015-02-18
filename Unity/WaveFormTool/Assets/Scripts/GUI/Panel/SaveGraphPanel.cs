@@ -146,6 +146,11 @@ public class SaveGraphPanel : SingletonSceneLifetime< SaveGraphPanel >
 	{
 	}
 
+	public void OnDisable()
+	{
+		confirmPopUp.SetActive ( false );
+	}
+
 	private void SetTitleButtonLabel()
 	{
 		titleLabel.text = "Save " + graphPanel.SaveTypeString;

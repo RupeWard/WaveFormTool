@@ -45,6 +45,7 @@ public class LoadGraphPanel : SingletonSceneLifetime< LoadGraphPanel >
 		System.Text.StringBuilder sb = new System.Text.StringBuilder ( );
 		sb.Append ( "Files with extension \"" + extn + "\" in " + GraphIO.SaveFolder +"...");
 		filenameSelection.items.Clear ( );
+		filenameSelection.selection = "";
 		System.IO.DirectoryInfo dirInfo = new System.IO.DirectoryInfo ( GraphIO.SaveFolder);
 		if (dirInfo.Exists)
 		{
@@ -123,6 +124,8 @@ public class LoadGraphPanel : SingletonSceneLifetime< LoadGraphPanel >
 			yield return null;
 			SetUpFileList ( );
 		}
+
+		confirmPopUp.gameObject.SetActive(false);
 		yield return null;
 	}
 
@@ -141,6 +144,11 @@ public class LoadGraphPanel : SingletonSceneLifetime< LoadGraphPanel >
 		{
 			SetUpFileList();
 		}
+	}
+
+	public void OnDisable()
+	{
+		confirmPopUp.SetActive ( false );
 	}
 
 	private void SetTitleButtonLabel()
