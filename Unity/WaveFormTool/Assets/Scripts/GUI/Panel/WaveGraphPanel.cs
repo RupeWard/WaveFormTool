@@ -110,7 +110,7 @@ public class WaveGraphPanel : GraphPanel
 		
 		float rangeEndTolerance = step / 10f;
 
-		firstGraphSection_ =  GraphSection.CreateGraphSection(this);
+		firstGraphSection_ =  GraphSection.CreateGraphSection("BaseWave", this);
 		while (currentX <= finalX)
 		{
 			if (!visibleOnly || (graphSettings.IsXInView(currentX) ))

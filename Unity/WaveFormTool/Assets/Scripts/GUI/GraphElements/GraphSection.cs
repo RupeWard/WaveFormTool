@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class GraphSection : MonoBehaviour, IDebugDescribable
 {
-	static public GraphSection CreateGraphSection(GraphPanel parent)
+	private string sectionName_ = "GraphSection";
+
+	static public GraphSection CreateGraphSection(string n, GraphPanel parent)
 	{
 		GameObject go = new GameObject();
 		go.AddComponent< GraphSection >();
 		GraphSection result = go.GetComponent< GraphSection>();
-		result.init ( parent );
+		result.init ( n, parent );
 		result.transform.localPosition = Vector3.zero;
 		result.transform.localScale = Vector3.one;
 		return result;
@@ -100,8 +102,9 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 		get { return graphPanel_; }
 	}
 
-	private void init (GraphPanel p)
+	private void init (string n, GraphPanel p)
 	{
+		sectionName_ = n;
 		graphPanel_ = p;
 		transform.parent = p.pointsContainer;
 	}
@@ -282,6 +285,7 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 	{
 
 		sb.Append ("[GraphSection ");
+		sb.Append ( sectionName_ ).Append(" ");
 		int num = NumGraphPoints ( );
 		if ( num > 0 )
 		{

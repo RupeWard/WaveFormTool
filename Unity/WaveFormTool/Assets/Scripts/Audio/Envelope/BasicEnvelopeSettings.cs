@@ -39,6 +39,40 @@ public class BasicEnvelopeSettings : IDebugDescribable
 		return (time <= leadInPeakTime);
 	}
 
+	public GraphCreator makeGraphCreator()
+	{
+		GraphCreator gc = new GraphCreator ( );
+
+		GraphSectionLinear leadInToPeak = new GraphSectionLinear (
+			"LeadInToPeak",
+			new Vector2( 0f,0f ),
+			new Vector2( leadInPeakTime, leadInPeakValue)
+			);
+		gc.AddGraphSection(leadInToPeak);
+
+		GraphSectionLinear leadInFromPeak = new GraphSectionLinear (
+			"LeadInFromPeak",
+			new Vector2( leadInPeakTime, leadInPeakValue),
+			new Vector2( leadInLength, midValue)
+			);
+		gc.AddGraphSection(leadInFromPeak);
+		
+		GraphSectionLinear mid = new GraphSectionLinear (
+			"MidSection",
+			new Vector2( leadInLength, midValue),
+			new Vector2( leadInLength + midLength, midValue)
+			);
+		gc.AddGraphSection(mid);
+
+		GraphSectionLinear tail = new GraphSectionLinear (
+			"Tail",
+			new Vector2( leadInLength + midLength, midValue),
+			new Vector2( TotalLength, 0f)
+			);
+		gc.AddGraphSection(mid);
+		return gc;
+	}
+
 	public AxisDefinition[] MakeAxisDefinitions()
 	{
 		AxisDefinition[] axisDefinitions = new AxisDefinition[3];

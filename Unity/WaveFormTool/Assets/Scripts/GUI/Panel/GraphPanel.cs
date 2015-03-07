@@ -966,7 +966,7 @@ public abstract class GraphPanel : MonoBehaviour
 			Debug.Log ("loading points");
 		}
 
-		firstGraphSection_ = GraphSection.CreateGraphSection(this);
+		firstGraphSection_ = GraphSection.CreateGraphSection("Loaded", this);
 
 		GraphPoint previousPoint = null;
 		foreach( GraphPointDef def in pointDefs)

@@ -106,7 +106,7 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		float time = 0f;
 
-		firstGraphSection_ = GraphSection.CreateGraphSection(this);
+		firstGraphSection_ = GraphSection.CreateGraphSection("EnvelopeSection",this);
 
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.init(firstGraphSection_, 
