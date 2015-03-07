@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnvelopeGraphPanel : GraphPanel
 {
@@ -37,18 +38,35 @@ public class EnvelopeGraphPanel : GraphPanel
 		StartCoroutine (AdjustPointPositionsCR ());
 	}
 
-	public void CreateGraph(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
+	public void CreateGraph(IEnvelopeProvider efp, int numSamples, OldEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
 		StartCoroutine (CreateGraphCR(efp, numSamples, envelopeSettings, visibleOnly));
 	}
 
-	private BasicEnvelopeSettings tmpEnvelopeSettings;
+	public void CreateGraph(GraphCreator creator, int numSamples, bool visibleOnly)
+	{
+		StartCoroutine (CreateGraphCR(creator, numSamples, visibleOnly));
+	}
 
-	protected override IEnumerator SetUpAxesCR ( )
+	private OldEnvelopeSettings tmpEnvelopeSettings;
+
+	protected IEnumerator SetUpAxesCR ( List<AxisDefinition> defns )
+	{
+		if (defns != null)
+		{
+			graphSettings.axisDefinitions = defns.ToArray();
+		}
+		yield return StartCoroutine(SetUpAxesCR()); 
+
+	}
+	protected override IEnumerator SetUpAxesCR (  )
 	{
 		if ( tmpEnvelopeSettings != null )
 		{
 			graphSettings.axisDefinitions = tmpEnvelopeSettings.MakeAxisDefinitions ( );
+		}
+		else if ( graphSettings.axisDefinitions != null && graphSettings.axisDefinitions.Length > 0 )
+		{
 		}
 		else
 		{
@@ -79,7 +97,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		yield return null;
 	}
 
-	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, BasicEnvelopeSettings envelopeSettings, bool visibleOnly)
+	private IEnumerator CreateGraphCR(IEnvelopeProvider efp, int numSamples, OldEnvelopeSettings envelopeSettings, bool visibleOnly)
 	{
 		tmpEnvelopeSettings = envelopeSettings;
 		isCreatingGraph_ = true;
@@ -116,11 +134,11 @@ public class EnvelopeGraphPanel : GraphPanel
 		              );
 		rangeStart_ = newPoint;
 		OnPointSelected(rangeStart_);
+		newPoint.gameObject.name = "First";
 
 		firstGraphSection_.FirstPoint = newPoint;
 
 		rangeStart_.SetFixed ();
-		newPoint.gameObject.name = "First";
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
 
@@ -139,7 +157,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 			newPoint.init(firstGraphSection_, 
 			                 time, 
-			                 efp.GetValueForTime(time, envelopeSettings),
+			                 efp.GetValueForTime(time),
 			                 GraphPointDef.EFunctionalState.Functional
 			                 );
 			newPoint.gameObject.name = "1";
@@ -165,7 +183,7 @@ public class EnvelopeGraphPanel : GraphPanel
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.init(firstGraphSection_, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings),
+				              efp.GetValueForTime(time),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "2";
@@ -223,7 +241,7 @@ public class EnvelopeGraphPanel : GraphPanel
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.init(firstGraphSection_, 
 				              time, 
-				              efp.GetValueForTime(time, envelopeSettings),
+				              efp.GetValueForTime(time),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "5";
@@ -252,6 +270,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		{
 			rangeEnd_ = previous;
 		}
+		rangeEnd_.gameObject.name = "Last";
 
 		OnPointSelected(rangeEnd_);
 		rangeEnd_.SetFixed ();
@@ -357,5 +376,178 @@ public class EnvelopeGraphPanel : GraphPanel
 		}
 		yield return null;
 	}
+
+	private IEnumerator CreateGraphCR(GraphCreator graphCreator, int numSamples, bool visibleOnly)
+	{
+//		tmpEnvelopeSettings = envelopeSettings;
+
+		isCreatingGraph_ = true;
+		
+		if (DEBUG_ENVELOPE_GRAPH)
+			Debug.Log ("CreateEnvelope( " + numSamples + " )\n"+graphCreator.DebugDescribe());
+		
+		yield return StartCoroutine(ClearPointsCR ());
+		if (DEBUG_ENVELOPE_GRAPH)
+			Debug.Log ("Cleared points");
+
+		graphSettings.xRange.x = graphSettings.xView.x = 0f;
+		graphSettings.xRange.y = graphSettings.xView.y = graphCreator.Length;
+		graphSettings.yRange.x = graphSettings.yView.x = 0f;
+		graphSettings.yRange.y = graphSettings.yView.y = graphCreator.MaxValue;
+
+		graphSettings.allowCrossingXAxis = false;
+		graphSettings.loop = false;
+
+		ResetView ();
+
+		List <AxisDefinition> axisDefinitions = new List < AxisDefinition>();
+		
+		AxisDefinition xAxis = new AxisDefinition ();
+		xAxis.axisName = "Time";
+		xAxis.eDirection = EXYDirection.X;
+		xAxis.value = 0f;
+		axisDefinitions.Add(xAxis);
+
+//		yield return StartCoroutine ( SetUpAxesCR ( ) );
+//		tmpEnvelopeSettings = null;
+
+		//FIXME do axes as you go along
+
+		GraphSection previousSection = null;
+
+		GraphPoint lastCreatedPoint = null;
+
+		int sectionNum = 0;
+		foreach ( GraphSectionDefinition s in graphCreator.GraphSections )
+		{
+			sectionNum++;
+
+			GraphSection thisGraphSection = GraphSection.CreateGraphSection(s.DefnName, this);
+			if (firstGraphSection_ == null)
+			{
+				firstGraphSection_ = thisGraphSection;
+			}
+			if (previousSection != null)
+			{
+				thisGraphSection.PreviousGraphSection = previousSection;
+				previousSection.NextGraphSection = thisGraphSection;
+			}
+			AxisDefinition axis = new AxisDefinition ();
+			axis.axisName = s.DefnName;
+			if (thisGraphSection.PreviousGraphSection != null)
+			{
+				axis.axisName = thisGraphSection.PreviousGraphSection.name+"-" +s.DefnName;
+			}
+			axis.eDirection = EXYDirection.Y;
+			axis.value = s.Range.x;
+			axisDefinitions.Add(axis);
+
+			float step = s.Length/s.NumPoints;
+			float x = s.Range.x;
+
+			GraphPoint previousPoint = null;
+
+			int ptNum = 0;
+			while (x < s.Range.y + step/100f)
+			{
+				ptNum++;
+				float y = s.ComputeY(x);
+
+				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+				newPoint.init(thisGraphSection, 
+				              x, 
+				              y,
+				              GraphPointDef.EFunctionalState.Functional
+				              );
+				newPoint.gameObject.name = sectionNum.ToString()+"-"+ptNum.ToString();
+				if (rangeStart_ == null)
+				{
+					rangeStart_ = newPoint;
+					OnPointSelected(rangeStart_);
+					rangeStart_.SetFixed ();
+					yield return null; // yield allows point to pick up on it immediately
+					pointPanel_.gameObject.SetActive (false);
+					yield return null; // yield allows point to pick up on it immediately
+				}
+				if (thisGraphSection.FirstPoint == null)
+				{
+					thisGraphSection.FirstPoint = newPoint;
+				}
+				if (previousPoint != null)
+				{
+					previousPoint.NextPointInternal = newPoint;
+					newPoint.PreviousPointInternal = previousPoint;
+				}
+				lastCreatedPoint = newPoint;
+				previousPoint = newPoint;
+				x+=step;
+			}
+			previousSection = thisGraphSection;
+		}
+
+//		firstGraphSection_ = GraphSection.CreateGraphSection("EnvelopeSection",this);
+
+		rangeEnd_ = lastCreatedPoint;
+
+		rangeEnd_.gameObject.name = "Last";
+
+		yield return StartCoroutine(SetUpAxesCR(axisDefinitions));
+
+		OnPointSelected(rangeEnd_);
+		rangeEnd_.SetFixed ();
+		yield return null; // yield allows point to pick up on it immediately
+		pointPanel_.gameObject.SetActive (false);
+
+		if (DEBUG_ENVELOPE_GRAPH)
+			Debug.Log ("Created points");
+		yield return null;
+		
+		isCreatingGraph_ = false;
+		HandleDataChange ();
+		
+		yield return null;
+	}
+	/*
+	public void Update()
+	{
+		if (isDirty_)
+		{
+			if (isCreating_)
+			{
+				if (DEBUG_ENVELOPE_GEN)
+				{
+					Debug.Log("EGP: restarting");
+				}
+				isCreating_ = false;
+				messageLabel.color = Color.red;
+				messageLabel.text = "Restarted envelope creation";
+				StopCoroutine ("CreateDataCR");
+			}
+			else
+			{
+				if (DEBUG_ENVELOPE_GEN)
+				{
+					Debug.Log("EGP: starting");
+				}
+				messageLabel.color = Color.red;
+				messageLabel.text = "Started envelope creation";
+			}
+			isDirty_ = false;
+			StartCoroutine("CreateDataCR");
+		}
+	}
+
+	private bool isDirty_ = false;
+	public override void HandleDataChange ()
+	{
+		isDirty_ = true;
+	}
+
+	private bool isCreating_ = false;
+
+	protected override void postInit()
+	{
+	}*/
+
 
 }

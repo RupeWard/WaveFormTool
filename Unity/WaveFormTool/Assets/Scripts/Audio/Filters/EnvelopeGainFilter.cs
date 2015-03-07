@@ -55,7 +55,7 @@ public class EnvelopeGainFilter : MonoBehaviour
 		}
 		else
 		{
-			envelopeLength_ = (double)envelopeProvider_.EnvelopeLength (null );
+			envelopeLength_ = (double)envelopeProvider_.EnvelopeLength ( );
 			Debug.Log ( "Length = "+envelopeLength_);
 		}
 	}
@@ -84,7 +84,7 @@ public class EnvelopeGainFilter : MonoBehaviour
 				else
 				{
  					currentTime_ = currentTime_ + increment_;
-					data[i] *= envelopeProvider_.GetValueForTime((float)currentTime_, null); // TODO null settings?
+					data[i] *= envelopeProvider_.GetValueForTime((float)currentTime_); // TODO null settings?
 					numSinceSkip = 0;
 					lastValue = data[i];
 				}

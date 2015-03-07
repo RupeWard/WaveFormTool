@@ -28,6 +28,30 @@ public static class CSharpExtensions
 		return Mathf.Abs (other-d) <= tolerance;
 	}
 
+	public static bool GreaterThanApprox(this float d, float other, float tolerance) 
+	{
+		#if UNITY_EDITOR
+		if (tolerance < 0f)
+		{
+			Debug.LogWarning ("Negative tolerance!");
+			tolerance *= -1f;
+		}
+		#endif
+		return d > (other+tolerance);
+	}
+	
+	public static bool LessThanApprox(this float d, float other, float tolerance) 
+	{
+		#if UNITY_EDITOR
+		if (tolerance < 0f)
+		{
+			Debug.LogWarning ("Negative tolerance!");
+			tolerance *= -1f;
+		}
+		#endif
+		return d < (other-tolerance);
+	}
+
 	#endregion
 	
 

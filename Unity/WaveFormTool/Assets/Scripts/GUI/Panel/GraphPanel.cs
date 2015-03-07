@@ -362,6 +362,7 @@ public abstract class GraphPanel : MonoBehaviour
 		{
 			Debug.Log(sb.ToString());
 		}
+
 	}
 
 	public void OnPointSelected(GraphPoint p)
@@ -942,6 +943,7 @@ public abstract class GraphPanel : MonoBehaviour
 	// FIXME Convert to subgraph
 	private IEnumerator OnLoadComplete(GraphSettingsDef settingsDef, List<GraphPointDef> pointDefs)
 	{
+
 		if (DEBUG_IO)
 		{
 			Debug.Log ("Clearing points");

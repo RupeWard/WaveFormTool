@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 
 	#region IEnvelopeProvider
 
-	public float GetValueForTime(float time, BasicEnvelopeSettings settings)
+	public float GetValueForTime(float time)
 	{
 		float f = 0f;
 		currentPointIndex_ = FindPointBeforeTime ( currentPointIndex_, time );
@@ -128,7 +128,7 @@ public class BasicEnvelopeProvider : IEnvelopeProvider
 		return ( points_.Count > 2 );
 	}
 		
-	public float EnvelopeLength(BasicEnvelopeSettings unused)
+	public float EnvelopeLength()
 	{
 		float result = 0f;
 		if ( IsReady ( ) )

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class BasicEnvelopeSettings : IDebugDescribable
+public class OldEnvelopeSettings : IDebugDescribable
 {
 	public float leadInLength = 0.3f;
 	public float leadInPeakValue = 1.0f;
@@ -39,9 +39,9 @@ public class BasicEnvelopeSettings : IDebugDescribable
 		return (time <= leadInPeakTime);
 	}
 
-	public GraphCreator makeGraphCreator()
+	public GraphCreator MakeGraphCreator()
 	{
-		GraphCreator gc = new GraphCreator ( );
+		GraphCreator gc = new GraphCreator ( "OldEnvelopeSettings");
 
 		GraphSectionLinear leadInToPeak = new GraphSectionLinear (
 			"LeadInToPeak",
@@ -69,7 +69,7 @@ public class BasicEnvelopeSettings : IDebugDescribable
 			new Vector2( leadInLength + midLength, midValue),
 			new Vector2( TotalLength, 0f)
 			);
-		gc.AddGraphSection(mid);
+		gc.AddGraphSection(tail);
 		return gc;
 	}
 

@@ -94,6 +94,8 @@ public class GraphSettings : MonoBehaviour
 		allowCrossingXAxis = def.allowCrossingXAxis;
 		loop = def.loop;
 		ResetViewCentres();
+		axisDefinitions = new AxisDefinition[0]{};
+
 	}
 	public Vector2 xRange = new Vector2();
 	public Vector2 yRange = Vector2.zero;

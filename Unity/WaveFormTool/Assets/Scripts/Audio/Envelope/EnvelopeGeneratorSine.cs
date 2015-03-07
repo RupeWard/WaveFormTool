@@ -1,19 +1,19 @@
 using System;
 using UnityEngine;
 
-public class EnvelopeGeneratorSine :  EnvelopeGenerator
+public class EnvelopeGeneratorSine :  OldEnvelopeGenerator
 {
-	public EnvelopeGeneratorSine () : base("Sine")
+	public EnvelopeGeneratorSine (OldEnvelopeSettings s) : base(s, "Sine")
 	{
 	}
 
 	#region IEnvelopeProvider 
 
-	protected override float GetLeadInValueForTime (float time, BasicEnvelopeSettings settings)
+	protected override float GetLeadInValueForTime (float time)
 	{
 		return 0f;
 	}
-	protected override float GetTailOutValueForTime (float time, BasicEnvelopeSettings settings)
+	protected override float GetTailOutValueForTime (float time)
 	{
 		return 0f;
 	}

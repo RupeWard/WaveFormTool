@@ -9,6 +9,7 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 	static public GraphSection CreateGraphSection(string n, GraphPanel parent)
 	{
 		GameObject go = new GameObject();
+		go.name = n;
 		go.AddComponent< GraphSection >();
 		GraphSection result = go.GetComponent< GraphSection>();
 		result.init ( n, parent );
@@ -57,11 +58,13 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 	public GraphSection PreviousGraphSection
 	{
 		get { return previousGraphSection_; }
+		set { previousGraphSection_ = value; }
 	}
 	private GraphSection nextGraphSection_ = null;
 	public GraphSection NextGraphSection
 	{
 		get { return nextGraphSection_; }
+		set { nextGraphSection_ = value; }
 	}
 
 	public bool IsFirst(GraphPoint p)

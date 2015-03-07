@@ -18,9 +18,9 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	public UILabel messageLabel;
 	public UISprite background_;
 
-	private BasicEnvelopeSettings settings_ = new BasicEnvelopeSettings();
+	private OldEnvelopeSettings settings_ = new OldEnvelopeSettings();
 
-	private Dictionary< string, EnvelopeGenerator > generatorDB_ = new Dictionary<string, EnvelopeGenerator>();
+	private Dictionary< string, OldEnvelopeGenerator > generatorDB_ = new Dictionary<string, OldEnvelopeGenerator>();
 	private int numSamples_ = 8;
 	private static readonly int s_minNumSamples = 4;
 	private static readonly int s_maxNumSamples = 1024;
@@ -28,8 +28,8 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	public void Start()
 	{
 //		HUDManager.Instance.AddPopup (gameObject);		
-		generatorDB_.Add ("Sine (built in)", new EnvelopeGeneratorSine ());
-		generatorDB_.Add ("Sawtooth (built in)", new EnvelopeGeneratorSaw ());
+//		generatorDB_.Add ("Sine (built in)", new EnvelopeGeneratorSine (settings_));
+		generatorDB_.Add ("Lead-Peak-Mid-Tail (built in)", new EnvelopeGeneratorSaw (settings_));
 
 		foreach (string key in generatorDB_.Keys)
 		{
@@ -252,7 +252,8 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 //		Debug.Log ("GenerateGraphButton clicked with selection = '"+selected+"'");
 		if (generatorDB_.ContainsKey (selected))
 		{
-			graphPanel.CreateGraph (generatorDB_ [selected], numSamples_, settings_, false);
+			GraphCreator creator = settings_.MakeGraphCreator();
+			graphPanel.CreateGraph (creator, numSamples_, false);
 		}
 		else
 		{

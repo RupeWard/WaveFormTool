@@ -262,7 +262,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void init (GraphSection sg, float x, float y, GraphPointDef.EFunctionalState functionalState)
 	{
 		myGraphSection_ = sg;
-		transform.parent = sg.transform;
+		transform.parent = sg.GraphPanel.pointsContainer;
 		EFunctionalState = functionalState;
 		SetXY (x, y);
 	}

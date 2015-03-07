@@ -153,7 +153,7 @@ public class ToneGeneratorPanel : SingletonSceneLifetime< ToneGeneratorPanel>
 				isPlaying = true;
 				if (useEnvelope_ )
 				{
-					yield return new WaitForSeconds( envelopeProvider_.EnvelopeLength(null));
+					yield return new WaitForSeconds( envelopeProvider_.EnvelopeLength());
 					player_.audio.Stop();
 					string msg = "Finished Playing ";
 					messageLabel.text = msg;

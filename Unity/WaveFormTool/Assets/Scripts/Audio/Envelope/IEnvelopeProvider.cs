@@ -3,13 +3,13 @@ using System.Collections;
 
 public interface IEnvelopeProvider 
 {
-	float GetValueForTime(float time, BasicEnvelopeSettings settings);
+	float GetValueForTime(float time);
 
 	string EnvelopeName();
 
 	bool IsReady();
 
-	float EnvelopeLength(BasicEnvelopeSettings settings);
+	float EnvelopeLength();
 
 	IEnvelopeProvider Clone();
 }
