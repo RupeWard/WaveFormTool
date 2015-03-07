@@ -26,7 +26,7 @@ public abstract class GraphPanel : MonoBehaviour
 	{
 		get 
 		{
-			return (firstSubGraph_ == null)?(null):(firstSubGraph_.FirstPoint); 
+			return (firstGraphSection_ == null)?(null):(firstGraphSection_.FirstPoint); 
 		}
 	}
 	protected GraphPoint rangeStart_ = null;
@@ -278,13 +278,26 @@ public abstract class GraphPanel : MonoBehaviour
 	
 #endregion axes
 
-#region subgraphs
-	protected SubGraph firstSubGraph_ = null;
+#region graphsections
+	protected GraphSection firstGraphSection_ = null;
 
-	protected SubGraph lastSubGraph_ = null;
+	protected GraphSection lastGraphSection_ = null;
 
-
-#endregion subgraphs
+	public int NumGraphSections
+	{
+		get 
+		{
+			int result =0;
+			GraphSection sg = firstGraphSection_;
+			while (sg != null)
+			{
+				result++;
+				sg = sg.NextGraphSection;
+			}
+			return result;
+		}
+	}
+	#endregion graphsections
 
 #region graph
 	protected static readonly bool DEBUG_GRAPH = false;
@@ -323,17 +336,32 @@ public abstract class GraphPanel : MonoBehaviour
 
 	protected IEnumerator ClearPointsCR()
 	{
+		System.Text.StringBuilder sb = null;
+		if ( GraphSection.DEBUG_SUBGRAPH )
+		{
+			sb = new System.Text.StringBuilder ( );
+			sb.Append ("Clearing points...");
+		}
 		pointPanel_.SetPoint (null);
 
-		SubGraph sg = firstSubGraph_;
+		int subgn = 0;
+		GraphSection sg = firstGraphSection_;
 		while ( sg != null )
 		{
-			yield return StartCoroutine(sg.ClearPointsCR());
-			sg = sg.NextSubgraph;
+			sb.Append("\n ").Append(subgn).Append(": ");
+			yield return StartCoroutine(sg.ClearPointsCR(sb));
+			GraphSection sgToDestroy = sg;
+			sg = sg.NextGraphSection;
+			GameObject.Destroy(sgToDestroy);
+			yield return null;
 		}
-		firstSubGraph_ = null;
+		firstGraphSection_ = null;
 		rangeStart_ = null;
 		rangeEnd_ = null;
+		if ( sb != null )
+		{
+			Debug.Log(sb.ToString());
+		}
 	}
 
 	public void OnPointSelected(GraphPoint p)
@@ -400,11 +428,11 @@ public abstract class GraphPanel : MonoBehaviour
 
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{
-		SubGraph subGraph = pt.subGraph;
+		GraphSection graphSection = pt.graphSection;
 
-		if ( subGraph == null )
+		if ( graphSection == null )
 		{
-			Debug.LogError("Null SUBGRAPH!");
+			Debug.LogError("Null GRAPHSECTION!");
 			return null;
 		}
 
@@ -424,22 +452,21 @@ public abstract class GraphPanel : MonoBehaviour
 			return null;
 		}
 
-		if ( subGraph.IsFirst ( pt ) )
+		if ( graphSection.IsFirst ( pt ) )
 		{
-			if (subGraph == firstSubGraph_)
+			if (graphSection == firstGraphSection_)
 			{
 				return null;;
 			}
-			subGraph = subGraph.PreviousSubgraph;
-			if (subGraph == null)
+			graphSection = graphSection.PreviousGraphSection;
+			if (graphSection == null)
 			{
 				Debug.LogError("Subgraph error");
 				return null;
 			}
 		}
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		newPoint.transform.parent = pointsContainer;
-		newPoint.init(subGraph, 
+		newPoint.init(graphSection, 
 	              0.5f *(pt.Point.x + pt.PreviousPointAbsolute.Point.x), 
 	              0.5f *(pt.Point.y + pt.PreviousPointAbsolute.Point.y), 
 		      (isFollower)?(GraphPointDef.EFunctionalState.NonFunctional):(GraphPointDef.EFunctionalState.Functional)
@@ -513,8 +540,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 		
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		newPoint.transform.parent = pointsContainer;
-		newPoint.init(pt.subGraph, 
+		newPoint.init(pt.graphSection, 
 		              0.5f *(pt.Point.x + pt.NextPointAbsolute.Point.x), 
 		              0.5f *(pt.Point.y + pt.NextPointAbsolute.Point.y), 
 		              GraphPointDef.EFunctionalState.Functional
@@ -940,28 +966,25 @@ public abstract class GraphPanel : MonoBehaviour
 			Debug.Log ("loading points");
 		}
 
-		firstSubGraph_ = new SubGraph();
-		firstSubGraph_.init (this);
+		firstGraphSection_ = GraphSection.CreateGraphSection(this);
 
 		GraphPoint previousPoint = null;
 		foreach( GraphPointDef def in pointDefs)
 		{
 			GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-			newPoint.transform.parent = pointsContainer;
-			newPoint.init(firstSubGraph_, 
+			newPoint.init(firstGraphSection_, 
 			              def.pt.x, 
 			              def.pt.y,
 			              def.eFunctionalState
 			              );
+			if (firstGraphSection_.FirstPoint == null)
+			{
+				firstGraphSection_.FirstPoint = newPoint;
+			}
 			newPoint.pointDef = def;
 			if (def.eFixedState == GraphPointDef.EFixedState.Fixed)
 			{
 				newPoint.SetFixed();
-			}
-			if (firstSubGraph_ == null)
-			{
-				firstSubGraph_ =  new SubGraph();
-				firstSubGraph_.init(this);
 			}
 			if (def.isRangeStart)
 			{

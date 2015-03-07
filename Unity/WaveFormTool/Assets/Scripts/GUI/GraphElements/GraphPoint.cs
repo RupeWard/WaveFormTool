@@ -61,9 +61,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			{	
 				return nextPoint_; 
 			}
-			if (mySubGraph_.NextSubgraph != null)
+			if (myGraphSection_.NextGraphSection != null)
 			{
-				return mySubGraph_.NextSubgraph.FirstPoint;
+				return myGraphSection_.NextGraphSection.FirstPoint;
 			}
 			return null;
 		}
@@ -83,9 +83,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			{
 				return previousPoint_; 
 			}
-			if (mySubGraph_.PreviousSubgraph != null)
+			if (myGraphSection_.PreviousGraphSection != null)
 			{
-				return mySubGraph_.PreviousSubgraph.LastPoint;
+				return myGraphSection_.PreviousGraphSection.LastPoint;
 			}
 			return null;
 		}
@@ -243,14 +243,14 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return graphPosition_; }
 	}
 
-	private SubGraph mySubGraph_; 
-	public SubGraph subGraph
+	private GraphSection myGraphSection_; 
+	public GraphSection graphSection
 	{
-		get { return subGraph; }
+		get { return myGraphSection_; }
 	}
 	public GraphPanel graphPanel
 	{
-		get { return mySubGraph_.GraphPanel; }
+		get { return myGraphSection_.GraphPanel; }
 	}
 
 	private Vector2 point_ = new Vector2 ();
@@ -259,9 +259,10 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return point_; }
 	}
 
-	public void init (SubGraph sg, float x, float y, GraphPointDef.EFunctionalState functionalState)
+	public void init (GraphSection sg, float x, float y, GraphPointDef.EFunctionalState functionalState)
 	{
-		mySubGraph_ = sg;
+		myGraphSection_ = sg;
+		transform.parent = sg.transform;
 		EFunctionalState = functionalState;
 		SetXY (x, y);
 	}
@@ -275,12 +276,12 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 				// TODO Refactor
 				pointSprite.color = 
 					(eFixedState_ == GraphPointDef.EFixedState.Fixed) 
-						? (SubGraph.s_functionalColorFixed) : (SubGraph.s_functionalColor);
+						? (GraphSection.s_functionalColorFixed) : (GraphSection.s_functionalColor);
 				break;
 			}
 			case GraphPointDef.EFunctionalState.NonFunctional:
 			{
-				pointSprite.color = SubGraph.s_nonFunctionalColor;
+				pointSprite.color = GraphSection.s_nonFunctionalColor;
 				break;
 			}
 			default :
@@ -295,12 +296,12 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			    && nextPoint_ != null && nextPoint_.EFunctionalState == GraphPointDef.EFunctionalState.Functional)
 			{
 				// TODO separate colours for lines & points
-				lineSprite.color = SubGraph.s_functionalColor;
+				lineSprite.color = GraphSection.s_functionalColor;
 			}
 			else
 			{
 				// TODO separate colours for lines & points
-				lineSprite.color = SubGraph.s_nonFunctionalColor;
+				lineSprite.color = GraphSection.s_nonFunctionalColor;
 			}
 		}
 	}

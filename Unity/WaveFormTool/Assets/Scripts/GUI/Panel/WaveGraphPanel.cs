@@ -110,15 +110,13 @@ public class WaveGraphPanel : GraphPanel
 		
 		float rangeEndTolerance = step / 10f;
 
-		firstSubGraph_ =  new SubGraph();
-		firstSubGraph_.init (this);
+		firstGraphSection_ =  GraphSection.CreateGraphSection(this);
 		while (currentX <= finalX)
 		{
 			if (!visibleOnly || (graphSettings.IsXInView(currentX) ))
 			{
 				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-				newPoint.transform.parent = pointsContainer;
-				newPoint.init(firstSubGraph_, 
+				newPoint.init(firstGraphSection_, 
 				              currentX, 
 				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
 				              (currentX >= 0f-rangeEndTolerance && currentX <= 1f+rangeEndTolerance)?
@@ -146,14 +144,14 @@ public class WaveGraphPanel : GraphPanel
 				
 				//				Debug.Log ("Created Point : "+newPoint.DebugDescribe());
 				
-				if (firstSubGraph_ == null)
+				if (firstGraphSection_.FirstPoint == null)
 				{
-					firstSubGraph_ = new SubGraph();
-					firstSubGraph_.init(this);
+					firstGraphSection_.FirstPoint = newPoint;
 				}
-				else
+
+				newPoint.PreviousPointInternal = previous;
+				if (previous != null)
 				{
-					newPoint.PreviousPointInternal = previous;
 					previous.NextPointInternal = newPoint;
 				}
 				previous = newPoint;

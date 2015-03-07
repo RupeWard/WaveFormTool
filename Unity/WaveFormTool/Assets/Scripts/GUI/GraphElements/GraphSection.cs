@@ -2,10 +2,21 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SubGraph : IDebugDescribable
+public class GraphSection : MonoBehaviour, IDebugDescribable
 {
+	static public GraphSection CreateGraphSection(GraphPanel parent)
+	{
+		GameObject go = new GameObject();
+		go.AddComponent< GraphSection >();
+		GraphSection result = go.GetComponent< GraphSection>();
+		result.init ( parent );
+		result.transform.localPosition = Vector3.zero;
+		result.transform.localScale = Vector3.one;
+		return result;
+	}
 	static public readonly bool DEBUG_POINT = true;
 	static public readonly bool DEBUG_POINTLINE = false;
+	static public readonly bool DEBUG_SUBGRAPH = true;
 
 	// FIXME colour from settings
 	static public readonly Color s_functionalColor = Color.green;
@@ -19,6 +30,14 @@ public class SubGraph : IDebugDescribable
 	public GraphPoint FirstPoint
 	{
 		get { return firstPoint_; }
+		set 
+		{
+			if (firstPoint_ != null)
+			{
+				Debug.LogError("Shouldn't be setting FirstPoint more than once");
+			}
+			firstPoint_ = value;
+		}
 	}
 	public GraphPoint LastPoint
 	{
@@ -32,15 +51,15 @@ public class SubGraph : IDebugDescribable
 			return p;
 		}
 	}
-	private SubGraph previousSubGraph_ = null;
-	public SubGraph PreviousSubgraph
+	private GraphSection previousGraphSection_ = null;
+	public GraphSection PreviousGraphSection
 	{
-		get { return previousSubGraph_; }
+		get { return previousGraphSection_; }
 	}
-	private SubGraph nextSubGraph_ = null;
-	public SubGraph NextSubgraph
+	private GraphSection nextGraphSection_ = null;
+	public GraphSection NextGraphSection
 	{
-		get { return nextSubGraph_; }
+		get { return nextGraphSection_; }
 	}
 
 	public bool IsFirst(GraphPoint p)
@@ -81,14 +100,15 @@ public class SubGraph : IDebugDescribable
 		get { return graphPanel_; }
 	}
 
-	public void init (GraphPanel p)
+	private void init (GraphPanel p)
 	{
 		graphPanel_ = p;
-		// FIXME
+		transform.parent = p.pointsContainer;
 	}
 
-	public IEnumerator ClearPointsCR()
+	public IEnumerator ClearPointsCR(System.Text.StringBuilder sb)
 	{
+		int n = 0;
 		GraphPoint pt = firstPoint_;
 		while (pt != null)
 		{
@@ -96,11 +116,20 @@ public class SubGraph : IDebugDescribable
 			GraphPoint nextPoint = pt.NextPointInternal;
 			//			pt.NextPoint = null;
 			GameObject.Destroy(pt.gameObject);
+			n++;
 			
 			pt = nextPoint;
-			//			yield return null;
+			yield return null;
 		}
 		firstPoint_ = null;
+		if ( previousGraphSection_ != null )
+		{
+			previousGraphSection_.nextGraphSection_ = null;
+		}
+		if ( sb != null )
+		{
+			sb.Append("GraphSection:Cleared ").Append(n);
+		}
 		yield return null;
 	}
 
@@ -252,7 +281,7 @@ public class SubGraph : IDebugDescribable
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 
-		sb.Append ("[SubGraph ");
+		sb.Append ("[GraphSection ");
 		int num = NumGraphPoints ( );
 		if ( num > 0 )
 		{

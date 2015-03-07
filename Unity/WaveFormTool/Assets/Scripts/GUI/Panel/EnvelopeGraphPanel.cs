@@ -106,18 +106,18 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		float time = 0f;
 
-		firstSubGraph_ = new SubGraph();
-		firstSubGraph_.init(this);
+		firstGraphSection_ = GraphSection.CreateGraphSection(this);
 
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		newPoint.transform.parent = pointsContainer;
-		newPoint.init(firstSubGraph_, 
+		newPoint.init(firstGraphSection_, 
 		              time, 
 		              0f,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
 		rangeStart_ = newPoint;
 		OnPointSelected(rangeStart_);
+
+		firstGraphSection_.FirstPoint = newPoint;
 
 		rangeStart_.SetFixed ();
 		newPoint.gameObject.name = "First";
@@ -137,8 +137,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		{
 			time = i*step;
 			newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-			newPoint.transform.parent = pointsContainer;
-			newPoint.init(firstSubGraph_, 
+			newPoint.init(firstGraphSection_, 
 			                 time, 
 			                 efp.GetValueForTime(time, envelopeSettings),
 			                 GraphPointDef.EFunctionalState.Functional
@@ -164,8 +163,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			{
 				time = envelopeSettings.leadInPeakTime + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-				newPoint.transform.parent = pointsContainer;
-				newPoint.init(firstSubGraph_, 
+				newPoint.init(firstGraphSection_, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
@@ -182,8 +180,7 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		time = envelopeSettings.leadInLength;
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		newPoint.transform.parent = pointsContainer;
-		newPoint.init(firstSubGraph_, 
+		newPoint.init(firstGraphSection_, 
 		              time, 
 		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
@@ -199,8 +196,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		time = envelopeSettings.leadInLength + envelopeSettings.midLength;
 
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		newPoint.transform.parent = pointsContainer;
-		newPoint.init(firstSubGraph_, 
+		newPoint.init(firstGraphSection_, 
 		              time, 
 		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
@@ -225,8 +221,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			{
 				time = envelopeSettings.leadInLength + envelopeSettings.midLength + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-				newPoint.transform.parent = pointsContainer;
-				newPoint.init(firstSubGraph_, 
+				newPoint.init(firstGraphSection_, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
@@ -244,8 +239,7 @@ public class EnvelopeGraphPanel : GraphPanel
 		if (previous.Point.x < envelopeSettings.TotalLength)
 		{
 			rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-			rangeEnd_.transform.parent = pointsContainer;
-			rangeEnd_.init(firstSubGraph_, 
+			rangeEnd_.init(firstGraphSection_, 
 			               envelopeSettings.TotalLength, 
 			               0f,
 			               GraphPointDef.EFunctionalState.Functional
