@@ -22,6 +22,7 @@ public abstract class GraphPanel : MonoBehaviour
 	public Transform pointsContainer;
 	public Transform axesContainer;
 
+	//FIXME subGraphs
 	protected GraphPoint firstPoint_ = null;
 	protected GraphPoint rangeStart_ = null;
 	public GraphPoint RangeStart
@@ -272,8 +273,16 @@ public abstract class GraphPanel : MonoBehaviour
 	
 #endregion axes
 
+#region subgraphs
+	SubGraph firstSubGraph_ = null;
+	SubGraph lastSubGraph_ = null;
+
+
+#endregion subgraphs
+
 #region graph
 	protected static readonly bool DEBUG_GRAPH = false;
+
 
 	public void ClearGraph()
 	{
@@ -281,6 +290,7 @@ public abstract class GraphPanel : MonoBehaviour
 		pointPanel_.SetActive(false);
 	}
 
+	// FIXME Convert to subgraph
 	protected IEnumerator AdjustPointPositionsCR()
 	{
 		GraphPoint pt = firstPoint_;
@@ -294,6 +304,7 @@ public abstract class GraphPanel : MonoBehaviour
 		yield return null;
 	}
 
+	// FIXME Convert to subgraph
 	public IEnumerator UpdateLinesCR()
 	{
 		GraphPoint pt = firstPoint_;
@@ -305,8 +316,8 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 		yield return null;
 	}
-	
 
+	// FIXME Convert to subgraph
 	protected IEnumerator ClearPointsCR()
 	{
 		pointPanel_.SetPoint (null);
@@ -334,6 +345,7 @@ public abstract class GraphPanel : MonoBehaviour
 		pointPanel_.SetPoint (p);
 	}
 
+	// FIXME Convert to subgraph
 	public void MovePointY(GraphPoint p, GraphPointMoverBase mover, float newY)
 	{	
 		if (!IsCreatingGraph)
@@ -390,6 +402,7 @@ public abstract class GraphPanel : MonoBehaviour
 		} while (ptToAddAfter != null && AddPointAfter(ptToAddAfter));
 	}
 
+	// FIXME Convert to subgraph
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{
 		if ( DEBUG_ADD_DELETE )
@@ -461,6 +474,7 @@ public abstract class GraphPanel : MonoBehaviour
 		return AddPointAfter (pt, true );
 	}
 
+	// FIXME Convert to subgraph
 	private GraphPoint AddPointAfter(GraphPoint pt, bool isFollower)
 	{
 		if ( DEBUG_ADD_DELETE )
@@ -535,6 +549,7 @@ public abstract class GraphPanel : MonoBehaviour
 		DeletePoint ( pt, true );
 	}
 
+	// FIXME Convert to subgraph
 	private void DeletePoint(GraphPoint pt, bool isFollower)
 	{
 		Debug.Log ( "DeletePoint " + pt );
@@ -578,6 +593,7 @@ public abstract class GraphPanel : MonoBehaviour
 		GameObject.Destroy ( pt.gameObject );
 	}
 
+	// FIXME Convert to subgraph
 	protected int NumGraphPoints()
 	{
 		int n = 0;
@@ -764,6 +780,7 @@ public abstract class GraphPanel : MonoBehaviour
 	}
 
 
+	// FIXME Convert to subgraph
 	private IEnumerator CreatePointDefsCR()
 	{
 		if (DEBUG_IO)
@@ -809,6 +826,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 	}
 
+	// FIXME Convert to subgraph
 	private IEnumerator LoadFromFileCR(string filename)
 	{
 		string filePath = GraphIO.SaveFolder + filename;
@@ -875,6 +893,7 @@ public abstract class GraphPanel : MonoBehaviour
 		yield return null;
 	}
 
+	// FIXME Convert to subgraph
 	private IEnumerator OnLoadComplete(GraphSettingsDef settingsDef, List<GraphPointDef> pointDefs)
 	{
 		if (DEBUG_IO)

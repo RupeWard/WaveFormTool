@@ -203,6 +203,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return graphPosition_; }
 	}
 
+	// FIXME Convert to subgraph
 	private GraphPanel myGraph_; 
 	public GraphPanel graphPanel
 	{

@@ -28,7 +28,6 @@ public class EnvelopeGeneratorPanel : SingletonSceneLifetime< EnvelopeGeneratorP
 	public void Start()
 	{
 //		HUDManager.Instance.AddPopup (gameObject);		
-
 		generatorDB_.Add ("Sine (built in)", new EnvelopeGeneratorSine ());
 		generatorDB_.Add ("Sawtooth (built in)", new EnvelopeGeneratorSaw ());
 

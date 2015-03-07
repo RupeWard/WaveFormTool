@@ -2,12 +2,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
+public class SubGraph : IDebugDescribable
 {
 	static public readonly bool DEBUG_POINT = true;
 	static public readonly bool DEBUG_POINTLINE = false;
 
-	// FIXME playing colour
+	// FIXME colour from settings
 	static readonly Color s_functionalColor = Color.green;
 	static readonly Color s_functionalColorFixed = Color.blue;
 	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
@@ -15,12 +15,21 @@ public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
 	public UISprite pointSprite;
 	public UISprite lineSprite;
 
-//	private GraphPoint nextPoint_ = null; // segment
-//	private GraphPoint previousPoint_ = null; // segment
+	protected GraphPoint firstPoint_ = null;
+
+	private SubGraph previousSubGraph_ = null;
+	public SubGraph PreviousSubgraph
+	{
+		get { return previousSubGraph_; }
+	}
+	private SubGraph nextSubGraph_ = null;
+	public SubGraph NextSubgraph
+	{
+		get { return nextSubGraph_; }
+	}
 
 	private Quaternion flatLineRotation_ =  new Quaternion(0,0,0,1);
-
-
+	
 	public bool showLines = true;
 
 	private bool isAppearanceDirty_ = false;
@@ -46,22 +55,9 @@ public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
 	{
 		isDataDirty_ = true;
 	}
-
-
-	private bool isFixed_ = false;
-	public bool IsFixed
-	{
-		get { return isFixed_; }
-		set
-		{
-			isFixed_ = value;
-			isAppearanceDirty_ = true;
-			isDataDirty_ = true;
-		}
-	}
-
+	
 	private bool isFunctional_ = true;
-	public bool IsFunctional
+	public bool IsFunctional // FIXME depends on all points? Can override?
 	{
 		get { return isFunctional_; }
 		set 
@@ -73,23 +69,52 @@ public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
 
 	}
 
-	private GraphPanel myGraph_; 
-	public GraphPanel graphPanel
+	private GraphPanel graphPanel_; 
+	public GraphPanel GraphPanel
 	{
-		get { return myGraph_; }
+		get { return graphPanel_; }
 	}
 
-	public void init (GraphPanel p, float x, float y, bool functional)
+	public void init (GraphPanel p, bool functional)
 	{
-		myGraph_ = p;
+		graphPanel_ = p;
 		IsFunctional = functional;
 
 		// FIXME
 	}
 
+	public IEnumerator ClearPointsCR()
+	{// FIXME
+		yield return null;
+	}
 
-	public void updateLines()
+	public IEnumerator AdjustPointPositionsCR()
+	{// FIXME
+		yield return null;
+	}
+
+	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
+	{// FIXME
+		return null;
+	}
+	private GraphPoint AddPointAfter(GraphPoint pt, bool isFollower)
+	{// FIXME
+		return null;
+	}
+	private void DeletePoint(GraphPoint pt, bool isFollower)
+	{// FIXME
+	}
+	protected int NumGraphPoints()
+	{// FIXME
+		return 0;
+	}
+	private IEnumerator CreatePointDefsCR()
 	{
+		yield return null;
+	}
+	public IEnumerator updateLinesCR()
+	{
+		yield return null;
 		// FIXME
 
 		/*
@@ -194,7 +219,9 @@ public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
 		*/
 
 	}
-	
+
+	#region IDebugDescribable
+
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
 		/*
@@ -217,12 +244,6 @@ public class SubGraph : /*MonoBehaviour,*/ IDebugDescribable
 		*/
 	}
 
-	public string DebugDescribe()
-	{
-		System.Text.StringBuilder sb = new System.Text.StringBuilder ();
-		DebugDescribe (sb);
-		return sb.ToString ();
-	}
-
+	#endregion IDebugDescribable
 
 }
