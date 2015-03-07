@@ -22,8 +22,13 @@ public abstract class GraphPanel : MonoBehaviour
 	public Transform pointsContainer;
 	public Transform axesContainer;
 
-	//FIXME subGraphs
-	protected GraphPoint firstPoint_ = null;
+	protected GraphPoint FirstPoint
+	{
+		get 
+		{
+			return (firstSubGraph_ == null)?(null):(firstSubGraph_.FirstPoint); 
+		}
+	}
 	protected GraphPoint rangeStart_ = null;
 	public GraphPoint RangeStart
 	{
@@ -274,8 +279,9 @@ public abstract class GraphPanel : MonoBehaviour
 #endregion axes
 
 #region subgraphs
-	SubGraph firstSubGraph_ = null;
-	SubGraph lastSubGraph_ = null;
+	protected SubGraph firstSubGraph_ = null;
+
+	protected SubGraph lastSubGraph_ = null;
 
 
 #endregion subgraphs
@@ -290,53 +296,44 @@ public abstract class GraphPanel : MonoBehaviour
 		pointPanel_.SetActive(false);
 	}
 
-	// FIXME Convert to subgraph
 	protected IEnumerator AdjustPointPositionsCR()
 	{
-		GraphPoint pt = firstPoint_;
+		GraphPoint pt = FirstPoint;
 		while (pt != null)
 		{
 			pt.adjustPosition();
 			pt.updateLine();
-			pt = pt.NextPoint;
+			pt = pt.NextPointAbsolute;
 			yield return null;
 		}
 		yield return null;
 	}
 
-	// FIXME Convert to subgraph
 	public IEnumerator UpdateLinesCR()
 	{
-		GraphPoint pt = firstPoint_;
+		GraphPoint pt = FirstPoint;
 		while (pt != null)
 		{
 			pt.updateLine();
-			pt = pt.NextPoint;
+			pt = pt.NextPointAbsolute;
 			yield return null;
 		}
 		yield return null;
 	}
 
-	// FIXME Convert to subgraph
 	protected IEnumerator ClearPointsCR()
 	{
 		pointPanel_.SetPoint (null);
+
+		SubGraph sg = firstSubGraph_;
+		while ( sg != null )
+		{
+			yield return StartCoroutine(sg.ClearPointsCR());
+			sg = sg.NextSubgraph;
+		}
+		firstSubGraph_ = null;
 		rangeStart_ = null;
 		rangeEnd_ = null;
-
-		GraphPoint pt = firstPoint_;
-		while (pt != null)
-		{
-//			pt.PreviousPoint = null;
-			GraphPoint nextPoint = pt.NextPoint;
-//			pt.NextPoint = null;
-			GameObject.Destroy(pt.gameObject);
-
-			pt = nextPoint;
-//			yield return null;
-		}
-		firstPoint_ = null;
-		yield return null;
 	}
 
 	public void OnPointSelected(GraphPoint p)
@@ -345,7 +342,6 @@ public abstract class GraphPanel : MonoBehaviour
 		pointPanel_.SetPoint (p);
 	}
 
-	// FIXME Convert to subgraph
 	public void MovePointY(GraphPoint p, GraphPointMoverBase mover, float newY)
 	{	
 		if (!IsCreatingGraph)
@@ -388,8 +384,8 @@ public abstract class GraphPanel : MonoBehaviour
 		do
 		{
 			ptToAddBefore = pt;
-			if (pt != null) pt = pt.PreviousPoint;
-		} while (ptToAddBefore!=null && AddPointBefore(ptToAddBefore));
+			if (pt != null) pt = pt.PreviousPointAbsolute;
+		} while (ptToAddBefore!=null && (AddPointBefore(ptToAddBefore)!=null));
 	}
 
 	public void AddAllPointsAfter(GraphPoint pt)
@@ -398,40 +394,62 @@ public abstract class GraphPanel : MonoBehaviour
 		do
 		{
 			ptToAddAfter = pt;
-			if (pt != null) pt = pt.NextPoint;
-		} while (ptToAddAfter != null && AddPointAfter(ptToAddAfter));
+			if (pt != null) pt = pt.NextPointAbsolute;
+		} while (ptToAddAfter != null && AddPointAfter(ptToAddAfter)!=null);
 	}
 
-	// FIXME Convert to subgraph
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{
+		SubGraph subGraph = pt.subGraph;
+
+		if ( subGraph == null )
+		{
+			Debug.LogError("Null SUBGRAPH!");
+			return null;
+		}
+
 		if ( DEBUG_ADD_DELETE )
 		{
 			Debug.Log ("AddBefore "+pt.DebugDescribe()
 			           +( (isFollower)?(" (follower)"):("not follower")));
 		}
-		if ( pt.PreviousPoint == null )
+		if ( pt.PreviousPointAbsolute == null )
 		{
 			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because no previous");
 			return null;
 		}
-		if (!isFollower && !pt.PreviousPoint.IsFunctional )
+		if (!isFollower && !pt.PreviousPointAbsolute.IsFunctional )
 		{
 			Debug.LogWarning ("Can't add point before "+pt.DebugDescribe()+" because previous non-functional"); 
 			return null;
 		}
+
+		if ( subGraph.IsFirst ( pt ) )
+		{
+			if (subGraph == firstSubGraph_)
+			{
+				return null;;
+			}
+			subGraph = subGraph.PreviousSubgraph;
+			if (subGraph == null)
+			{
+				Debug.LogError("Subgraph error");
+				return null;
+			}
+		}
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
-		newPoint.init(this, 
-	              0.5f *(pt.Point.x + pt.PreviousPoint.Point.x), 
-	              0.5f *(pt.Point.y + pt.PreviousPoint.Point.y), 
+		newPoint.init(subGraph, 
+	              0.5f *(pt.Point.x + pt.PreviousPointAbsolute.Point.x), 
+	              0.5f *(pt.Point.y + pt.PreviousPointAbsolute.Point.y), 
 		      (isFollower)?(GraphPointDef.EFunctionalState.NonFunctional):(GraphPointDef.EFunctionalState.Functional)
 	              );
-		newPoint.PreviousPoint = pt.PreviousPoint;
-		newPoint.NextPoint = pt;
 
-		pt.PreviousPoint.NextPoint = newPoint;
-		pt.PreviousPoint = newPoint;
+		newPoint.PreviousPointInternal = pt.PreviousPointInternal;
+		newPoint.NextPointInternal = pt;
+
+		pt.PreviousPointInternal.NextPointInternal = newPoint;
+		pt.PreviousPointInternal = newPoint;
 
 		if (!isFollower)
 		{
@@ -483,7 +501,7 @@ public abstract class GraphPanel : MonoBehaviour
 			           +( (isFollower)?(" (follower)"):("")));
 		}
 
-		if ( pt.NextPoint == null )
+		if ( pt.NextPointAbsolute == null )
 		{
 			Debug.LogWarning ("Can't add point after "+pt.DebugDescribe()+" because no next");
 			return null;
@@ -496,16 +514,16 @@ public abstract class GraphPanel : MonoBehaviour
 		
 		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
-		newPoint.init(this, 
-		              0.5f *(pt.Point.x + pt.NextPoint.Point.x), 
-		              0.5f *(pt.Point.y + pt.NextPoint.Point.y), 
+		newPoint.init(pt.subGraph, 
+		              0.5f *(pt.Point.x + pt.NextPointAbsolute.Point.x), 
+		              0.5f *(pt.Point.y + pt.NextPointAbsolute.Point.y), 
 		              GraphPointDef.EFunctionalState.Functional
 		              );
-		newPoint.NextPoint = pt.NextPoint;
-		newPoint.PreviousPoint = pt;
-		
-		pt.NextPoint.PreviousPoint = newPoint;
-		pt.NextPoint = newPoint;
+		newPoint.NextPointInternal = pt.NextPointInternal;
+		newPoint.PreviousPointInternal = pt;
+
+		pt.NextPointInternal.PreviousPointInternal = newPoint;
+		pt.NextPointInternal = newPoint;
 
 		if (!isFollower)
 		{
@@ -578,13 +596,13 @@ public abstract class GraphPanel : MonoBehaviour
 			Debug.LogWarning ("Attempt to delete end point "+pt.DebugDescribe());
 			return;
 		}
-		if ( pt.PreviousPoint != null )
+		if ( pt.PreviousPointInternal != null )
 		{
-			pt.PreviousPoint.NextPoint = pt.NextPoint;
+			pt.PreviousPointInternal.NextPointInternal = pt.NextPointInternal;
 		}
-		if ( pt.NextPoint != null )
+		if ( pt.NextPointInternal != null )
 		{
-			pt.NextPoint.PreviousPoint = pt.PreviousPoint;
+			pt.NextPointInternal.PreviousPointInternal = pt.PreviousPointInternal;
 		}
 		if (!isFollower && pt.HasFollower )
 		{
@@ -597,11 +615,12 @@ public abstract class GraphPanel : MonoBehaviour
 	protected int NumGraphPoints()
 	{
 		int n = 0;
+
 		GraphPoint p = rangeStart_;
 		while (p != null && p != rangeEnd_)
 		{
 			n++;
-			p = p.NextPoint;
+			p = p.NextPointAbsolute;
 		}
 		return n;
 	}
@@ -738,6 +757,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 	}
 
+	// FIXME save subgraphs
 	public IEnumerator SaveToFileCR(string filename)
 	{
 		{
@@ -762,11 +782,11 @@ public abstract class GraphPanel : MonoBehaviour
 			}
 			GraphIO.WriteStartLine(file, "Points");
 
-			GraphPoint p = firstPoint_;
+			GraphPoint p = FirstPoint;
 			while (p != null)
 			{
 				p.pointDef.SaveToFile(file);
-				p = p.NextPoint;
+				p = p.NextPointAbsolute;
 			}
 			GraphIO.WriteEndLine(file, "Points");
 			if (DEBUG_IO)
@@ -789,23 +809,23 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 		yield return null;
 		int id = 0;
-		GraphPoint p = firstPoint_;
+		GraphPoint p = FirstPoint;
 		while (p != null)
 		{
 			p.CreatePointDef(id);
 			id++;
-			p = p.NextPoint;
+			p = p.NextPointAbsolute;
 		}
 		if (DEBUG_IO)
 		{
 			Debug.Log ( "Updating point defs" );
 		}
 		yield return null;
-		p = firstPoint_;
+		p = FirstPoint;
 		while (p != null)
 		{
 			p.UpdatePointDef();
-			p = p.NextPoint;
+			p = p.NextPointAbsolute;
 		}
 	}
 
@@ -920,12 +940,15 @@ public abstract class GraphPanel : MonoBehaviour
 			Debug.Log ("loading points");
 		}
 
+		firstSubGraph_ = new SubGraph();
+		firstSubGraph_.init (this);
+
 		GraphPoint previousPoint = null;
 		foreach( GraphPointDef def in pointDefs)
 		{
 			GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 			newPoint.transform.parent = pointsContainer;
-			newPoint.init(this, 
+			newPoint.init(firstSubGraph_, 
 			              def.pt.x, 
 			              def.pt.y,
 			              def.eFunctionalState
@@ -935,9 +958,10 @@ public abstract class GraphPanel : MonoBehaviour
 			{
 				newPoint.SetFixed();
 			}
-			if (firstPoint_ == null)
+			if (firstSubGraph_ == null)
 			{
-				firstPoint_ = newPoint;
+				firstSubGraph_ =  new SubGraph();
+				firstSubGraph_.init(this);
 			}
 			if (def.isRangeStart)
 			{
@@ -955,10 +979,10 @@ public abstract class GraphPanel : MonoBehaviour
 				}
 				rangeEnd_ = newPoint;
 			}
-			newPoint.PreviousPoint = previousPoint;
+			newPoint.PreviousPointInternal = previousPoint;
 			if (previousPoint != null)
 			{
-				previousPoint.NextPoint = newPoint;
+				previousPoint.NextPointInternal = newPoint;
 			}
 			previousPoint = newPoint;
 			Debug.Log ("Loaded point "+newPoint.DebugDescribe()
@@ -967,7 +991,7 @@ public abstract class GraphPanel : MonoBehaviour
 			           );
 			yield return null;
 		}
-		GraphPoint p = firstPoint_;
+		GraphPoint p = FirstPoint;
 		while (p != null)
 		{
 			if (p.pointDef == null)
@@ -976,7 +1000,7 @@ public abstract class GraphPanel : MonoBehaviour
 			}
 			if (p.pointDef.followerId != -1)
 			{
-				GraphPoint p2 = firstPoint_;
+				GraphPoint p2 = FirstPoint;
 				while (p2 != null)
 				{
 					if (p2.pointDef.id == p.pointDef.followerId)
@@ -984,14 +1008,14 @@ public abstract class GraphPanel : MonoBehaviour
 						p.Follower = p2;
 						break;
 					}
-					p2 = p2.NextPoint;
+					p2 = p2.NextPointInternal;
 				}
 				if (p.Follower == null)
 				{
 					Debug.LogError ("Couldnt find follower with id of "+p.pointDef.followerId+" for "+p.DebugDescribe());
 				}
 			}
-			p = p.NextPoint;
+			p = p.NextPointAbsolute;
 
 		}
 		if (DEBUG_IO)

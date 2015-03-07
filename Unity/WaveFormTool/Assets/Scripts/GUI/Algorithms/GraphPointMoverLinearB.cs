@@ -35,11 +35,11 @@ public class GraphPointMoverLinearB : GraphPointMoverBase // FIXME refactor to Y
 		}
 		List < GraphPoint > pointsToMove = new List< GraphPoint>();
 							
-		GraphPoint tp = pt.PreviousPoint;
-		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
+		GraphPoint tp = pt.PreviousPointAbsolute;
+		while (tp != null && !tp.IsFixed && tp.PreviousPointAbsolute != null && tp.PreviousPointAbsolute.IsFunctional)
 		{
 			pointsToMove.Add (tp);
-			tp = tp.PreviousPoint;
+			tp = tp.PreviousPointAbsolute;
 			if (tp != null && tp.Point.y * sign < 0f) // FIXME Only go to x axis?
 			{
 				break;
@@ -50,11 +50,11 @@ public class GraphPointMoverLinearB : GraphPointMoverBase // FIXME refactor to Y
 		if (DEBUG_POINTMOVEMENT)
 			Debug.Log (pointsToMove.Count.ToString()+" prior points to move relative to fixed point "+fixedPriorPoint.DebugDescribe());
 
-		tp = pt.NextPoint;
-		while (tp != null && !tp.IsFixed && tp.PreviousPoint != null && tp.PreviousPoint.IsFunctional)
+		tp = pt.NextPointAbsolute;
+		while (tp != null && !tp.IsFixed && tp.PreviousPointAbsolute != null && tp.PreviousPointAbsolute.IsFunctional)
 		{
 			pointsToMove.Add (tp);
-			tp = tp.NextPoint;
+			tp = tp.NextPointAbsolute;
 			if (tp != null && tp.Point.y * sign < 0f) // FIXME Only go to x axis?
 			{
 				break;

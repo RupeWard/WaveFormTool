@@ -8,15 +8,30 @@ public class SubGraph : IDebugDescribable
 	static public readonly bool DEBUG_POINTLINE = false;
 
 	// FIXME colour from settings
-	static readonly Color s_functionalColor = Color.green;
-	static readonly Color s_functionalColorFixed = Color.blue;
-	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
+	static public readonly Color s_functionalColor = Color.green;
+	static public readonly Color s_functionalColorFixed = Color.blue;
+	static public readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
 
 	public UISprite pointSprite;
 	public UISprite lineSprite;
 
 	protected GraphPoint firstPoint_ = null;
-
+	public GraphPoint FirstPoint
+	{
+		get { return firstPoint_; }
+	}
+	public GraphPoint LastPoint
+	{
+		get
+		{
+			GraphPoint p = firstPoint_;
+			while (p!= null && p.NextPointInternal != null)
+			{
+				p =  p.NextPointInternal;
+			}
+			return p;
+		}
+	}
 	private SubGraph previousSubGraph_ = null;
 	public SubGraph PreviousSubgraph
 	{
@@ -28,6 +43,10 @@ public class SubGraph : IDebugDescribable
 		get { return nextSubGraph_; }
 	}
 
+	public bool IsFirst(GraphPoint p)
+	{
+		return (p==firstPoint_);
+	}
 	private Quaternion flatLineRotation_ =  new Quaternion(0,0,0,1);
 	
 	public bool showLines = true;
@@ -56,43 +75,43 @@ public class SubGraph : IDebugDescribable
 		isDataDirty_ = true;
 	}
 	
-	private bool isFunctional_ = true;
-	public bool IsFunctional // FIXME depends on all points? Can override?
-	{
-		get { return isFunctional_; }
-		set 
-		{
-			isFunctional_ = value;
-			isAppearanceDirty_ = true;
-		}
-		
-
-	}
-
 	private GraphPanel graphPanel_; 
 	public GraphPanel GraphPanel
 	{
 		get { return graphPanel_; }
 	}
 
-	public void init (GraphPanel p, bool functional)
+	public void init (GraphPanel p)
 	{
 		graphPanel_ = p;
-		IsFunctional = functional;
-
 		// FIXME
 	}
 
 	public IEnumerator ClearPointsCR()
-	{// FIXME
+	{
+		GraphPoint pt = firstPoint_;
+		while (pt != null)
+		{
+			//			pt.PreviousPoint = null;
+			GraphPoint nextPoint = pt.NextPointInternal;
+			//			pt.NextPoint = null;
+			GameObject.Destroy(pt.gameObject);
+			
+			pt = nextPoint;
+			//			yield return null;
+		}
+		firstPoint_ = null;
 		yield return null;
 	}
 
+	/* NOT NEEDED?
 	public IEnumerator AdjustPointPositionsCR()
 	{// FIXME
 		yield return null;
 	}
+	*/
 
+	/*
 	private GraphPoint AddPointBefore(GraphPoint pt, bool isFollower)
 	{// FIXME
 		return null;
@@ -104,10 +123,20 @@ public class SubGraph : IDebugDescribable
 	private void DeletePoint(GraphPoint pt, bool isFollower)
 	{// FIXME
 	}
+	*/
 	protected int NumGraphPoints()
-	{// FIXME
-		return 0;
+	{
+		int result = 0;
+		GraphPoint p = firstPoint_;
+		while ( p != null )
+		{
+			result++;
+			p = p.NextPointInternal;
+		}
+		return result;
 	}
+	/*
+
 	private IEnumerator CreatePointDefsCR()
 	{
 		yield return null;
@@ -117,7 +146,6 @@ public class SubGraph : IDebugDescribable
 		yield return null;
 		// FIXME
 
-		/*
 		bool bShow = false;
 		if (showLine)
 		{
@@ -153,14 +181,13 @@ public class SubGraph : IDebugDescribable
 //				Debug.LogWarning("No line because showline");
 		}
 		lineSprite.gameObject.SetActive(bShow);
-		*/
 	}
 
 	public void adjustPositions()
 	{
 		// FIXME
 	}
-	
+*/	
 	public void OnSelected()
 	{
 		Debug.LogError ("Not implementred");
@@ -224,24 +251,23 @@ public class SubGraph : IDebugDescribable
 
 	public void DebugDescribe(System.Text.StringBuilder sb)
 	{
-		/*
-		sb.Append ("[GraphPoint ( ");
-		sb.Append (point_.x);
-		sb.Append (", ");
-		sb.Append (point_.y);
-		sb.Append (" ) at ");
-		sb.Append (transform.localPosition);
-		sb.Append (" ");
-		if (isFixed_)
+
+		sb.Append ("[SubGraph ");
+		int num = NumGraphPoints ( );
+		if ( num > 0 )
 		{
-			sb.Append ("Fixed ");
+			sb.Append( "n=").Append(num);
+			sb.Append( "first=").Append (firstPoint_.DebugDescribe());
+			if (num >1)
+			{
+				sb.Append( " last=").Append (LastPoint.DebugDescribe());
+			}
 		}
-		if (!isFunctional_)
+		else
 		{
-			sb.Append ("Dead ");
+			sb.Append(" empty");
 		}
 		sb.Append (" ]");
-		*/
 	}
 
 	#endregion IDebugDescribable

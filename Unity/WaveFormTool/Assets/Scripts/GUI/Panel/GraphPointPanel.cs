@@ -306,9 +306,9 @@ public class GraphPointPanel : MonoBehaviour
 			{
 				point_.graphPanel.RangeStart.OnSelected();
 			}
-			else if (point_.NextPoint != null && point_.NextPoint.IsFunctional)
+			else if (point_.NextPointAbsolute != null && point_.NextPointAbsolute.IsFunctional)
 			{
-				point_.NextPoint.OnSelected();
+				point_.NextPointAbsolute.OnSelected();
 			}
 		}
 	}
@@ -321,9 +321,9 @@ public class GraphPointPanel : MonoBehaviour
 			{
 				point_.graphPanel.RangeEnd.OnSelected();
 			}
-			if (point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional)
+			if (point_.PreviousPointAbsolute != null && point_.PreviousPointAbsolute.IsFunctional)
 			{
-				point_.PreviousPoint.OnSelected();
+				point_.PreviousPointAbsolute.OnSelected();
 			}
 		}
 	}

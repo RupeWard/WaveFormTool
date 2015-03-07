@@ -7,10 +7,6 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	static public readonly bool DEBUG_POINT = true;
 	static public readonly bool DEBUG_POINTLINE = false;
 
-	static readonly Color s_functionalColor = Color.green;
-	static readonly Color s_functionalColorFixed = Color.blue;
-	static readonly Color s_nonFunctionalColor = new Color (0.5f, 0.5f, 1f,1f);
-
 	public UISprite pointSprite;
 	public UISprite lineSprite;
 
@@ -39,7 +35,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 	private Quaternion flatLineRotation_ =  new Quaternion(0,0,0,1);
 
-	public GraphPoint NextPoint
+	public GraphPoint NextPointInternal
 	{
 		get { return nextPoint_; }
 		set 
@@ -48,7 +44,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			isAppearanceDirty_ = true; 
 		}
 	}
-	public GraphPoint PreviousPoint
+	public GraphPoint PreviousPointInternal
 	{
 		get { return previousPoint_; }
 		set 
@@ -56,6 +52,50 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			previousPoint_ = value;
 			isAppearanceDirty_ = true; 
 		}
+	}
+	public GraphPoint NextPointAbsolute
+	{
+		get 
+		{ 
+			if ( nextPoint_ != null )
+			{	
+				return nextPoint_; 
+			}
+			if (mySubGraph_.NextSubgraph != null)
+			{
+				return mySubGraph_.NextSubgraph.FirstPoint;
+			}
+			return null;
+		}
+		/*
+		set 
+		{ 
+			nextPoint_ = value;
+			isAppearanceDirty_ = true; 
+		}
+		*/
+	}
+	public GraphPoint PreviousPointAbsolute
+	{
+		get 
+		{
+			if (previousPoint_ != null)
+			{
+				return previousPoint_; 
+			}
+			if (mySubGraph_.PreviousSubgraph != null)
+			{
+				return mySubGraph_.PreviousSubgraph.LastPoint;
+			}
+			return null;
+		}
+		/*
+		set 
+		{ 
+			previousPoint_ = value;
+			isAppearanceDirty_ = true; 
+		}
+		*/
 	}
 
 	public bool showLine = true;
@@ -203,11 +243,14 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return graphPosition_; }
 	}
 
-	// FIXME Convert to subgraph
-	private GraphPanel myGraph_; 
+	private SubGraph mySubGraph_; 
+	public SubGraph subGraph
+	{
+		get { return subGraph; }
+	}
 	public GraphPanel graphPanel
 	{
-		get { return myGraph_; }
+		get { return mySubGraph_.GraphPanel; }
 	}
 
 	private Vector2 point_ = new Vector2 ();
@@ -216,9 +259,9 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		get { return point_; }
 	}
 
-	public void init (GraphPanel p, float x, float y, GraphPointDef.EFunctionalState functionalState)
+	public void init (SubGraph sg, float x, float y, GraphPointDef.EFunctionalState functionalState)
 	{
-		myGraph_ = p;
+		mySubGraph_ = sg;
 		EFunctionalState = functionalState;
 		SetXY (x, y);
 	}
@@ -232,12 +275,12 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 				// TODO Refactor
 				pointSprite.color = 
 					(eFixedState_ == GraphPointDef.EFixedState.Fixed) 
-						? (s_functionalColorFixed) : (s_functionalColor);
+						? (SubGraph.s_functionalColorFixed) : (SubGraph.s_functionalColor);
 				break;
 			}
 			case GraphPointDef.EFunctionalState.NonFunctional:
 			{
-				pointSprite.color = s_nonFunctionalColor;
+				pointSprite.color = SubGraph.s_nonFunctionalColor;
 				break;
 			}
 			default :
@@ -252,12 +295,12 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			    && nextPoint_ != null && nextPoint_.EFunctionalState == GraphPointDef.EFunctionalState.Functional)
 			{
 				// TODO separate colours for lines & points
-				lineSprite.color = s_functionalColor;
+				lineSprite.color = SubGraph.s_functionalColor;
 			}
 			else
 			{
 				// TODO separate colours for lines & points
-				lineSprite.color = s_nonFunctionalColor;
+				lineSprite.color = SubGraph.s_nonFunctionalColor;
 			}
 		}
 	}
@@ -271,7 +314,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	{
 		point_.x = x;
 		point_.y = y;
-		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (graphPanel.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -290,7 +333,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void SetY (float y)
 	{
 		point_.y = y;
-		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (graphPanel.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -306,7 +349,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void SetX (float x)
 	{
 		point_.x = x;
-		pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
+		pointSprite.transform.SetLocalXYSize (graphPanel.graphSettings.pointSize); 
 		adjustPosition ();
 		updateLine ();
 		if (previousPoint_ != null)
@@ -327,8 +370,8 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			if (nextPoint_ != null)
 			{
 
-				Vector2 pointPosition = myGraph_.GetLocationForPoint (point_.x, point_.y);
-				Vector2 nextPointPosition = myGraph_.GetLocationForPoint (nextPoint_.Point.x, nextPoint_.Point.y);
+				Vector2 pointPosition = graphPanel.GetLocationForPoint (point_.x, point_.y);
+				Vector2 nextPointPosition = graphPanel.GetLocationForPoint (nextPoint_.Point.x, nextPoint_.Point.y);
 
 				float xDist = nextPointPosition.x - pointPosition.x;
 				float yDist =  nextPointPosition.y - pointPosition.y;
@@ -361,7 +404,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 	public void adjustPosition()
 	{
-		graphPosition_ = myGraph_.GetLocationForPoint (point_.x, point_.y);
+		graphPosition_ = graphPanel.GetLocationForPoint (point_.x, point_.y);
 		transform.SetLocalXYPosition(graphPosition_.x, graphPosition_.y);
 		transform.localScale = Vector3.one;
 	}
@@ -371,7 +414,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 		if (IsFunctional)
 		{
 //			Debug.Log ("Point Selected: " + this.DebugDescribe ());
-			myGraph_.OnPointSelected (this);
+			graphPanel.OnPointSelected (this);
 		}
 		else
 		{
@@ -391,7 +434,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			ClearAppearanceDirty();
 		}
 
-		if (this == myGraph_.pointPanel_.Point)
+		if (this == graphPanel.pointPanel_.Point)
 		{
 			if (!isSelected)
 			{
@@ -402,25 +445,25 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 			}
 			isSelected = true;
 
-			float phase = throbTime / myGraph_.graphSettings.selectedPointThrobTime; // 0 to 1
-			float size = Mathf.Lerp (myGraph_.graphSettings.pointSize, myGraph_.graphSettings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
+			float phase = throbTime / graphPanel.graphSettings.selectedPointThrobTime; // 0 to 1
+			float size = Mathf.Lerp (graphPanel.graphSettings.pointSize, graphPanel.graphSettings.selectedPointMaxSize, Mathf.Sin (2f * Mathf.PI * phase));
 			pointSprite.transform.SetLocalXYSize (size); 
 				
 			throbTime += Time.deltaTime;
-			if (throbTime > myGraph_.graphSettings.selectedPointThrobTime)
+			if (throbTime > graphPanel.graphSettings.selectedPointThrobTime)
 			{
-				throbTime -= myGraph_.graphSettings.selectedPointThrobTime;
+				throbTime -= graphPanel.graphSettings.selectedPointThrobTime;
 			}
 		}
 		else
 		{
 			if (isSelected)
 			{
-				if (DEBUG_POINT && !myGraph_.IsCreatingGraph)
+				if (DEBUG_POINT && !graphPanel.IsCreatingGraph)
 				{
 				//	Debug.Log("Point deselection detected: "+this.DebugDescribe());
 				}
-				pointSprite.transform.SetLocalXYSize (myGraph_.graphSettings.pointSize); 
+				pointSprite.transform.SetLocalXYSize (graphPanel.graphSettings.pointSize); 
 			}
 			isSelected = false;
 		}

@@ -109,14 +109,16 @@ public class WaveGraphPanel : GraphPanel
 		GraphPoint previous = null;
 		
 		float rangeEndTolerance = step / 10f;
-		
+
+		firstSubGraph_ =  new SubGraph();
+		firstSubGraph_.init (this);
 		while (currentX <= finalX)
 		{
 			if (!visibleOnly || (graphSettings.IsXInView(currentX) ))
 			{
 				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
-				newPoint.init(this, 
+				newPoint.init(firstSubGraph_, 
 				              currentX, 
 				              wfp.GetValueForPhase(currentX, WaveFormDataInterpolatorLinear.Instance),
 				              (currentX >= 0f-rangeEndTolerance && currentX <= 1f+rangeEndTolerance)?
@@ -144,14 +146,15 @@ public class WaveGraphPanel : GraphPanel
 				
 				//				Debug.Log ("Created Point : "+newPoint.DebugDescribe());
 				
-				if (firstPoint_ == null)
+				if (firstSubGraph_ == null)
 				{
-					firstPoint_ = newPoint;
+					firstSubGraph_ = new SubGraph();
+					firstSubGraph_.init(this);
 				}
 				else
 				{
-					newPoint.PreviousPoint = previous;
-					previous.NextPoint = newPoint;
+					newPoint.PreviousPointInternal = previous;
+					previous.NextPointInternal = newPoint;
 				}
 				previous = newPoint;
 				yield return null;
@@ -163,7 +166,7 @@ public class WaveGraphPanel : GraphPanel
 			Debug.LogError ("Range ends not found, looking for closest");
 			
 			float minAbsXdist = float.MaxValue;
-			GraphPoint pt = firstPoint_;
+			GraphPoint pt = FirstPoint;
 			while (pt != null)
 			{
 				float absDist = Mathf.Abs(pt.Point.x - graphSettings.xRange.x);
@@ -172,10 +175,10 @@ public class WaveGraphPanel : GraphPanel
 					minAbsXdist = absDist;
 					rangeStart_ = pt;
 				}
-				pt = pt.NextPoint;
+				pt = pt.NextPointAbsolute;
 			}
 			minAbsXdist = float.MaxValue;
-			pt = firstPoint_;
+			pt = FirstPoint;
 			while (pt != null)
 			{
 				float absDist = Mathf.Abs(pt.Point.x - graphSettings.xRange.y);
@@ -184,36 +187,36 @@ public class WaveGraphPanel : GraphPanel
 					minAbsXdist = absDist;
 					rangeEnd_ = pt;
 				}
-				pt = pt.NextPoint;
+				pt = pt.NextPointAbsolute;
 			}
 			
 		}
-		GraphPoint earlyPoint = rangeStart_.PreviousPoint;
-		GraphPoint followedPoint = rangeEnd_.PreviousPoint;
+		GraphPoint earlyPoint = rangeStart_.PreviousPointInternal;
+		GraphPoint followedPoint = rangeEnd_.PreviousPointInternal;
 		
 		int earlyPoints = 0;
 		while (earlyPoint != null && followedPoint != null)
 		{
 			earlyPoints++;
 			followedPoint.Follower = earlyPoint;
-			earlyPoint = earlyPoint.PreviousPoint;
-			followedPoint = followedPoint.PreviousPoint;
+			earlyPoint = earlyPoint.PreviousPointInternal;
+			followedPoint = followedPoint.PreviousPointInternal;
 		}
 		if (earlyPoints > 0 && !graphSettings.loop)
 		{
 			Debug.LogError("Found  "+earlyPoints+" early points when not looping");
 		}
 		
-		GraphPoint latePoint = rangeEnd_.NextPoint;
-		followedPoint = rangeStart_.NextPoint;
+		GraphPoint latePoint = rangeEnd_.NextPointInternal;
+		followedPoint = rangeStart_.NextPointInternal;
 		
 		int latePoints = 0;
 		while (latePoint != null && followedPoint != null)
 		{
 			latePoints++;
 			followedPoint.Follower = latePoint;
-			latePoint = latePoint.NextPoint;
-			followedPoint = followedPoint.NextPoint;
+			latePoint = latePoint.NextPointInternal;
+			followedPoint = followedPoint.NextPointInternal;
 		}
 		if (latePoints > 0 && !graphSettings.loop)
 		{
@@ -300,7 +303,7 @@ public class WaveGraphPanel : GraphPanel
 				Debug.Log("PHASE is "+ phase);
 			}
 
-			nextPt = p.NextPoint;
+			nextPt = p.NextPointAbsolute;
 			if (DEBUG_TONE_GEN)
 			{
 				Debug.Log("NextPoint is "+ UnityExtensions.DebugDescribe(nextPt));

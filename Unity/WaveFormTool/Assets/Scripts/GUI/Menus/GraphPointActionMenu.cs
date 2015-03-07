@@ -32,16 +32,16 @@ public class GraphPointActionMenu : Menu
 		SetOptionActive(deletePointOption, point_!= null && false == point_.IsFixed && point_.IsFunctional);
 		SetOptionActive(addBeforeOption, 
 		                point_!= null  
-		                && point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional);
+		                && point_.PreviousPointAbsolute != null && point_.PreviousPointAbsolute.IsFunctional);
 		SetOptionActive(addAfterOption, 
 		                point_!= null && point_.IsFunctional 
-		                && point_.PreviousPoint != null);
+		                && point_.PreviousPointAbsolute != null);
 		SetOptionActive(addAllBeforeOption, 
 		                point_!= null  
-		                && point_.PreviousPoint != null && point_.PreviousPoint.IsFunctional);
+		                && point_.PreviousPointAbsolute != null && point_.PreviousPointAbsolute.IsFunctional);
 		SetOptionActive(addAllAfterOption, 
 		                point_!= null && point_.IsFunctional 
-		                && point_.PreviousPoint != null);
+		                && point_.PreviousPointAbsolute != null);
 	}
 	
 	public override void OnOptionSelected(string option)

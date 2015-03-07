@@ -106,23 +106,26 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		float time = 0f;
 
-		firstPoint_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-		firstPoint_.transform.parent = pointsContainer;
-		firstPoint_.init(this, 
+		firstSubGraph_ = new SubGraph();
+		firstSubGraph_.init(this);
+
+		GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+		newPoint.transform.parent = pointsContainer;
+		newPoint.init(firstSubGraph_, 
 		              time, 
 		              0f,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
-		rangeStart_ = firstPoint_;
+		rangeStart_ = newPoint;
 		OnPointSelected(rangeStart_);
 
 		rangeStart_.SetFixed ();
-		firstPoint_.gameObject.name = "First";
+		newPoint.gameObject.name = "First";
 		yield return null; // yield allows point to pick up on it immediately
 		pointPanel_.gameObject.SetActive (false);
 
-		GraphPoint previous = firstPoint_;
-		GraphPoint newPoint = null;
+		GraphPoint previous = newPoint;
+		newPoint = null;
 
 		int numToPeak = Mathf.CeilToInt(((float)envelopeSettings.leadInPeakTime / (float)envelopeSettings.leadInLength) * (float)numSamples);
 		float step = envelopeSettings.leadInPeakTime / numToPeak;
@@ -135,14 +138,14 @@ public class EnvelopeGraphPanel : GraphPanel
 			time = i*step;
 			newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 			newPoint.transform.parent = pointsContainer;
-			newPoint.init(this, 
+			newPoint.init(firstSubGraph_, 
 			                 time, 
 			                 efp.GetValueForTime(time, envelopeSettings),
 			                 GraphPointDef.EFunctionalState.Functional
 			                 );
 			newPoint.gameObject.name = "1";
-			newPoint.PreviousPoint = previous;
-			previous.NextPoint = newPoint;
+			newPoint.PreviousPointInternal = previous;
+			previous.NextPointInternal = newPoint;
 			previous = newPoint;
 		}
 		if (DEBUG_ENVELOPE_GRAPH)
@@ -162,14 +165,14 @@ public class EnvelopeGraphPanel : GraphPanel
 				time = envelopeSettings.leadInPeakTime + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
-				newPoint.init(this, 
+				newPoint.init(firstSubGraph_, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "2";
-				newPoint.PreviousPoint = previous;
-				previous.NextPoint = newPoint;
+				newPoint.PreviousPointInternal = previous;
+				previous.NextPointInternal = newPoint;
 				previous = newPoint;
 			}
 		}
@@ -180,14 +183,14 @@ public class EnvelopeGraphPanel : GraphPanel
 		time = envelopeSettings.leadInLength;
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
-		newPoint.init(this, 
+		newPoint.init(firstSubGraph_, 
 		              time, 
 		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "3";
-		newPoint.PreviousPoint = previous;
-		previous.NextPoint = newPoint;
+		newPoint.PreviousPointInternal = previous;
+		previous.NextPointInternal = newPoint;
 		previous = newPoint;
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("At mid start = "+previous.DebugDescribe());
@@ -197,14 +200,14 @@ public class EnvelopeGraphPanel : GraphPanel
 
 		newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 		newPoint.transform.parent = pointsContainer;
-		newPoint.init(this, 
+		newPoint.init(firstSubGraph_, 
 		              time, 
 		              envelopeSettings.midValue,
 		              GraphPointDef.EFunctionalState.Functional
 		              );
 		newPoint.gameObject.name = "4";
-		newPoint.PreviousPoint = previous;
-		previous.NextPoint = newPoint;
+		newPoint.PreviousPointInternal = previous;
+		previous.NextPointInternal = newPoint;
 		previous = newPoint;
 		if (DEBUG_ENVELOPE_GRAPH)
 			Debug.Log ("At mid end = "+previous.DebugDescribe());
@@ -223,14 +226,14 @@ public class EnvelopeGraphPanel : GraphPanel
 				time = envelopeSettings.leadInLength + envelopeSettings.midLength + i*step;
 				newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 				newPoint.transform.parent = pointsContainer;
-				newPoint.init(this, 
+				newPoint.init(firstSubGraph_, 
 				              time, 
 				              efp.GetValueForTime(time, envelopeSettings),
 				              GraphPointDef.EFunctionalState.Functional
 				              );
 				newPoint.gameObject.name = "5";
-				newPoint.PreviousPoint = previous;
-				previous.NextPoint = newPoint;
+				newPoint.PreviousPointInternal = previous;
+				previous.NextPointInternal = newPoint;
 				previous = newPoint;
 			}
 		}
@@ -242,14 +245,14 @@ public class EnvelopeGraphPanel : GraphPanel
 		{
 			rangeEnd_ = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
 			rangeEnd_.transform.parent = pointsContainer;
-			rangeEnd_.init(this, 
+			rangeEnd_.init(firstSubGraph_, 
 			               envelopeSettings.TotalLength, 
 			               0f,
 			               GraphPointDef.EFunctionalState.Functional
 			               );
 			rangeEnd_.gameObject.name = "6";
-			rangeEnd_.PreviousPoint = previous;
-			previous.NextPoint = rangeEnd_;
+			rangeEnd_.PreviousPointInternal = previous;
+			previous.NextPointInternal = rangeEnd_;
 		}
 		else
 		{
@@ -343,7 +346,7 @@ public class EnvelopeGraphPanel : GraphPanel
 			{
 				provider.AddPoint(p.Point);
 				sb.Append("\nEnvPt "+p.Point);
-				p = p.NextPoint;
+				p = p.NextPointAbsolute;
 
 			}	//	while (p!= null && p != RangeEnd && numDone < numSamples_)
 			yield return null;
