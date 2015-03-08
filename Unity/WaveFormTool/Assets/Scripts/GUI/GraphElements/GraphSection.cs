@@ -282,6 +282,103 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 
 	}
 
+	#region IO
+
+	public class Section_Def
+	{
+		public string name;
+		public List <GraphPointDef> defs = new List<GraphPointDef>();
+	}
+
+	public void SaveToFile(System.IO.TextWriter file)
+	{
+		GraphIO.WriteStartLine( file, "GraphSection" );
+		GraphIO.WriteString(file, "SectionName", sectionName_);
+		GraphIO.WriteStartLine(file, "Points");
+		GraphPoint p = FirstPoint;
+		while (p != null)
+		{
+			p.pointDef.SaveToFile(file);
+			p = p.NextPointInternal;
+		}
+		file.Write("\n");
+		GraphIO.WriteEndLine(file, "Points");
+
+		GraphIO.WriteEndLine( file, "GraphSection" );
+	}
+
+	static public bool ReadFromFile(System.IO.TextReader file, ref Section_Def sectionDef)
+	{
+		GraphSection result = null;
+
+		//FIXME
+		string line = file.ReadLine ( );
+		if ( line == null)
+		{
+			return false;
+		}
+		if ( line.StartsWith ( GraphIO.EndLine("Sections")) )
+		{
+			Debug.Log ("Found Sections END");
+			return false;
+		}
+
+		if (! line.StartsWith(GraphIO.StartLine("GraphSection"))) 
+		{
+			Debug.LogError ("No GraphSection START");
+			return false;
+		}
+		else
+		{
+			Debug.Log ("Found GraphSection START");
+		}
+		line = file.ReadLine();
+		if (line == null || !GraphIO.ReadString(line, "SectionName", ref sectionDef.name))
+		{
+			Debug.LogError ("No GraphSection name");
+		}
+
+		line = file.ReadLine();
+		if (!line.StartsWith(GraphIO.StartLine("Points")))
+		{
+			Debug.LogError ("No Points START");
+			return false;
+		}
+		else
+		{
+			Debug.Log ("Found Points START");
+		}
+		GraphPointDef def = GraphPointDef.ReadFromFile(file);
+		while (def != null)
+		{
+			sectionDef.defs.Add(def);
+			def = GraphPointDef.ReadFromFile(file);
+		}
+		line = file.ReadLine();
+		if (!line.StartsWith(GraphIO.EndLine("Points")))
+		{
+			Debug.LogError ("No Points End");
+			return false;
+		}
+		else
+		{
+			Debug.Log ("Found Points END");
+		}
+		line = file.ReadLine();
+		if (!line.StartsWith(GraphIO.EndLine("GraphSection")))
+		{
+			Debug.LogError ("No GraphSection END");
+			return false;
+		}
+		else
+		{
+			Debug.Log ("Found GraphSection END");
+		}
+		Debug.Log("Read section '"+sectionDef.name+" ( "+sectionDef.defs.Count+" )");
+		return true;
+	}
+	#endregion IO	
+
 	#region IDebugDescribable
 
 	public void DebugDescribe(System.Text.StringBuilder sb)

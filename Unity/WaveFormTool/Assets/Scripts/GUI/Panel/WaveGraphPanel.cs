@@ -232,30 +232,46 @@ public class WaveGraphPanel : GraphPanel
 
 	public void Update()
 	{
-		if (isDirty_)
+		if ( IsCreatingGraph )
 		{
-			if (isCreating_)
+			if ( isCreating_ )
 			{
-				if (DEBUG_GENERATION)
+				if ( DEBUG_GENERATION )
 				{
-					Debug.Log("WGP: restarting");
+					Debug.Log ( "WGP: stopping brecause creating" );
 				}
 				isCreating_ = false;
-				messageLabel.color = Color.red;
-				messageLabel.text = "Restarted tone creation";
-				StopCoroutine ("CreateDataCR");
+				StopCoroutine ( "CreateDataCR" );
 			}
-			else
+
+		}
+		else
+		{
+			if (isDirty_)
 			{
-				if (DEBUG_GENERATION)
+				if (isCreating_)
 				{
-					Debug.Log("WGP: starting");
+					if (DEBUG_GENERATION)
+					{
+						Debug.Log("WGP: restarting");
+					}
+					isCreating_ = false;
+					messageLabel.color = Color.red;
+					messageLabel.text = "Restarted tone creation";
+					StopCoroutine ("CreateDataCR");
 				}
-				messageLabel.color = Color.red;
-				messageLabel.text = "Started tone creation";
+				else
+				{
+					if (DEBUG_GENERATION)
+					{
+						Debug.Log("WGP: starting");
+					}
+					messageLabel.color = Color.red;
+					messageLabel.text = "Started tone creation";
+				}
+				isDirty_ = false;
+				StartCoroutine("CreateDataCR");
 			}
-			isDirty_ = false;
-			StartCoroutine("CreateDataCR");
 		}
 	}
 

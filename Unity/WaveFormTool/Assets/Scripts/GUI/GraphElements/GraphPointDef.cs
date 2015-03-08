@@ -145,6 +145,7 @@ public class GraphPointDef :IDebugDescribable
 			Debug.LogError ("No Point END");
 			return null;
 		}
+		Debug.Log(" Read Point "+def.DebugDescribe());
 		return def;		
 	}
 	

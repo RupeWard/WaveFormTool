@@ -262,7 +262,7 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 	public void init (GraphSection sg, float x, float y, GraphPointDef.EFunctionalState functionalState)
 	{
 		myGraphSection_ = sg;
-		transform.parent = sg.GraphPanel.pointsContainer;
+		transform.parent = sg.transform;// sg.GraphPanel.pointsContainer;
 		EFunctionalState = functionalState;
 		SetXY (x, y);
 	}
@@ -428,6 +428,18 @@ public class GraphPoint : MonoBehaviour, IDebugDescribable
 
 	public void Update()
 	{
+#if UNITY_EDITOR
+		if (myGraphSection_ == null)
+		{
+			Debug.LogError ("Null graphSection for "+this.DebugDescribe());
+			return;
+		}
+		if (myGraphSection_.GraphPanel == null)
+		{
+			Debug.LogError ("Null graphPanel for "+this.DebugDescribe());
+			return;
+		}
+#endif
 		if (isAppearanceDirty_)
 		{
 			updateLine();

@@ -168,7 +168,7 @@ public class GraphIO
 
 	static public void WriteString(System.IO.TextWriter file, string key, string s)
 	{
-		file.Write ( "int "+key + " \"" + s + "\"\n" );
+		file.Write ( "text "+key + " \"" + s + "\"\n" );
 	}
 	
 	static public bool ReadString(string line, string key, ref string s)

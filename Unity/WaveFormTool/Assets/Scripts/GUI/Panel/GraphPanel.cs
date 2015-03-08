@@ -807,15 +807,24 @@ public abstract class GraphPanel : MonoBehaviour
 			{
 				Debug.Log ("writing points ");
 			}
-			GraphIO.WriteStartLine(file, "Points");
+			GraphIO.WriteStartLine(file, "Sections");
 
+			GraphSection section = firstGraphSection_;
+			while (section != null)
+			{
+				section.SaveToFile (file);
+				section = section.NextGraphSection;
+			}
+			/*
 			GraphPoint p = FirstPoint;
 			while (p != null)
 			{
 				p.pointDef.SaveToFile(file);
 				p = p.NextPointAbsolute;
 			}
-			GraphIO.WriteEndLine(file, "Points");
+			 */
+			file.Write("\n");
+			GraphIO.WriteEndLine(file, "Sections");
 			if (DEBUG_IO)
 			{
 				Debug.Log ("Finished writing graph ");
@@ -827,7 +836,7 @@ public abstract class GraphPanel : MonoBehaviour
 	}
 
 
-	// FIXME Convert to subgraph
+	// FIXME Convert this to subgraph
 	private IEnumerator CreatePointDefsCR()
 	{
 		if (DEBUG_IO)
@@ -869,6 +878,7 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 		else
 		{
+			isCreatingGraph_ = true;
 			StartCoroutine ( LoadFromFileCR ( filename ) );
 		}
 	}
@@ -885,6 +895,7 @@ public abstract class GraphPanel : MonoBehaviour
 		if (!fileInfo.Exists)
 		{
 			Debug.LogError ("Non-existent File '"+filePath+"'");
+			isCreatingGraph_ = false;
 			yield break;
 		}
 
@@ -898,6 +909,7 @@ public abstract class GraphPanel : MonoBehaviour
 		if (!graphSettingsDef.ReadFromFile(file))
 		{
 			Debug.LogError ("No GraphSettings");
+			isCreatingGraph_ = false;
 			yield break;
 		}
 		if (DEBUG_IO)
@@ -906,42 +918,40 @@ public abstract class GraphPanel : MonoBehaviour
 		}
 
 		string line = file.ReadLine();
-		if (line == null || line != GraphIO.StartLine("Points"))
+		if (line == null || line != GraphIO.StartLine("Sections"))
 		{
-			Debug.LogError ("No Points START");
+			Debug.LogError ("No Sections START");
+			isCreatingGraph_ = false;
 			yield break;
 		}
 		if (DEBUG_IO)
 		{
-			Debug.Log ( "found points start " );
+			Debug.Log ( "found Sections start " );
 		}
 
-		List <GraphPointDef> pointDefs = new List< GraphPointDef>();
-
-		GraphPointDef ptDef = GraphPointDef.ReadFromFile(file);
-
-		while ( ptDef != null )
+		List< GraphSection.Section_Def > sectionDefs = new List<GraphSection.Section_Def>();
+		GraphSection.Section_Def sectionDef = new GraphSection.Section_Def();
+		if (GraphSection.ReadFromFile(file, ref sectionDef))
 		{
-			pointDefs.Add(ptDef);
-			ptDef = GraphPointDef.ReadFromFile (file);
+			sectionDefs.Add (sectionDef);
 		}
 
 		if (DEBUG_IO)
 		{
-			Debug.Log ("Read "+pointDefs.Count+" points");
+			Debug.Log ("Read "+sectionDefs.Count+" sections");
 		}
 
-		yield return StartCoroutine( OnLoadComplete( graphSettingsDef, pointDefs ));
+		yield return StartCoroutine( OnLoadComplete( graphSettingsDef, sectionDefs ));
 		if (DEBUG_IO)
 		{
 			Debug.Log ("Finished loading graph");
 		}
-
+		isCreatingGraph_ = false;
 		yield return null;
 	}
 
 	// FIXME Convert to subgraph
-	private IEnumerator OnLoadComplete(GraphSettingsDef settingsDef, List<GraphPointDef> pointDefs)
+	private IEnumerator OnLoadComplete(GraphSettingsDef settingsDef, List<GraphSection.Section_Def> sectionDefs)
 	{
 
 		if (DEBUG_IO)
@@ -961,61 +971,81 @@ public abstract class GraphPanel : MonoBehaviour
 			Debug.Log ("Settign up axes");
 		}
 
-		yield return StartCoroutine(SetUpAxesCR());
+//		yield return StartCoroutine(SetUpAxesCR());
 
 		if (DEBUG_IO)
 		{
 			Debug.Log ("loading points");
 		}
 
-		firstGraphSection_ = GraphSection.CreateGraphSection("Loaded", this);
-
-		GraphPoint previousPoint = null;
-		foreach( GraphPointDef def in pointDefs)
+		int sectionNum = 0;
+		GraphSection previousSection = null;
+		foreach (GraphSection.Section_Def sectionDef in sectionDefs)
 		{
-			GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
-			newPoint.init(firstGraphSection_, 
-			              def.pt.x, 
-			              def.pt.y,
-			              def.eFunctionalState
-			              );
-			if (firstGraphSection_.FirstPoint == null)
+			sectionNum++;
+			int ptNum =0;
+			GraphSection thisSection = GraphSection.CreateGraphSection(sectionDef.name, this);
+			if (previousSection != null)
 			{
-				firstGraphSection_.FirstPoint = newPoint;
+				previousSection.NextGraphSection = thisSection;
+				thisSection.PreviousGraphSection = previousSection;
 			}
-			newPoint.pointDef = def;
-			if (def.eFixedState == GraphPointDef.EFixedState.Fixed)
+			if (firstGraphSection_ == null)
 			{
-				newPoint.SetFixed();
+				firstGraphSection_ = thisSection;
 			}
-			if (def.isRangeStart)
+
+			GraphPoint previousPoint = null;
+			foreach( GraphPointDef def in sectionDef.defs)
 			{
-				if (rangeStart_ != null)
+				ptNum++;
+				GraphPoint newPoint = (GameObject.Instantiate ( Resources.Load<GameObject>( "GUI/Prefabs/GraphPoint"))as GameObject).GetComponent< GraphPoint>();
+				newPoint.init(thisSection, 
+				              def.pt.x, 
+				              def.pt.y,
+				              def.eFunctionalState
+				              );
+				newPoint.gameObject.name = sectionNum.ToString()+"_"+ptNum.ToString();
+				if (thisSection.FirstPoint == null)
 				{
-					Debug.LogError("Already found RangeStart "+rangeStart_.DebugDescribe()+" but "+def.DebugDescribe());
+					thisSection.FirstPoint = newPoint;
 				}
-				rangeStart_ = newPoint;
-			}
-			if (def.isRangeEnd)
-			{
-				if (rangeEnd_ != null)
+				newPoint.pointDef = def;
+				if (def.eFixedState == GraphPointDef.EFixedState.Fixed)
 				{
-					Debug.LogError("Already found RangeEnd");
+					newPoint.SetFixed();
 				}
-				rangeEnd_ = newPoint;
+				if (def.isRangeStart)
+				{
+					if (rangeStart_ != null)
+					{
+						Debug.LogError("Already found RangeStart "+rangeStart_.DebugDescribe()+" but "+def.DebugDescribe());
+					}
+					rangeStart_ = newPoint;
+				}
+				if (def.isRangeEnd)
+				{
+					if (rangeEnd_ != null)
+					{
+						Debug.LogError("Already found RangeEnd");
+					}
+					rangeEnd_ = newPoint;
+				}
+				newPoint.PreviousPointInternal = previousPoint;
+				if (previousPoint != null)
+				{
+					previousPoint.NextPointInternal = newPoint;
+				}
+				previousPoint = newPoint;
+				Debug.Log ("Loaded point "+newPoint.DebugDescribe()
+				           +((def.isRangeStart)?(" START"):(""))
+				           +((def.isRangeEnd)?(" END"):(""))
+				           );
+				yield return null;
 			}
-			newPoint.PreviousPointInternal = previousPoint;
-			if (previousPoint != null)
-			{
-				previousPoint.NextPointInternal = newPoint;
-			}
-			previousPoint = newPoint;
-			Debug.Log ("Loaded point "+newPoint.DebugDescribe()
-			           +((def.isRangeStart)?(" START"):(""))
-			           +((def.isRangeEnd)?(" END"):(""))
-			           );
-			yield return null;
+
 		}
+
 		GraphPoint p = FirstPoint;
 		while (p != null)
 		{
@@ -1033,7 +1063,7 @@ public abstract class GraphPanel : MonoBehaviour
 						p.Follower = p2;
 						break;
 					}
-					p2 = p2.NextPointInternal;
+					p2 = p2.NextPointAbsolute;
 				}
 				if (p.Follower == null)
 				{
@@ -1041,11 +1071,18 @@ public abstract class GraphPanel : MonoBehaviour
 				}
 			}
 			p = p.NextPointAbsolute;
-
 		}
 		if (DEBUG_IO)
 		{
 			Debug.Log ("Created "+NumGraphPoints()+" graph points");
+		}
+		if (rangeStart_ == null)
+		{
+			Debug.LogError("Failed to find rangeStart on load");
+		}
+		if (rangeEnd_ == null)
+		{
+			Debug.LogError("Failed to find rangeEnd on load");
 		}
 		//yield return StartCoroutine(UpdateLinesCR());
 		HandleDataChange();

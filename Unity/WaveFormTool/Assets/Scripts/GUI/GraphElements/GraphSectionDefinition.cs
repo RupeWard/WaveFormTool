@@ -21,7 +21,6 @@ public abstract class GraphSectionDefinition : IDebugDescribable, IEnvelopeProvi
 		get { return range_; }
 	}
 
-	private float length_=0f;
 	public float Length
 	{
 		get { return range_.y - range_.x; }
