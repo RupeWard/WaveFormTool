@@ -805,25 +805,24 @@ public abstract class GraphPanel : MonoBehaviour
 
 			if (DEBUG_IO)
 			{
-				Debug.Log ("writing points ");
+				Debug.Log ("writing Sections ");
 			}
 			GraphIO.WriteStartLine(file, "Sections");
+			int numSections = NumGraphSections;
+			GraphIO.WriteInt(file,"NumSections", numSections);
+			int numWritten = 0;
 
 			GraphSection section = firstGraphSection_;
 			while (section != null)
 			{
 				section.SaveToFile (file);
+				numWritten++;
 				section = section.NextGraphSection;
 			}
-			/*
-			GraphPoint p = FirstPoint;
-			while (p != null)
+			if (numWritten != numSections)
 			{
-				p.pointDef.SaveToFile(file);
-				p = p.NextPointAbsolute;
+				Debug.LogError ("NumWritten = "+numWritten+" but num = "+numSections);
 			}
-			 */
-			file.Write("\n");
 			GraphIO.WriteEndLine(file, "Sections");
 			if (DEBUG_IO)
 			{
@@ -908,7 +907,7 @@ public abstract class GraphPanel : MonoBehaviour
 		GraphSettingsDef graphSettingsDef = new GraphSettingsDef();
 		if (!graphSettingsDef.ReadFromFile(file))
 		{
-			Debug.LogError ("No GraphSettings");
+			Debug.LogError ("No GraphSettings ");
 			isCreatingGraph_ = false;
 			yield break;
 		}
@@ -920,7 +919,7 @@ public abstract class GraphPanel : MonoBehaviour
 		string line = file.ReadLine();
 		if (line == null || line != GraphIO.StartLine("Sections"))
 		{
-			Debug.LogError ("No Sections START");
+			Debug.LogError ("No Sections START in '"+line+"'");
 			isCreatingGraph_ = false;
 			yield break;
 		}
@@ -928,20 +927,37 @@ public abstract class GraphPanel : MonoBehaviour
 		{
 			Debug.Log ( "found Sections start " );
 		}
-
-		List< GraphSection.Section_Def > sectionDefs = new List<GraphSection.Section_Def>();
-		GraphSection.Section_Def sectionDef = new GraphSection.Section_Def();
-		if (GraphSection.ReadFromFile(file, ref sectionDef))
+		int numSections = 0;
+		line = file.ReadLine();
+		if (GraphIO.ReadInt(line, "NumSections", ref numSections))
 		{
-			sectionDefs.Add (sectionDef);
+			List< GraphSection.Section_Def > sectionDefs = new List<GraphSection.Section_Def>();
+			
+			for (int i = 0; i<numSections; i++)
+			{
+				GraphSection.Section_Def sectionDef = new GraphSection.Section_Def();
+				if (GraphSection.ReadFromFile(file, ref sectionDef))
+				{
+					sectionDefs.Add (sectionDef);
+				}
+				else
+				{
+					Debug.LogError ("Failed to read section def # "+i);
+					break;
+				}
+			}
+			
+			if (DEBUG_IO)
+			{
+				Debug.Log ("Read "+sectionDefs.Count+" sections");
+			}
+			yield return StartCoroutine( OnLoadComplete( graphSettingsDef, sectionDefs ));
+		}
+		else
+		{
+			Debug.LogError ("Failed to read NumSections from '"+line+"'");
 		}
 
-		if (DEBUG_IO)
-		{
-			Debug.Log ("Read "+sectionDefs.Count+" sections");
-		}
-
-		yield return StartCoroutine( OnLoadComplete( graphSettingsDef, sectionDefs ));
 		if (DEBUG_IO)
 		{
 			Debug.Log ("Finished loading graph");

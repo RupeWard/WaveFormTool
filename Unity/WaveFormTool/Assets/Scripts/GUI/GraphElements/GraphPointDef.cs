@@ -86,63 +86,63 @@ public class GraphPointDef :IDebugDescribable
 		}
 		if (! line.StartsWith(GraphIO.StartLine("Point"))) 
 		{
-			Debug.LogError ("No Point START");
+			Debug.LogError ("No Point START in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if (! GraphIO.ReadInt ( line, "ID", ref def.id ) )
 		{
-			Debug.LogError ("No ID");
+			Debug.LogError ("No ID in '"+line+"'");
 			return null;
 		}
 
 		line = file.ReadLine ( );
 		if (! GraphIO.ReadVector2 ( line, "Point", ref def.pt ) )
 		{
-			Debug.LogError ("No Point");
+			Debug.LogError ("No Point in '"+line+"'");
 			return null;
 		}
 
 		line = file.ReadLine ( );
 		if (! GraphIO.ReadFixedState ( line, ref def.eFixedState ) )
 		{
-			Debug.LogError ("No FixedState");
+			Debug.LogError ("No FixedState in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if ( ! GraphIO.ReadFunctionalState ( line, ref def.eFunctionalState ) )
 		{
-			Debug.LogError ("No FunctionalState");
+			Debug.LogError ("No FunctionalState in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if ( ! GraphIO.ReadInt ( line, "Follower", ref def.followerId ) )
 		{
-			Debug.LogError ("No FollowerID");
+			Debug.LogError ("No FollowerID in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if ( ! GraphIO.ReadBool ( line, "RangeStart", ref def.isRangeStart ) )
 		{
-			Debug.LogError ("No RangeStart");
+			Debug.LogError ("No RangeStart in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if ( ! GraphIO.ReadBool ( line, "RangeEnd", ref def.isRangeEnd ) )
 		{
-			Debug.LogError ("No RangeEnd");
+			Debug.LogError ("No RangeEnd in '"+line+"'");
 			return null;
 		}
 		
 		line = file.ReadLine ( );
 		if (line == null || false == line.StartsWith(GraphIO.EndLine("Point"))) 
 		{
-			Debug.LogError ("No Point END");
+			Debug.LogError ("No Point END in '"+line+"'");
 			return null;
 		}
 		Debug.Log(" Read Point "+def.DebugDescribe());

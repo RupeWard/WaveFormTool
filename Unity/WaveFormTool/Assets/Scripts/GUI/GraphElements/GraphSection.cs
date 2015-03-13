@@ -292,16 +292,23 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 
 	public void SaveToFile(System.IO.TextWriter file)
 	{
+		int numPoints = NumGraphPoints ( );
 		GraphIO.WriteStartLine( file, "GraphSection" );
 		GraphIO.WriteString(file, "SectionName", sectionName_);
+		GraphIO.WriteInt(file, "NumPoints", numPoints);
 		GraphIO.WriteStartLine(file, "Points");
 		GraphPoint p = FirstPoint;
+		int numWritten=0;
 		while (p != null)
 		{
 			p.pointDef.SaveToFile(file);
+			numWritten++;
 			p = p.NextPointInternal;
 		}
-		file.Write("\n");
+		if (numWritten != numPoints)
+		{
+			Debug.LogError("NumWritten = "+numWritten+", num = "+numPoints);
+		}
 		GraphIO.WriteEndLine(file, "Points");
 
 		GraphIO.WriteEndLine( file, "GraphSection" );
@@ -309,8 +316,6 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 
 	static public bool ReadFromFile(System.IO.TextReader file, ref Section_Def sectionDef)
 	{
-		GraphSection result = null;
-
 		//FIXME
 		string line = file.ReadLine ( );
 		if ( line == null)
@@ -325,7 +330,7 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 
 		if (! line.StartsWith(GraphIO.StartLine("GraphSection"))) 
 		{
-			Debug.LogError ("No GraphSection START");
+			Debug.LogError ("No GraphSection START in '"+line+"'");
 			return false;
 		}
 		else
@@ -335,29 +340,44 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 		line = file.ReadLine();
 		if (line == null || !GraphIO.ReadString(line, "SectionName", ref sectionDef.name))
 		{
-			Debug.LogError ("No GraphSection name");
+			Debug.LogError ("No GraphSection name in '"+line+"'");
+		}
+
+		line = file.ReadLine();
+		int numPoints = 0;
+		if (! GraphIO.ReadInt ( line, "NumPoints", ref numPoints ) )
+		{
+			Debug.LogError ("No NumPoints in '"+line+"'");
+			return false;
 		}
 
 		line = file.ReadLine();
 		if (!line.StartsWith(GraphIO.StartLine("Points")))
 		{
-			Debug.LogError ("No Points START");
+			Debug.LogError ("No Points START in '"+line+"'");
 			return false;
 		}
 		else
 		{
 			Debug.Log ("Found Points START");
 		}
-		GraphPointDef def = GraphPointDef.ReadFromFile(file);
-		while (def != null)
+		for (int i = 0; i<numPoints; i++)
 		{
-			sectionDef.defs.Add(def);
-			def = GraphPointDef.ReadFromFile(file);
+			GraphPointDef def = GraphPointDef.ReadFromFile(file);
+			if (def == null)
+			{
+				Debug.LogError ("Failed to read Point #"+i);
+				break;
+			}
+			else
+			{
+				sectionDef.defs.Add(def);
+			}
 		}
 		line = file.ReadLine();
 		if (!line.StartsWith(GraphIO.EndLine("Points")))
 		{
-			Debug.LogError ("No Points End");
+			Debug.LogError ("No Points End in '"+line+"'");
 			return false;
 		}
 		else
@@ -367,7 +387,7 @@ public class GraphSection : MonoBehaviour, IDebugDescribable
 		line = file.ReadLine();
 		if (!line.StartsWith(GraphIO.EndLine("GraphSection")))
 		{
-			Debug.LogError ("No GraphSection END");
+			Debug.LogError ("No GraphSection END in'"+line+"'");
 			return false;
 		}
 		else
